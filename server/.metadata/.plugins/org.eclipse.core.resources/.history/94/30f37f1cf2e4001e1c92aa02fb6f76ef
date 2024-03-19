@@ -1,0 +1,16 @@
+package com.app.service;
+
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.app.model.BloodRequest;
+
+
+@Service
+public interface BloodRequestService {
+
+    public Optional<BloodRequest> getById(Long id);
+    public BloodRequest createRequest(BloodRequest bloodRequest);
+}

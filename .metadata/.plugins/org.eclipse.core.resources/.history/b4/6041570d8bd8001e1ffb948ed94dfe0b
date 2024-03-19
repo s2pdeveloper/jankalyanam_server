@@ -1,0 +1,27 @@
+package com.app.service.imp;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.app.model.User;
+import com.app.repository.UserRepository;
+import com.app.service.UserService;
+
+public class UserServiceImp implements UserService{
+    @Autowired
+    private UserRepository repository;
+
+    public User saveUser(User user) {
+        return repository.save(user);
+    }
+    public User getUser(String id) {
+        return repository.findById(id).orElse(null);
+    }
+    public List<User> getAllUsers(){
+        return repository.findAll();
+    }
+    public void deleteUser(String id) {
+        repository.deleteById(id);
+    }
+}

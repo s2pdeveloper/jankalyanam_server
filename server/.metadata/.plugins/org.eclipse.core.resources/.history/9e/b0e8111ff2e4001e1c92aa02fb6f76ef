@@ -1,0 +1,45 @@
+package com.app.service.imp;
+
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+
+
+import com.app.model.BloodRequest;
+import com.app.repository.BloodRequestRepository;
+import com.app.service.BloodRequestService;
+
+@Service
+public class BloodRequestServiceImp implements BloodRequestService{
+   
+	@Autowired
+    private BloodRequestRepository bloodRequestRepository;
+
+	@Override
+	public Optional<BloodRequest> getById(Long id) {
+		try {
+		Optional<BloodRequest> data = bloodRequestRepository.findById(id);
+		System.out.println("data_________"+data);
+		return data;
+		}
+		catch(Exception e) {
+			System.out.println("EROORR__________"+e);
+			 throw new RuntimeException("Failed to get blood request by ID: " + id, e);
+		}
+	
+		
+	}
+
+	@Override
+	public BloodRequest createRequest(BloodRequest bloodRequest) {
+	return bloodRequestRepository.save(bloodRequest);
+	}
+    
+	
+
+
+
+}

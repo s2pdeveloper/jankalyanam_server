@@ -1,0 +1,23 @@
+package com.app.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import com.app.dto.ResultDTO;
+import com.app.model.User;
+import com.app.repository.UserRepository;
+
+@Service
+public interface BloodRequestService {
+	 public ResultDTO register(User user);
+	 public String login(User user) throws Exception;
+    public User saveUser(User user);
+    public User getUser(Long id);
+    public List<User> getAllUsers();
+    public void deleteUser(Long id);
+}

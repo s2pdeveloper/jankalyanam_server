@@ -1,0 +1,45 @@
+package com.app.service.imp;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.app.dto.ResultDTO;
+import com.app.model.User;
+import com.app.repository.UserRepository;
+import com.app.service.UserService;
+
+public class UserServiceImp implements UserService{
+    @Autowired
+    private UserRepository repository;
+    
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public User saveUser(User user) {
+        return repository.save(user);
+    }
+    public User getUser(String id) {
+        return repository.findById(id).orElse(null);
+    }
+    public List<User> getAllUsers(){
+        return repository.findAll();
+    }
+    public void deleteUser(String id) {
+        repository.deleteById(id);
+    }
+	@Override
+	public ResultDTO register(User user) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		User saveData = repository.save(user);
+		return new ResultDTO(saveData.getId(),"Register Successfully");
+	}
+	@Override
+	public User login(User user) {
+		BCryptPasswordEncoder decode = new BCryptPasswordEncoder();
+		User data = repository.findByEmail(user.getEmail());
+		if(bCryptPasswordEncoder.matches(user.getPassword(), data.getPassword())
+	}
+}

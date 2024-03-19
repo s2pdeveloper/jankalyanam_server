@@ -1,0 +1,19 @@
+package com.app.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.model.User;
+import com.app.repository.UserRepository;
+
+@Service
+public interface UserService {
+	 public User register(User user);
+	 public User login(User user);
+    public User saveUser(User user);
+    public User getUser(String id);
+    public List<User> getAllUsers();
+    public void deleteUser(String id);
+}

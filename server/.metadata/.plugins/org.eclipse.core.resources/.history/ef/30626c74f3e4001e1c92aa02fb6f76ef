@@ -1,0 +1,8 @@
+package com.app.dto;
+
+public class BloodRequestDTO {
+	long id;
+	UserDTO user;
+	DonorDTO donor;
+	
+}

@@ -1,0 +1,55 @@
+package com.app.model;
+
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+public class Donation {
+
+    @Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    private String name;
+    
+    @Column(name = "father_or_husband")
+    private String fatherOrHusband;
+    
+    private int age;
+    
+    private String state;
+
+    private String city;
+    
+    private double hemoglobin;
+
+    private String illness;
+    
+    private String admittedTo;
+    
+    @Column(name = "blood_group")
+    private String bloodGroup;
+    
+    private int units;
+    
+    private Long donor;
+    
+    @Column(name = "blood_require_date")
+    private String bloodRequireDate;
+
+    
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+    
+}

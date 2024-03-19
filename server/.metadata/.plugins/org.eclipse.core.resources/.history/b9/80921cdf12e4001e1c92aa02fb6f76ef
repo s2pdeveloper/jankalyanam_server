@@ -1,0 +1,10 @@
+package com.app.constant;
+
+public class ServiceConstant {
+
+	public enum Role {
+	   ADMIN,SUPER_ADMIN,ATTENDER
+	}
+	
+	
+}

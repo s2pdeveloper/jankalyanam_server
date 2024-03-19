@@ -1,0 +1,17 @@
+package com.app.utilities;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
+
+@Component
+public class utility {
+	
+    public static  final ModelMapper modelMapper = new ModelMapper();
+
+
+    // Map one object to another
+    public <S, D> D mapObject(S source, Class<D> destinationType) {
+        return modelMapper.map(source, destinationType);
+    }
+
+}
