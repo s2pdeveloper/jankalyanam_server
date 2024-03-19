@@ -1,9 +1,0 @@
-package com.app.dto;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ResultDTO {
-	private String id;
-	private String message;
-}

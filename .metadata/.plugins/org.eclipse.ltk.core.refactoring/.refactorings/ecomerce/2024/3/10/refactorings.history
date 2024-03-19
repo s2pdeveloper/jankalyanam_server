@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename compilation unit &apos;com.app.service.imp.UserDetailsService.java&apos; to &apos;CustomUserDetailsService.java&apos;&#x0A;- Original project: &apos;ecomerce&apos;&#x0A;- Original element: &apos;com.app.service.imp.UserDetailsService.java&apos;&#x0A;- Renamed element: &apos;com.app.service.imp.CustomUserDetailsService.java&apos;" description="Rename compilation unit &apos;UserDetailsService.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.app.service.imp{UserDetailsService.java" name="CustomUserDetailsService.java" references="false" stamp="1709453989729" version="1.0"/>
-</session>
