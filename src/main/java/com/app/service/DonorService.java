@@ -9,7 +9,7 @@ import com.app.model.DonorDO;
 
 
 @Service
-public interface DonationService {
+public interface DonorService {
 
     public Optional<DonorDO> getById(Long id);
     

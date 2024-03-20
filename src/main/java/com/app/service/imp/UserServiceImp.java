@@ -123,7 +123,7 @@ public class UserServiceImp implements UserService{
 		UserDO user = userRepository.findById(Utility.getSessionUser().getId()).orElse(null);
 		if(user != null) {
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			user.setPassword(encoder.encode(user.getPassword()));
+			user.setPassword(encoder.encode(changePasswordDTO.getNewPassword()));
 			userRepository.save(user);
 			new ResultDTO(user.getId().toString(),"Password change successfully");
 		}

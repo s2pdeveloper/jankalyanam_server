@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.model.DonorDO;
-import com.app.service.DonationService;
+import com.app.service.DonorService;
 
 import io.swagger.annotations.Api;
 
@@ -20,10 +20,10 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/donate")
 @Api(tags = {"donate"})
-public class DonationController {
+public class DonorController {
 	
 	@Autowired
-	 private DonationService donationService ;
+	 private DonorService donationService ;
 	
 	@PostMapping("/save")
 	public DonorDO save(@RequestBody DonorDO donation) {

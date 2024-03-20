@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.PROVIDED;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -71,20 +73,26 @@ public class BloodRequestDO {
     @Column(name = "blood_require_date")
     private Date bloodRequireDate;
 
+    private BLOOD_STATUS status;
+    
+    private PROVIDED provided;
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Date createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
     
     
+    @ManyToOne()
+    @JoinColumn(name = "acceptor")
+    private UserDO acceptor;
   
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private UserDO user;
+    private UserDO attender;
     
     @OneToOne
     @JoinColumn(name = "donor_id")

@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 import com.app.model.BloodRequestDO;
 import com.app.model.DonorDO;
 import com.app.repository.BloodRequestRepository;
-import com.app.repository.DonationRepository;
+import com.app.repository.DonorRepository;
 import com.app.service.BloodRequestService;
-import com.app.service.DonationService;
+import com.app.service.DonorService;
 
 @Service
-public class DonationServiceImp implements DonationService{
+public class DonorServiceImp implements DonorService{
    
 	@Autowired
-    private DonationRepository donationRepository;
+    private DonorRepository donationRepository;
 
 	@Override
 	public Optional<DonorDO> getById(Long id) {

@@ -4,6 +4,7 @@ package com.app.model;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -72,11 +73,11 @@ public class UserDO implements UserDetails {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Date createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
     
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,9 +105,15 @@ public class UserDO implements UserDetails {
 		return true;
 	}
     
+	
+	@OneToMany(mappedBy = "acceptor")
+    private List<BloodRequestDO> myList ;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "attender")
     private List<BloodRequestDO> bloodRequestList ;
+	
+	@OneToMany(mappedBy = "donor")
+    private List<DonorDO> bloodDonateList ;
   
 //    @JsonIgnoreProperties("user")
   

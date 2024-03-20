@@ -10,5 +10,11 @@ public class ServiceConstant {
 		   ACTIVE,INACTIVE,DELETED
 		}
 	
+	public enum BLOOD_STATUS {
+		   PENDING,ACCEPTED,DONE
+		}
 	
+	public enum PROVIDED {
+		 DONOR,BLOOD
+		}
 }
