@@ -67,7 +67,7 @@ public class UserDO implements UserDetails {
     
     private String  password;
     
-    private STATUS status = STATUS.ACTIVE; ;
+    private STATUS status = STATUS.ACTIVE; 
     
     private ROLE role;
     

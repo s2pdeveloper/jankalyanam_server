@@ -47,14 +47,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    @Override
    protected void configure(HttpSecurity http) throws Exception {
        http.csrf(csrf -> csrf.disable())
-               .authorizeRequests(requests -> requests.antMatchers("/user/register","/user/login").permitAll()
+               .authorizeRequests(requests -> requests.antMatchers("/**").permitAll()
             		   .antMatchers(AUTH_WHITE_LIST).permitAll()
                        .anyRequest().authenticated())
                			.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                
-          
-    
-      http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-   }
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+}     
+       
+       
+//       @Override
+//       protected void configure(HttpSecurity http) throws Exception {
+//           http.csrf().disable()
+//               .authorizeRequests(requests -> requests.antMatchers("/**").permitAll()
+//                   .antMatchers("/**").permitAll()
+//                   .anyRequest().authenticated()
+//               .sessionManagement()
+//                   .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                 
+//         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+//         }     
+                
+
+   
 }
 

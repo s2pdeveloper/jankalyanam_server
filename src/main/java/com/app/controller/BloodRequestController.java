@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.dto.BloodRequestDTO;
+import com.app.dto.UserDTO;
 import com.app.model.BloodRequestDO;
 import com.app.model.UserDO;
 import com.app.service.BloodRequestService;
 
 import io.swagger.annotations.Api;
-
+import com.app.model.*;
 
 @RestController
 @RequestMapping("/blood-request")
@@ -27,23 +29,37 @@ public class BloodRequestController {
 	@Autowired
 	 private BloodRequestService bloodRequestService ;
 	
-	@PostMapping("/save")
-	public BloodRequestDO save(@RequestBody BloodRequestDO bloodRequest) {
+//	@PostMapping("/save")
+//	public BloodRequestDO save(@RequestBody BloodRequestDO bloodRequest) {
+//
+//		
+//		return bloodRequestService.createRequest(bloodRequest);
+//		
+//	}
+//	 
+//	@GetMapping("/{id}")
+//	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
 
 		
-		return bloodRequestService.createRequest(bloodRequest);
+//		return bloodRequestService.getById(id);
 		
-	}
+//	}
+	
+	
+	//Admin
+	 @GetMapping("/list/{type}")
+	    public List<BloodRequestDTO> getItemsByStatus(@PathVariable String type) {
+	     return bloodRequestService.getByStatus(type);
+	      
+	    }
 	 
-	@GetMapping("/{id}")
-	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
-
-		
-		return bloodRequestService.getById(id);
-		
-	}
-	
-	
+	 
+	 
+//	 @GetMapping("/all")
+//		public List<BloodRequestDO> getAllRequest() {
+//			return bloodRequestService.getAllRequest();
+//		}
 	
 
+	 
 }
