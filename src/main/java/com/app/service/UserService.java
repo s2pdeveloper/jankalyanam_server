@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.app.constant.ServiceConstant.ROLE;
+import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
@@ -38,4 +40,7 @@ public interface UserService {
 	 public ResultDTO changePassword(ChangePasswordDTO changePasswordDTO);
 
 	 public UserDTO getUserById(Long id);
+	 
+	 
+	 public UserDTO getByRoleAndStatus(ROLE role , STATUS status) ;
 }

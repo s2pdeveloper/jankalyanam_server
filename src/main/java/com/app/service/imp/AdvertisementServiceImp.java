@@ -3,18 +3,22 @@ package com.app.service.imp;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import com.app.dto.BloodRequestDTO;
 import com.app.dto.FileDTO;
 import com.app.dto.FileUploadDTO;
 import com.app.dto.ResultDTO;
 import com.app.model.AdvertisementDO;
+import com.app.model.BloodRequestDO;
 import com.app.repository.AdvertisementRepository;
 import com.app.service.AdvertisementService;
 import com.app.service.FilesStorageService;
+import com.app.utilities.Utility;
 
 @Service
 public class AdvertisementServiceImp implements AdvertisementService{
@@ -26,7 +30,7 @@ public class AdvertisementServiceImp implements AdvertisementService{
 	@Override
 	public ResultDTO upload(FileUploadDTO fileUploadDTO) {
 		var fileName = fileUploadDTO.getFile().getOriginalFilename() +"_"+ System.currentTimeMillis();
-		filesStorageService.save(fileUploadDTO.getFile(), fileName);
+		filesStorageService.save(fileUploadDTO.getFile(),fileName);
 		
 		AdvertisementDO advertise = new AdvertisementDO();
 		advertise.setName(fileUploadDTO.getName());
@@ -52,7 +56,21 @@ public class AdvertisementServiceImp implements AdvertisementService{
 	@Override
 	public FileDTO getById(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+//		return null;
+
+		try {
+			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
+			AdvertisementDO b = data.orElse(null);
+			FileDTO result = Utility.mapObject(b,FileDTO.class);
+			return result;
+			}
+			catch(Exception e) {
+				System.out.println("EROORR__________"+e);
+				 throw new RuntimeException("Failed to get Advertisement by ID: " + id, e);
+			}
+	
+	
+	
 	}
 
 	@Override

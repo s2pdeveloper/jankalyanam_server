@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.app.config.JwtFilter;
 import com.app.config.JwtUtil;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
@@ -83,21 +82,21 @@ public class UserServiceImp implements UserService{
 	
 	@Override
 	public UserDTO login(LoginDTO user) throws Exception {
-	      try {
-	          authenticationManager.authenticate(
-	             new
-	             UsernamePasswordAuthenticationToken(user.getMobileNo(),
-	             user.getPassword())
-	          );
-	       } catch (DisabledException e) {
-	          throw new Exception("USER_DISABLED", e);
-	       } catch (BadCredentialsException e) {
-	          throw new Exception("INVALID_CREDENTIALS", e);
-	       }
+//	      try {
+//	          authenticationManager.authenticate(
+//	             new
+//	             UsernamePasswordAuthenticationToken(user.getMobileNo(),
+//	             user.getPassword())
+//	          );
+//	       } catch (DisabledException e) {
+//	          throw new Exception("USER_DISABLED", e);
+//	       } catch (BadCredentialsException e) {
+//	          throw new Exception("INVALID_CREDENTIALS", e);
+//	       }
 	       final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getMobileNo());
-	       final String jwtToken = jwtService.generateToken(userDetails);
+//	       final String jwtToken = jwtService.generateToken(userDetails);
 	       UserDTO userDTO = Utility.mapObject(userDetails, UserDTO.class);
-	       userDTO.setToken(jwtToken);
+//	       userDTO.setToken(jwtToken);
 	       return userDTO;
 	}
 

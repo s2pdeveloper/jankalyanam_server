@@ -21,22 +21,27 @@ import com.app.service.FilesStorageService;
 public class FileStorageServiceImp implements FilesStorageService{
 	private final Path root = Paths.get("uploads");
 
+	
 	  @Override
 	  public void init() {
 	    try {
+	    	System.out.print(root);
 	      Files.createDirectory(root);
 	    } catch (IOException e) {
 	      throw new RuntimeException("Could not initialize folder for upload!");
 	    }
 	  }
+	  
+
 
 	  @Override
-	  public void save(MultipartFile file ,String filename) {
+	  public void save(MultipartFile file,String fileName) {
 	    try {
-
+	  
 	    	System.out.println(file.getInputStream());
 	    	System.out.println(file.getOriginalFilename());
-	      Files.copy(file.getInputStream(), this.root.resolve(filename));
+	      	System.out.println("Here");
+	      Files.copy(file.getInputStream(), this.root.resolve(fileName));
 	    } catch (Exception e) {
 	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
 	    }
@@ -63,6 +68,7 @@ public class FileStorageServiceImp implements FilesStorageService{
 	    FileSystemUtils.deleteRecursively(root.toFile());
 	  }
 
+	  
 	  @Override
 	  public Stream<Path> loadAll() {
 	    try {
