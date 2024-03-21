@@ -3,6 +3,7 @@ package com.app.dto;
 import java.util.Date;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,8 @@ import lombok.NoArgsConstructor;
 public class BloodRequestDTO {
 	
 private	String bloodGroup;
+private GENDER gender;
+private String fatherOrHusband;
 private	Long mobileNo;
 private	String location;
 private	String illness;

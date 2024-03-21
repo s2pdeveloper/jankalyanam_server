@@ -18,6 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.app.constant.ServiceConstant.BloodGroup;
 import com.app.constant.ServiceConstant.DONOR_STATUS;
+import com.app.constant.ServiceConstant.GENDER;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -38,6 +39,8 @@ public class DonorDO {
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    private GENDER gender;
     
     private String name;
     

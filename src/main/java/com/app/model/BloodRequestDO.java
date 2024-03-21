@@ -19,6 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.constant.ServiceConstant.BloodGroup;
+import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -50,6 +51,8 @@ public class BloodRequestDO {
     
     @Column(name = "father_or_husband")
     private String fatherOrHusband;
+    
+    private GENDER gender;
     
     private int age;
     

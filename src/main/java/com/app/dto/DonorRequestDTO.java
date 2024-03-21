@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.app.constant.ServiceConstant.BloodGroup;
 import com.app.constant.ServiceConstant.DONOR_STATUS;
+import com.app.constant.ServiceConstant.GENDER;
 import com.app.model.BloodRequestDO;
 import com.app.model.UserDO;
 
@@ -32,4 +33,5 @@ public class DonorRequestDTO {
     
     private Date donationDate;
 
+    private GENDER gender;
 }
