@@ -29,7 +29,8 @@ public class AdvertisementServiceImp implements AdvertisementService{
 
 	@Override
 	public ResultDTO upload(FileUploadDTO fileUploadDTO) {
-		var fileName = fileUploadDTO.getFile().getOriginalFilename() +"_"+ System.currentTimeMillis();
+		
+		var fileName = System.currentTimeMillis() +"_"+ fileUploadDTO.getFile().getOriginalFilename();
 		filesStorageService.save(fileUploadDTO.getFile(),fileName);
 		
 		AdvertisementDO advertise = new AdvertisementDO();
@@ -55,12 +56,11 @@ public class AdvertisementServiceImp implements AdvertisementService{
 
 	@Override
 	public FileDTO getById(Long id) {
-		// TODO Auto-generated method stub
-//		return null;
-
 		try {
 			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
 			AdvertisementDO b = data.orElse(null);
+			var result1 = filesStorageService.load(b.getUrl());
+			System.out.println("result1----"+result1);
 			FileDTO result = Utility.mapObject(b,FileDTO.class);
 			return result;
 			}

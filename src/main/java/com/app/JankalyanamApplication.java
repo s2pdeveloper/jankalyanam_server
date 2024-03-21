@@ -13,7 +13,7 @@ import com.app.service.FilesStorageService;
 
 @SpringBootApplication
 @ComponentScan
-public class JankalyanamApplication  {
+public class JankalyanamApplication {
 
 	 @Autowired
 	  FilesStorageService storageService;
@@ -26,7 +26,7 @@ public class JankalyanamApplication  {
 	
 //     @Override
 //	public void run(String... arg) throws Exception {
-////	    storageService.deleteAll();
+//	    storageService.deleteAll();
 //	    storageService.init();
 //	  }
 }

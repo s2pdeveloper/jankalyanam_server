@@ -137,6 +137,13 @@ public class UserServiceImp implements UserService{
 		return Utility.mapObject(user, UserDTO.class);
 	}
 
+
+	@Override
+	public UserDTO getByRoleAndStatus(ROLE role, STATUS status) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 

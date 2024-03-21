@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor 
 @Data
-public class BloodRequestDTO {
+public class BloodDTO {
 	
 private	String bloodGroup;
 private	Long mobileNo;
@@ -23,12 +23,8 @@ private	String city;
 private	String state;
 private	int age;
 private	String name;
-private	PROVIDED provided;
 private	Date bloodRequireDate;
-private	BLOOD_STATUS status;
 private	int units;
-private	UserDTO acceptor;
-private	UserDTO attender;
-private	DonorDTO donor;
+
 	
 }

@@ -6,8 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.ROLE;
+import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
+import com.app.dto.BloodRequestUpdateDTO;
 import com.app.dto.DonorDTO;
+import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.BloodRequestDO;
 import com.app.model.DonorDO;
@@ -24,51 +29,49 @@ public class BloodRequestServiceImp implements BloodRequestService{
 
 	@Override
 	public BloodRequestDTO getById(Long id) {
-		try {
 		Optional<BloodRequestDO> data = bloodRequestRepository.findById(id);
 		BloodRequestDO b = data.orElse(null);
 		BloodRequestDTO result = Utility.mapObject(b,BloodRequestDTO.class);
 		return result;
-		}
-		catch(Exception e) {
-			System.out.println("EROORR__________"+e);
-			 throw new RuntimeException("Failed to get blood request by ID: " + id, e);
-		}
-	
 		
 	}
 	
-
-
 	@Override
-	public BloodRequestDTO createRequest(BloodRequestDO bloodRequest) {
-	 BloodRequestDO blood  = bloodRequestRepository.save(bloodRequest);
-	 return Utility.mapObject(blood, BloodRequestDTO.class);
+	public ResultDTO createRequest(BloodDTO bloodRequest) {
+		BloodRequestDO mapBloodRequest = Utility.mapObject(bloodRequest, BloodRequestDO.class);
+		mapBloodRequest.setAttenderId(Utility.getSessionUser().getId());
+	  bloodRequestRepository.save(mapBloodRequest);
+	  return new ResultDTO("","Successfully Created!");
+	  
 	}
     
 	@Override
     public List<BloodRequestDTO> getByStatus(String type) { 
-		if(type.equals("HISTORY")) {
-			List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatus("DONE");
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
-			 return BloodRequestlist ;
-		}else if(type.equals("ACTIVE")) {
-			List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByStatusIn(List.of("PENDING","ACCEPTED","RECEIVED"));
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
-			 return BloodRequestlist ;
-		}else if(type.equals("MYLIST")) {
+		
+		if(Utility.getSessionUser().getRole().equals(ROLE.ADMIN)) {
+			if(type.equals("HISTORY")) {
+				List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatus(BLOOD_STATUS.DONE);
+				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				 return BloodRequestlist ;
+			}else if(type.equals("ACTIVE")) {
+				List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED));
+				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				 return BloodRequestlist ;
+			}else if(type.equals("MYLIST")) {
+				
+				List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId())	;
+				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				 return BloodRequestlist ;
+			
+		
+			}
+			return null;
 
-			
-			//			TODO
-//			List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findStatusesByUserId()	;
-//			List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
-//			 return BloodRequestlist ;
-			
-			return null ;
-	
+		}else {
+		
+			return null;
 		}
-//		TODO
-		return null;
+		
        
     }
 
@@ -79,6 +82,64 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		
 		return null;
 	}
+
+	@Override
+	public List<BloodRequestDTO> getByStatusAndAttenderId(String type) {
+		if(Utility.getSessionUser().getRole().equals(ROLE.ATTENDER)) {
+		if(type.equals("HISTORY")) {
+			List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId());
+			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+			 return BloodRequestlist ;
+		}else if(type.equals("ACTIVE")) {
+			List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId());
+			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+			 return BloodRequestlist ;
+		}
+		return null;
+		}else {
+			return null;
+		}
+	}
+
+	@Override
+	public ResultDTO acceptRequest(Long id,BLOOD_STATUS status) {
+		BLOOD_STATUS changeStatus = null;
+		switch(status) {
+		  case ACCEPTED:
+			  changeStatus = BLOOD_STATUS.ACCEPTED;
+		    break;
+		  case PENDING:
+			  changeStatus = BLOOD_STATUS.PENDING;
+		    break;
+		  case RECEIVED:
+			  changeStatus = BLOOD_STATUS.RECEIVED;
+			    break;
+		  case DONE:
+			  changeStatus = BLOOD_STATUS.DONE;
+			    break;
+		  default:
+		     
+		}
+		bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+		return new ResultDTO(id.toString(),"Blood Request Accepted Successfully!");
+	}
+
+	@Override
+	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData) {
+		Optional<BloodRequestDO> bloodRequest = bloodRequestRepository.findById(id);
+		BloodRequestDO data = bloodRequest.orElse(null);
+		if(data == null) {
+			
+		}
+		
+		data.setProvided(updateData.getProvided());
+		data.setDonorId(updateData.getDonorId() != null ? updateData.getDonorId() : data.getDonorId());
+		bloodRequestRepository.save(data);
+		return new ResultDTO(id.toString(),"Updated Successfully!");
+		
+	}
+
+
 	
 
     

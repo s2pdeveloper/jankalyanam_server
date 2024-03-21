@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.app.constant.ServiceConstant.BloodGroup;
+import com.app.constant.ServiceConstant.DONOR_STATUS;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -53,11 +55,17 @@ public class DonorDO {
     private Boolean illness;
     
     @Column(name = "blood_group")
-    private String bloodGroup;
+    private BloodGroup bloodGroup;
+    
+    private DONOR_STATUS status = DONOR_STATUS.PENDING;
+    
+    private String location;
     
     @Column(name = "donation_date")
     private Date donationDate;
 
+    @Column(name = "user_id")
+    private Long userId;
     
     @Column(name = "created_at")
     @CreationTimestamp
@@ -72,7 +80,7 @@ public class DonorDO {
     private BloodRequestDO bloodRequest;
     
     @ManyToOne()
-    @JoinColumn(name = "user_id")
-    private UserDO donor;
+    @JoinColumn(name = "user_id",referencedColumnName = "id", insertable = false, updatable = false)
+    private UserDO user;
     
 }

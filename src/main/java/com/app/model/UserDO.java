@@ -112,7 +112,7 @@ public class UserDO implements UserDetails {
 	@OneToMany(mappedBy = "attender")
     private List<BloodRequestDO> bloodRequestList ;
 	
-	@OneToMany(mappedBy = "donor")
+	@OneToMany(mappedBy = "user")
     private List<DonorDO> bloodDonateList ;
   
 //    @JsonIgnoreProperties("user")

@@ -4,7 +4,11 @@ import java.util.* ;
 
 import org.springframework.stereotype.Service;
 
+import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
+import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.BloodRequestDO;
 
@@ -13,8 +17,17 @@ import com.app.model.BloodRequestDO;
 public interface BloodRequestService {
 
     public BloodRequestDTO getById(Long id);
-    public BloodRequestDTO createRequest(BloodRequestDO bloodRequest);
-    public List<BloodRequestDTO> getByStatus(String Status) ;
+    
+    public ResultDTO createRequest(BloodDTO bloodRequest);
+    
+    public List<BloodRequestDTO> getByStatus(String type) ;
+    
+    public List<BloodRequestDTO> getByStatusAndAttenderId(String type) ;
+    
 	 public List<BloodRequestDTO> getAllRequest();
+
+	 public ResultDTO acceptRequest(Long id, BLOOD_STATUS status);
+
+	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData);
 
 }

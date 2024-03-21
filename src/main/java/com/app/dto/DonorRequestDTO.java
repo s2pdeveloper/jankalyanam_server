@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor 
 @Data
-public class DonorDTO {
-    private Long id;
+public class DonorRequestDTO {
     
     private String name;
     
@@ -31,15 +30,6 @@ public class DonorDTO {
 
     private Boolean illness;
     
-    private BloodGroup bloodGroup;
-    
     private Date donationDate;
-    
-    private DONOR_STATUS status;
-    
-    private String location;
-    
-    private BloodRequestDO bloodRequest;
-    
-    private UserDO user;
+
 }
