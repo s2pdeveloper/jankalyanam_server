@@ -73,30 +73,37 @@ public class UserServiceImp implements UserService{
     
 	@Override
 	public ResultDTO register(RegisterDTO user) {
+//		if(user.getMobileNo()==userRepository.findByMobileNo(user.getMobileNo())) {
+//			TODO
+//			
+//			return null ;
+//		}
+//		else(
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
 		UserDO userDO = Utility.mapObject(user, UserDO.class);
 		UserDO saveData = userRepository.save(userDO);
 		return new ResultDTO(saveData.getId().toString(),"Register Sucessfully");
+//		)
 	}
 	
 	@Override
 	public UserDTO login(LoginDTO user) throws Exception {
-//	      try {
-//	          authenticationManager.authenticate(
-//	             new
-//	             UsernamePasswordAuthenticationToken(user.getMobileNo(),
-//	             user.getPassword())
-//	          );
-//	       } catch (DisabledException e) {
-//	          throw new Exception("USER_DISABLED", e);
-//	       } catch (BadCredentialsException e) {
-//	          throw new Exception("INVALID_CREDENTIALS", e);
-//	       }
+	      try {
+	          authenticationManager.authenticate(
+	             new
+	             UsernamePasswordAuthenticationToken(user.getMobileNo(),
+	             user.getPassword())
+	          );
+	       } catch (DisabledException e) {
+	          throw new Exception("USER_DISABLED", e);
+	       } catch (BadCredentialsException e) {
+	          throw new Exception("INVALID_CREDENTIALS", e);
+	       }
 	       final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getMobileNo());
-//	       final String jwtToken = jwtService.generateToken(userDetails);
+	       final String jwtToken = jwtService.generateToken(userDetails);
 	       UserDTO userDTO = Utility.mapObject(userDetails, UserDTO.class);
-//	       userDTO.setToken(jwtToken);
+	       userDTO.setToken(jwtToken);
 	       return userDTO;
 	}
 

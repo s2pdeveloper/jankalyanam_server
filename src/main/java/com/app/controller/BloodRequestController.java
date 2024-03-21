@@ -71,7 +71,7 @@ public class BloodRequestController {
 	 }
 	
 	 
-	@PutMapping("/update/{id")
+	@PutMapping("/update/{id}")
 		public ResultDTO updateById(@PathVariable(name = "id") Long id,@RequestBody BloodRequestUpdateDTO updateData) {
 
 			return bloodRequestService.updateById(id,updateData);

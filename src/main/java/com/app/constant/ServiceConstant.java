@@ -22,6 +22,10 @@ public class ServiceConstant {
 		 DONOR,BLOOD
 		}
 	
+	public enum GENDER {
+		 MALE,FEMALE,OTHER
+		}
+	
 	public enum BloodGroup {
 	    A_POSITIVE,  // Blood Group A positive
 	    A_NEGATIVE,  // Blood Group A negative
