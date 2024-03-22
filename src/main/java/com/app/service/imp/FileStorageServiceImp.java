@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -19,25 +21,26 @@ import com.app.service.FilesStorageService;
 
 @Service
 public class FileStorageServiceImp implements FilesStorageService{
-	private final Path root = Paths.get("uploads");
-
 	
-	  @Override
-	  public void init() {
-	    try {
-	    	System.out.print(root);
-	      Files.createDirectory(root);
-	    } catch (IOException e) {
-	      throw new RuntimeException("Could not initialize folder for upload!");
-	    }
-	  }
+	
+	private final Path root = Paths.get("uploads");
+//
+//	  @Override
+//	  public void init() {
+//	    try {
+//	      Files.createDirectory(root);
+//	    } catch (IOException e) {
+//	      throw new RuntimeException("Could not initialize folder for upload!");
+//	    }
+//	  }
 	  
 
 
 	  @Override
 	  public void save(MultipartFile file,String fileName) {
 	    try {
-	  
+	    	Files.createDirectory(root);
+	    System.out.print("inside the save---------"+root);
 	    	System.out.println(file.getInputStream());
 	    	System.out.println(file.getOriginalFilename());
 	      	System.out.println("Here");

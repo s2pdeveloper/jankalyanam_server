@@ -15,8 +15,8 @@ import com.app.service.FilesStorageService;
 @ComponentScan
 public class JankalyanamApplication {
 
-	 @Autowired
-	  FilesStorageService storageService;
+//	 @Autowired
+//	  FilesStorageService storageService;
 	
 	
 	public static void main(String[] args) {
