@@ -1,5 +1,6 @@
 package com.app.service.imp;
 
+import java.time.LocalDateTime;
 import java.util.* ;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +141,15 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
 
 
+
+	@Override
+	public List<BloodRequestDTO> findNearbyBloodRequests() {
+		  LocalDateTime currentDateTime = LocalDateTime.now();
+	        LocalDateTime oneDayBeforeDateTime = currentDateTime.minusDays(1);
+		List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByCreatedAtBetween(oneDayBeforeDateTime, currentDateTime);
+		 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+		 return BloodRequestlist ;
+	}
 	
 
     

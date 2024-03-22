@@ -1,5 +1,6 @@
 package com.app.service;
 
+import java.time.LocalDateTime;
 import java.util.* ;
 
 import org.springframework.stereotype.Service;
@@ -29,5 +30,7 @@ public interface BloodRequestService {
 	 public ResultDTO acceptRequest(Long id, BLOOD_STATUS status);
 
 	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData);
+	
+	 public List<BloodRequestDTO>findNearbyBloodRequests();
 
 }

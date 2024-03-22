@@ -2,6 +2,7 @@ package com.app.repository;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.dto.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,19 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	@Transactional
 	@Query("UPDATE BloodRequestDO b SET b.status = ?2 where b.id = ?1")
 	void findByIdAndUpdateStatus(Long id,BLOOD_STATUS status);
+	
+	
+	
+//	 List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime dateTime);
+
+
+//	List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime minusHours);
+
+
+//	List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime minusHours);
+//	List<BloodRequestDO> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<BloodRequestDO> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+	
+
 }

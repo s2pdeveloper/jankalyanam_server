@@ -83,7 +83,7 @@ public class BloodRequestDO {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp

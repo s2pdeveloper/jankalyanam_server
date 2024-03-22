@@ -1,9 +1,11 @@
 package com.app.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,6 +85,16 @@ public class BloodRequestController {
 //			return bloodRequestService.getAllRequest();
 //		}
 	
+//	 @GetMapping("/nearby")
+//	    public List<BloodRequestDTO> getNearbyBloodRequests(@RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime ) {
+//	        return bloodRequestService.findNearbyBloodRequests(dateTime);
+//	    }
+	
+	    @GetMapping("/current")
+	    public List<BloodRequestDTO> getCurrentBloodRequests() {
+//	        LocalDateTime currentDateTime = LocalDateTime.now();
+	        return bloodRequestService.findNearbyBloodRequests();
+	    }
 
 	 
 }
