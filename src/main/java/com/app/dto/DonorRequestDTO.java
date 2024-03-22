@@ -34,4 +34,6 @@ public class DonorRequestDTO {
     private Date donationDate;
 
     private GENDER gender;
+    
+    private BloodGroup bloodGroup;
 }
