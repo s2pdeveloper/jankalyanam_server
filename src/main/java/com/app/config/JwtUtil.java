@@ -1,10 +1,17 @@
 package com.app.config;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
@@ -13,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 
 
 @Component
-public class JwtUtil  {
+public class JwtUtil implements AuthenticationEntryPoint {
 //    private static final String SECRET = "ECOMERCE-S2P";
 //    private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 //    public static String generateToken(User user) {
@@ -82,11 +89,13 @@ public class JwtUtil  {
 	        return Keys.hmacShaKeyFor(keyBytes);
 	    }
 
-//		@Override
-//		public void commence(HttpServletRequest request, HttpServletResponse response,
-//				AuthenticationException authException) throws IOException, ServletException {
-//			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-//					   "Unauthorized");
-//			
-//		}
+		@Override
+		public void commence(HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException authException) throws IOException, ServletException {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+					   "Unauthorized");
+			
+		}
+
+	
 }

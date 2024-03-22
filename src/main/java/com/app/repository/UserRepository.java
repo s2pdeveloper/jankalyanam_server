@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<UserDO, Long>{
 	UserDO findByMobileNo(String  mobileNo);
 	
 	List<UserDO> findByRoleAndStatus(ROLE role,STATUS status);
+	
+	Boolean existsByMobileNo(String  mobileNo);
 
 
 

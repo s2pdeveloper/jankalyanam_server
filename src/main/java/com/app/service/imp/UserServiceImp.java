@@ -24,6 +24,7 @@ import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
+import com.app.exception.InvalidInputException;
 import com.app.model.UserDO;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
@@ -73,18 +74,16 @@ public class UserServiceImp implements UserService{
     
 	@Override
 	public ResultDTO register(RegisterDTO user) {
-//		if(user.getMobileNo()==userRepository.findByMobileNo(user.getMobileNo())) {
-//			TODO
-//			
-//			return null ;
-//		}
-//		else(
+		if(userRepository.existsByMobileNo(user.getMobileNo())) {
+			 throw new InvalidInputException("Mobile No already exits");
+		}
+
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
 		UserDO userDO = Utility.mapObject(user, UserDO.class);
 		UserDO saveData = userRepository.save(userDO);
 		return new ResultDTO(saveData.getId().toString(),"Register Sucessfully");
-//		)
+
 	}
 	
 	@Override
@@ -96,9 +95,9 @@ public class UserServiceImp implements UserService{
 	             user.getPassword())
 	          );
 	       } catch (DisabledException e) {
-	          throw new Exception("USER_DISABLED", e);
+	          throw new InvalidInputException("USER Is DISABLED");
 	       } catch (BadCredentialsException e) {
-	          throw new Exception("INVALID_CREDENTIALS", e);
+	          throw new InvalidInputException("INVALID CREDENTIALS");
 	       }
 	       final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getMobileNo());
 	       final String jwtToken = jwtService.generateToken(userDetails);
