@@ -36,17 +36,9 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	void findByIdAndUpdateStatus(Long id,BLOOD_STATUS status);
 	
 	
-	
-//	 List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime dateTime);
-
-
-//	List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime minusHours);
-
-
-//	List<BloodRequestDO> findByCreatedAtAfter(LocalDateTime minusHours);
-//	List<BloodRequestDO> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+//	@Query("SELECT b FROM FROM BloodRequestDO b WHERE b.created_at between ?1 AND ?2 ")
     List<BloodRequestDO> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
-	
+
 
 }

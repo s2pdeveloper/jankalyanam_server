@@ -91,8 +91,7 @@ public class BloodRequestController {
 //	    }
 	
 	    @GetMapping("/current")
-	    public List<BloodRequestDTO> getCurrentBloodRequests() {
-//	        LocalDateTime currentDateTime = LocalDateTime.now();
+	    public List<BloodRequestDO> getCurrentBloodRequests() {
 	        return bloodRequestService.findNearbyBloodRequests();
 	    }
 

@@ -1,8 +1,11 @@
 package com.app.service.imp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.* ;
 
+//import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -22,9 +25,14 @@ import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
 import com.app.utilities.Utility;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class BloodRequestServiceImp implements BloodRequestService{
-   
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(BloodRequestServiceImp.class);
+	
 	@Autowired
     private BloodRequestRepository bloodRequestRepository;
 
@@ -143,12 +151,19 @@ public class BloodRequestServiceImp implements BloodRequestService{
 
 
 	@Override
-	public List<BloodRequestDTO> findNearbyBloodRequests() {
+	public List<BloodRequestDO> findNearbyBloodRequests() {
+		System.out.println("HERE");
 		  LocalDateTime currentDateTime = LocalDateTime.now();
-	        LocalDateTime oneDayBeforeDateTime = currentDateTime.minusDays(1);
+	        LocalDateTime oneDayBeforeDateTime = currentDateTime.minusDays(4);
+	        System.out.println(oneDayBeforeDateTime) ;
+	        System.out.println(currentDateTime) ;
 		List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByCreatedAtBetween(oneDayBeforeDateTime, currentDateTime);
-		 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
-		 return BloodRequestlist ;
+//		 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+//		 return null ;
+//		log.info(BloodRequestList);
+		System.out.print(BloodRequestList.toString());
+//		LOGGER.info(BloodRequestList+"This is a test" + bloodRequestRepository.findByCreatedAtBetween(oneDayBeforeDateTime, currentDateTime));
+		return null;
 	}
 	
 

@@ -31,6 +31,6 @@ public interface BloodRequestService {
 
 	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData);
 	
-	 public List<BloodRequestDTO>findNearbyBloodRequests();
+	 public List<BloodRequestDO>findNearbyBloodRequests();
 
 }
