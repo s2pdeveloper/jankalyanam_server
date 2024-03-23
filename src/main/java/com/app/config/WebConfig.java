@@ -26,17 +26,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class WebConfig implements WebMvcConfigurer {
 
 	  
-	  @Override
-	  public void addCorsMappings(CorsRegistry registry) {
-
-	    registry.addMapping("/**")
-	      .allowedOrigins("*")
-	      .allowedMethods("GET", "POST","PUT","DELETE","PATCH")
-	      .allowedHeaders("*");
-	  
-
-
-	  }
+//	  @Override
+//	  public void addCorsMappings(CorsRegistry registry) {
+//
+//	    registry.addMapping("/**")
+//	      .allowedOrigins("*")
+//	      .allowedMethods("GET", "POST","PUT","DELETE","PATCH")
+//	      .allowedHeaders("*");
+//	  
+//
+//
+//	  }
 
 
 
