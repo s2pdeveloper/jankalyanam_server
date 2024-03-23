@@ -21,6 +21,8 @@ import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
 import com.app.utilities.Utility;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 public class BloodRequestServiceImp implements BloodRequestService{
    

@@ -20,6 +20,9 @@ import com.app.repository.DonorRepository;
 import com.app.service.DonorService;
 import com.app.utilities.Utility;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class DonorServiceImp implements DonorService{
    
@@ -30,6 +33,7 @@ public class DonorServiceImp implements DonorService{
 	public DonorDTO getDonorDetails(Long id) {
 		Optional<DonorDO> donorDetails = donorRepository.findById(id);
 		DonorDO data = donorDetails.orElse(null);
+		log.info("data------   {}",data);
 		if(data == null) {
 			
 		}

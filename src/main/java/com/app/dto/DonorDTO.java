@@ -42,7 +42,7 @@ public class DonorDTO {
     
     private String location;
     
-    private BloodRequestDO bloodRequest;
+    private BloodDTO bloodRequest;
     
-    private UserDO user;
+    private UserDTO user;
 }

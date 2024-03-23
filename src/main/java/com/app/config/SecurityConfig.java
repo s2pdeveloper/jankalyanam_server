@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 
 
 //@EnableWebSecurity
@@ -44,18 +45,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       return super.authenticationManagerBean();
    }
    
+//   @Override
+//   protected void configure(HttpSecurity http) throws Exception {
+//       http.csrf(csrf -> csrf.disable())
+//               .authorizeRequests(requests -> requests.antMatchers("/user/login","/user/register").permitAll()
+//            		   .antMatchers(AUTH_WHITE_LIST).permitAll()
+//                       .anyRequest().authenticated())
+//               			.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//               
+//        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+//    
+//}     
+   
    @Override
    protected void configure(HttpSecurity http) throws Exception {
        http.csrf(csrf -> csrf.disable())
-               .authorizeRequests(requests -> requests.antMatchers("/user/login","/user/register").permitAll()
+               .authorizeRequests(requests -> requests.antMatchers("/**").permitAll()
             		   .antMatchers(AUTH_WHITE_LIST).permitAll()
                        .anyRequest().authenticated())
                			.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-}     
-   
-                
+}              
 
    
 }

@@ -32,6 +32,6 @@ private	BLOOD_STATUS status;
 private	int units;
 private	UserDTO acceptor;
 private	UserDTO attender;
-private	DonorDTO donor;
+private	DonorRequestDTO donor;
 	
 }
