@@ -19,24 +19,24 @@ public class ExceptionController {
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<ApiError> handleInvalidInputException(InvalidInputException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ApiError(null, e.getMessage(), null));
+                             .body(new ApiError(null, e.getMessage()));
     }
     
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiError> handleNoSuchElementException(NoSuchElementException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(new ApiError(null, "The resource that you're trying to access is not found", e.getMessage()));
+                             .body(new ApiError(e.getMessage(), "The resource that you're trying to access is not found"));
     }
 
     @ExceptionHandler(ServerError.class)
     public ResponseEntity<ApiError> handleServerError(ServerError e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                             .body(new ApiError(null, "Something went wrong", e.getMessage()));
+                             .body(new ApiError(e.getMessage(), "Something went wrong"));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(new ApiError(null, "Something went wrong", e.getMessage()));
+                             .body(new ApiError(e.getMessage(), "Something went wrong"));
     }
 }

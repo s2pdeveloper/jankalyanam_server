@@ -11,15 +11,14 @@ import lombok.ToString;
 @ToString
 public class ApiError {
 
-	private String id;
+//	private String id;
 	private String message;
 	private String error;
-	private String errorType;
+//	private String errorType;
 
-	public ApiError(String id, String message, String error) {
-		this.id = id;
-		this.message = message;
-		this.error = error;
-	}
+//	public ApiError(String error, String message) {
+//		this.message = message;
+//		this.error = error;
+//	}
 
 }
