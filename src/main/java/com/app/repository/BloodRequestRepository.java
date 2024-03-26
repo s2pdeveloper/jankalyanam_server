@@ -4,9 +4,12 @@ import com.app.dto.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,15 +18,15 @@ import com.app.model.BloodRequestDO;
 
 
 @Repository
-public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Long>{
-	List <BloodRequestDO> findByStatus(BLOOD_STATUS status);
+public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Long> {
+	Page <BloodRequestDO> findByStatus(BLOOD_STATUS status,Pageable pageable);
 	
 	
-	List<BloodRequestDO> findByStatusIn(List<BLOOD_STATUS> status);
+	Page<BloodRequestDO> findByStatusIn(List<BLOOD_STATUS> status,Pageable pageable);
 	
 
 	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in ?1 and b.acceptorId = ?2")
-	List <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id);
+	Page <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id,Pageable pageable);
 	
 	
 	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in ?1 and b.attenderId = ?2")

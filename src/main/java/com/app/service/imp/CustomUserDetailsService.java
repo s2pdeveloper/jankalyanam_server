@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.app.exception.InvalidInputException;
 import com.app.model.UserDO;
 import com.app.repository.UserRepository;
 
@@ -23,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 	        UserDO user = userRepository.findByMobileNo(username);
 	        if(user == null){
 	        
-	            throw new UsernameNotFoundException("could not found user..!!");
+	            throw new InvalidInputException("could not found user..!!");
 	        }
 	   
 			return user;

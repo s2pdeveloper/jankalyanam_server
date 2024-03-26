@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,6 +54,7 @@ public class BloodRequestDO {
     @Column(name = "father_or_husband")
     private String fatherOrHusband;
     
+    @Enumerated(EnumType.STRING)
     private GENDER gender;
     
     private int age;
@@ -70,6 +73,7 @@ public class BloodRequestDO {
     private Long mobileNo;
     
     @Column(name = "blood_group")
+    @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
     
     private int units;
@@ -77,17 +81,19 @@ public class BloodRequestDO {
     @Column(name = "blood_require_date")
     private Date bloodRequireDate;
 
+    @Enumerated(EnumType.STRING)
     private BLOOD_STATUS status = BLOOD_STATUS.PENDING;
     
+    @Enumerated(EnumType.STRING)
     private PROVIDED provided;
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     
     @Column(name = "acceptor_id")
     private Long acceptorId;

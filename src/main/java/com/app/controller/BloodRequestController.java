@@ -3,6 +3,8 @@ package com.app.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,17 +44,19 @@ public class BloodRequestController {
 		
 	}
 	 
-	@GetMapping("/{id}")
-	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
-		
-		return bloodRequestService.getById(id);
-	}
-	
-	
+
 	//Admin
-	 @GetMapping("/admin-list/{type}")
-	    public List<BloodRequestDTO> getItemsByStatus(@PathVariable String type) {
-	     return bloodRequestService.getByStatus(type);
+	 @RolesAllowed("ADMIN")
+	 @GetMapping("/admin-list")
+	    public List<BloodRequestDTO> getItemsByStatus(
+	    		@RequestParam  String type,
+	    		@RequestParam(defaultValue = "0") Integer pageNo,
+                @RequestParam(defaultValue = "10") Integer pageSize,
+                @RequestParam(defaultValue = "id") String sortBy,
+                @RequestParam(required = false) String searchBy,
+                @RequestParam(required = false) String search
+                ) {
+	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,searchBy,search);
 	      
 	  }
 	 
@@ -78,6 +82,12 @@ public class BloodRequestController {
 			
 	 }
 
+	@RolesAllowed("ROLE_ATTENDER")
+	@GetMapping("/{id}")
+	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
+		
+		return bloodRequestService.getById(id);
+	}
 //	 @GetMapping("/all")
 //		public List<BloodRequestDO> getAllRequest() {
 //			return bloodRequestService.getAllRequest();

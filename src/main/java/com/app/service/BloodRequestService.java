@@ -20,7 +20,7 @@ public interface BloodRequestService {
     
     public ResultDTO createRequest(BloodDTO bloodRequest);
     
-    public List<BloodRequestDTO> getByStatus(String type) ;
+    public List<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String searchBy, String search) ;
     
     public List<BloodRequestDTO> getByStatusAndAttenderId(String type) ;
     

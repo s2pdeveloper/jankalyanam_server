@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -68,17 +71,19 @@ public class UserDO implements UserDetails {
     
     private String  password;
     
+    @Enumerated(EnumType.STRING)
     private STATUS status = STATUS.ACTIVE; 
     
+    @Enumerated(EnumType.STRING)
     private ROLE role;
     
-    @Column(name = "created_at")
+    @Column(name = "created_at",nullable = false, updatable=false)
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
-    @Column(name = "updated_at")
+    @Column(name = "updated_at",nullable = false, updatable=true)
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

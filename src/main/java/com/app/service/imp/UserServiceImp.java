@@ -53,7 +53,11 @@ public class UserServiceImp implements UserService{
     
     
     public UserDO getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
+    	UserDO user = userRepository.findById(id).orElse(null);
+    	if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+    	return user;
     }
     
     
@@ -66,6 +70,9 @@ public class UserServiceImp implements UserService{
     
     public ResultDTO deleteUser(Long id) {
     	UserDO user = userRepository.findById(id).orElse(null);
+    	if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
     	user.setStatus(STATUS.DELETED);
     	userRepository.save(user);
     	return new ResultDTO(id.toString(),"User Deleted Successfully");
@@ -126,12 +133,15 @@ public class UserServiceImp implements UserService{
 	@Override
 	public ResultDTO changePassword(ChangePasswordDTO changePasswordDTO) {
 		UserDO user = userRepository.findById(Utility.getSessionUser().getId()).orElse(null);
-		if(user != null) {
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			user.setPassword(encoder.encode(changePasswordDTO.getNewPassword()));
-			userRepository.save(user);
-			new ResultDTO(user.getId().toString(),"Password change successfully");
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
 		}
+	
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode(changePasswordDTO.getNewPassword()));
+		userRepository.save(user);
+		new ResultDTO(user.getId().toString(),"Password change successfully");
+		
 	
 		return null;
 	}
@@ -139,7 +149,11 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public UserDTO getUserById(Long id) {
+	    System.out.println("userDetails-------"+Utility.getSessionUser().toString());
 		UserDO user = userRepository.findById(id).orElse(null);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
 		return Utility.mapObject(user, UserDTO.class);
 	}
 

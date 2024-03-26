@@ -34,3 +34,4 @@ build/
 /.metadata
 .DS_Store
 /uploads
+src/main/resources/jankalyan-firebase.json

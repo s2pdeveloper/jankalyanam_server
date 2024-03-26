@@ -1,4 +1,5 @@
 package com.app.model;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,8 +19,7 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor 
+@NoArgsConstructor 
 @Entity
 @Table (name = "Advertisement")
 public class AdvertisementDO {
@@ -34,9 +34,9 @@ public class AdvertisementDO {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 }

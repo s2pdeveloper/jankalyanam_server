@@ -2,7 +2,12 @@ package com.app.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
@@ -31,26 +37,21 @@ public class UserController {
 	 private UserService userService;
 	 
 
-	
-	@GetMapping("/{id}")
-	public UserDTO getUserById(@PathVariable Long id) {
-		return userService.getUserById(id);
-		
-	}
-	
+	@RolesAllowed("ROLE_ADMIN")
 	@GetMapping("/admins")
 	public List<UserDTO> getAllAdmins() {
 		return userService.getAllAdmins();
 		
 	}
 	
+	@RolesAllowed("ROLE_ADMIN")
 	@GetMapping("/attenders")
 	public List<UserDTO> getAllAttenders() {
 		return userService.getAllAttenders();
 	}
 	
 	@PostMapping("/register")
-	public ResultDTO register(@RequestBody RegisterDTO user){
+	public ResultDTO register(@RequestBody @Valid RegisterDTO user){
 		return userService.register(user);
 		
 	}
@@ -67,9 +68,19 @@ public class UserController {
 		
 	}
 	
+	@RolesAllowed("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable Long id) {
 		return userService.deleteUser(id);
+		
+	}
+	
+	
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+//	@RolesAllowed("ROLE_ADMIN")
+	public UserDTO getUserById(@PathVariable Long id) {
+		return userService.getUserById(id);
 		
 	}
 }

@@ -1,9 +1,9 @@
 package com.app.service.imp;
 
 import java.util.* ;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
@@ -12,16 +12,22 @@ import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
 import com.app.dto.DonorDTO;
+import com.app.dto.NotificationRequest;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
+import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
 import com.app.model.DonorDO;
 import com.app.model.UserDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
 import com.app.utilities.Utility;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import lombok.extern.slf4j.Slf4j;
+
 
 @Service
 public class BloodRequestServiceImp implements BloodRequestService{
@@ -29,8 +35,21 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	@Autowired
     private BloodRequestRepository bloodRequestRepository;
 
+	@Autowired
+	private FCMService fcmService;
+	  
 	@Override
 	public BloodRequestDTO getById(Long id) {
+//		NotificationRequest notify = new NotificationRequest("Title","Body","Topic","dQ0HVLFtQcy3NCcijiMaAk:APA91bE1l9i4e85sFkMdXuM-qE1BC8BTfIHYVTqeec6Fk6frUjR1YXk7b5R2nkqgqxA-nVTQQn3j7mH_7wSyox3lFDLjOH8MPh2w-UavYdRmfShpvD5QhNdDwT9PMHIUVovnwl8c18Av");
+//		try {
+//			fcmService.sendMessageToToken(notify);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		Optional<BloodRequestDO> data = bloodRequestRepository.findById(id);
 		BloodRequestDO b = data.orElse(null);
 		BloodRequestDTO result = Utility.mapObject(b,BloodRequestDTO.class);
@@ -48,32 +67,39 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
     
 	@Override
-    public List<BloodRequestDTO> getByStatus(String type) { 
-		
-		if(Utility.getSessionUser().getRole().equals(ROLE.ADMIN)) {
+    public List<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String searchBy, String search) { 
+	
+		if(type == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+		 System.out.println(type+pageNo+pageSize+"*******"+sortBy);
+		 System.out.println(searchBy+"&&&&&&&&"+search);
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending()); 
+		Page<BloodRequestDO> BloodRequestList;
+		if(searchBy == null && search == null) {
 			if(type.equals("HISTORY")) {
-				List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatus(BLOOD_STATUS.DONE);
-				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				 BloodRequestList = bloodRequestRepository.findByStatus(BLOOD_STATUS.DONE,paging);
+				 System.out.println("BloodRequestList----"+BloodRequestList.toString());
+				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("ACTIVE")) {
-				List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED));
-				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				 BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),paging);
+				 System.out.println("BloodRequestList----"+BloodRequestList.toString());
+				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("MYLIST")) {
 				
-				List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId())	;
-				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(), paging);
+				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			
 		
 			}
-			return null;
-
-		}else {
-		
-			return null;
+			
 		}
 		
+		
+		return null;
        
     }
 

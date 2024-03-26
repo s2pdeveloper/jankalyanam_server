@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,6 +42,7 @@ public class DonorDO {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @Enumerated(EnumType.STRING)
     private GENDER gender;
     
     private String name;
@@ -58,8 +61,10 @@ public class DonorDO {
     private Boolean illness;
     
     @Column(name = "blood_group")
+    @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
     
+    @Enumerated(EnumType.STRING)
     private DONOR_STATUS status = DONOR_STATUS.PENDING;
     
     private String location;

@@ -12,8 +12,9 @@ import lombok.ToString;
 public class ApiError {
 
 //	private String id;
-	private String message;
+
 	private String error;
+	private String message;
 //	private String errorType;
 
 //	public ApiError(String error, String message) {

@@ -9,10 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+
+import com.app.exception.InvalidInputException;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -20,7 +23,7 @@ import io.jsonwebtoken.security.Keys;
 
 
 @Component
-public class JwtUtil implements AuthenticationEntryPoint {
+public class JwtUtil implements AuthenticationEntryPoint{
 //    private static final String SECRET = "ECOMERCE-S2P";
 //    private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 //    public static String generateToken(User user) {
@@ -39,6 +42,8 @@ public class JwtUtil implements AuthenticationEntryPoint {
 //            
 //
 //    }
+	   @Autowired
+	   private AuthenticationExceptionHandler exceptionHandler;
 	
 	   public static final String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
 	   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
@@ -92,8 +97,8 @@ public class JwtUtil implements AuthenticationEntryPoint {
 		@Override
 		public void commence(HttpServletRequest request, HttpServletResponse response,
 				AuthenticationException authException) throws IOException, ServletException {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-					   "Unauthorized");
+			System.out.println("Test Unauthorised--------");
+//			 exceptionHandler.handleUnAuthorizedError(response,authException,"Unauthorised");
 			
 		}
 

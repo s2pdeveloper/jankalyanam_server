@@ -3,6 +3,8 @@ package com.app.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/advertise")
 @Api(tags = {"advertise"})
+@RolesAllowed("ROLE_ADMIN")
 public class AdvertisementController {
 	
 	@Autowired

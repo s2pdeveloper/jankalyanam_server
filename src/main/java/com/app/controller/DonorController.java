@@ -3,6 +3,8 @@ package com.app.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +49,7 @@ public class DonorController {
 	}
 
 	// Admin
+	@RolesAllowed("ROLE_ADMIN")
 	@GetMapping("/admin-list/{type}")
 	public List<DonorDTO> getItemsByStatus(@PathVariable String type) {
 		return donorService.getByStatus(type);
