@@ -35,3 +35,4 @@ build/
 .DS_Store
 /uploads
 src/main/resources/jankalyan-firebase.json
+/.apt_generated_tests/

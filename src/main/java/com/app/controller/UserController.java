@@ -1,10 +1,7 @@
 package com.app.controller;
-
 import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-
+import javax.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
@@ -24,7 +20,6 @@ import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.UserDO;
 import com.app.service.UserService;
-
 import io.swagger.annotations.Api;
 
 
@@ -40,8 +35,7 @@ public class UserController {
 	@RolesAllowed("ROLE_ADMIN")
 	@GetMapping("/admins")
 	public List<UserDTO> getAllAdmins() {
-		return userService.getAllAdmins();
-		
+		return userService.getAllAdmins();	
 	}
 	
 	@RolesAllowed("ROLE_ADMIN")
@@ -57,22 +51,20 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public UserDTO login(@RequestBody LoginDTO user) throws Exception{
+	public UserDTO login(@RequestBody  @Valid LoginDTO user) throws Exception{
 		return userService.login(user);
-		
-	}
+		}
 	
 	@PostMapping("/change")
-	public ResultDTO change(@RequestBody ChangePasswordDTO changePasswordDTO) {
-		return userService.changePassword(changePasswordDTO);
-		
+	public ResultDTO change(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
+		return userService.changePassword(changePasswordDTO);	
 	}
+	
 	
 	@RolesAllowed("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable Long id) {
-		return userService.deleteUser(id);
-		
+		return userService.deleteUser(id);	
 	}
 	
 	
@@ -80,7 +72,6 @@ public class UserController {
 	@PreAuthorize("hasRole('ADMIN')")
 //	@RolesAllowed("ROLE_ADMIN")
 	public UserDTO getUserById(@PathVariable Long id) {
-		return userService.getUserById(id);
-		
+		return userService.getUserById(id);	
 	}
 }

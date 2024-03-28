@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class DonorController {
 	private DonorService donorService;
 
 	@PostMapping("")
-	public ResultDTO save(@RequestBody DonorRequestDTO donor) {
+	public ResultDTO save(@RequestBody @Valid DonorRequestDTO donor) {
 
 		return donorService.createRequest(donor);
 
@@ -64,7 +65,7 @@ public class DonorController {
 	}
 
 	@PutMapping("/update/{id")
-	public ResultDTO updateById(@PathVariable(name = "id") Long id, @RequestBody DonorRequestUpdateDTO updateData) {
+	public ResultDTO updateById(@PathVariable(name = "id") Long id, @RequestBody @Valid DonorRequestUpdateDTO updateData) {
 
 		return donorService.updateById(id, updateData);
 

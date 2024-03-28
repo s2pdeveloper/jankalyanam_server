@@ -14,7 +14,7 @@ public interface AdvertisementService {
 
 	public ResultDTO upload(FileUploadDTO fileUploadDTO);
 	
-	public ResultDTO update(FileUploadDTO fileUploadDTO);
+//	public ResultDTO update(FileUploadDTO fileUploadDTO);
 	
 	public ResultDTO delete(Long id);
 	
@@ -23,5 +23,7 @@ public interface AdvertisementService {
 	public List<FileDTO> latestAdvertise();
 	
 	public List<FileDTO> allAdvertise();
+
+	public ResultDTO update(FileUploadDTO fileUploadDTO, Long id);
 	
 }

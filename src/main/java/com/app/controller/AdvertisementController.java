@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.dto.DonorRequestUpdateDTO;
 import com.app.dto.FileDTO;
 import com.app.dto.FileUploadDTO;
 import com.app.dto.ResultDTO;
 import com.app.model.DonorDO;
 import com.app.service.AdvertisementService;
 import com.app.service.DonorService;
+import com.app.service.FilesStorageService;
 
 import io.swagger.annotations.Api;
 
@@ -28,28 +30,29 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/advertise")
 @Api(tags = {"advertise"})
-@RolesAllowed("ROLE_ADMIN")
 public class AdvertisementController {
 	
 	@Autowired
 	 private AdvertisementService advertisementService;
 	
+	
+	@Autowired
+	private FilesStorageService files ;
+	
 	@PostMapping("")
 	public ResultDTO save(FileUploadDTO fileUploadDTO) {
-		
 		return advertisementService.upload(fileUploadDTO);
 		
 	}
 	
-	@PutMapping("")
-	public ResultDTO update(FileUploadDTO fileUploadDTO) {
-		
-		return advertisementService.update(fileUploadDTO);
-		
+	@PutMapping("update/{id}")
+		public ResultDTO updateById(@PathVariable(name = "id") Long id, FileUploadDTO updateData) {
+		return advertisementService.update(updateData , id);
 	}
-	 
+
+
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("delete/{id}")
 	public ResultDTO delete(@PathVariable(name = "id") Long id) {
 		
 		return advertisementService.delete(id);

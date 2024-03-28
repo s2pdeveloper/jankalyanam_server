@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class BloodRequestController {
 	 private BloodRequestService bloodRequestService ;
 	
 	@PostMapping("")
-	public ResultDTO save(@RequestBody BloodDTO bloodRequest) {
+	public ResultDTO save(@RequestBody @Valid BloodDTO bloodRequest) {
 
 		return bloodRequestService.createRequest(bloodRequest);
 		

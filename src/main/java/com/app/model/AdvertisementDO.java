@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.app.constant.ServiceConstant.STATUS;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -31,6 +33,8 @@ public class AdvertisementDO {
     private String name;
     
     private String url;
+    
+    private STATUS status = STATUS.ACTIVE;
     
     @Column(name = "created_at")
     @CreationTimestamp

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.FileSystemUtils;
 
+import com.app.exception.ServerError;
 import com.app.service.FilesStorageService;
+import com.google.protobuf.GeneratedMessageV3.Builder;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 
 
@@ -23,8 +28,12 @@ import com.app.service.FilesStorageService;
 public class FileStorageServiceImp implements FilesStorageService{
 	
 	
+	private static final MultipartFile MultipartFile = null;
 	private final Path root = Paths.get("uploads");
-//
+
+
+	
+//	private Path folderName1 ;
 //	  @Override
 //	  public void init() {
 //	    try {
@@ -34,26 +43,40 @@ public class FileStorageServiceImp implements FilesStorageService{
 //	    }
 //	  }
 	  
-
+	public void createDirectory(Path folderName) throws IOException {
+		if (!Files.isDirectory(root)) {
+			Files.createDirectory(root);
+			Files.createDirectory(folderName) ;
+		}
+		else if (Files.isDirectory(root) && !Files.isDirectory(folderName)){
+			Files.createDirectory(folderName) ;
+		}
+		
+	}
 
 	  @Override
-	  public void save(MultipartFile file,String fileName) {
+	  public void save(MultipartFile file,String fileName,Path folderName) {
 	    try {
-	    	Files.createDirectory(root);
-	    System.out.print("inside the save---------"+root);
-	    	System.out.println(file.getInputStream());
-	    	System.out.println(file.getOriginalFilename());
-	      	System.out.println("Here");
-	      Files.copy(file.getInputStream(), this.root.resolve(fileName));
+		    createDirectory(folderName) ;	
+	      Files.copy(file.getInputStream(), folderName.resolve(fileName));
 	    } catch (Exception e) {
-	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+	      throw new ServerError("Could not store the file. Error: " + e.getMessage());
 	    }
 	  }
+	  
+	  
+		@Override
+		public void update(MultipartFile file , String updatedFileName , String existingFileName , Path folderName) {
+			    delete(existingFileName , folderName);
+			     save(file , updatedFileName , folderName) ;
+			  
+			
+		}
 
 	  @Override
-	  public Resource load(String filename) {
+	  public Resource load(String filename , Path folderName) {
 	    try {
-	      Path file = root.resolve(filename);
+	      Path file = folderName.resolve(filename);
 	      Resource resource = new UrlResource(file.toUri());
 
 	      if (resource.exists() || resource.isReadable()) {
@@ -67,18 +90,35 @@ public class FileStorageServiceImp implements FilesStorageService{
 	  }
 
 	  @Override
-	  public void deleteAll() {
-	    FileSystemUtils.deleteRecursively(root.toFile());
+	  public void deleteAll(Path folderName) {
+	    FileSystemUtils.deleteRecursively(folderName.toFile());
 	  }
 
 	  
+	  
 	  @Override
-	  public Stream<Path> loadAll() {
+	  public boolean delete(String filename , Path folderName) {
 	    try {
-	      return Files.walk(this.root, 1).filter(path -> !path.equals(this.root)).map(this.root::relativize);
+	      Path file = folderName.resolve(filename);
+	      return Files.deleteIfExists(file);
+	    } catch (IOException e) {
+	      throw new RuntimeException("Could not delete the file. Error: " + e.getMessage());
+	    }
+	  }
+	  
+	  
+	  
+
+	  
+	  @Override
+	  public Stream<Path> loadAll(Path folderName) {
+	    try {
+	      return Files.walk(folderName, 1).filter(path -> !path.equals(folderName)).map(folderName::relativize);
 	    } catch (IOException e) {
 	      throw new RuntimeException("Could not load the files!");
 	    }
 	  }
+
+
 
 }

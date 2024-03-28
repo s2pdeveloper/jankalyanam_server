@@ -10,11 +10,16 @@ public interface FilesStorageService {
 
 //	  public void init();
 
-	  public void save(MultipartFile file, String fileName);
+	  public void save(MultipartFile file, String fileName , Path folderName);
 
-	  public Resource load(String filename);
+	  public Resource load(String filename , Path folderName);
 
-	  public void deleteAll();
+	  public void deleteAll( Path folderName);
 
-	  public Stream<Path> loadAll();
+	  public Stream<Path> loadAll(Path folderName);
+
+	public boolean delete(String filename , Path FolderName);
+	
+      public void update (MultipartFile file1, String filename , String UpdatedFileName , Path folderName) ;
+
 }
