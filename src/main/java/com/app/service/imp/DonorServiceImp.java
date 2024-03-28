@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.app.constant.ServiceConstant.DONOR_STATUS;
@@ -14,6 +17,7 @@ import com.app.dto.DonorDTO;
 import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
 import com.app.dto.ResultDTO;
+import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
 import com.app.model.DonorDO;
 import com.app.repository.DonorRepository;
@@ -33,9 +37,8 @@ public class DonorServiceImp implements DonorService{
 	public DonorDTO getDonorDetails(Long id) {
 		Optional<DonorDO> donorDetails = donorRepository.findById(id);
 		DonorDO data = donorDetails.orElse(null);
-		log.info("data------   {}",data);
 		if(data == null) {
-			
+			throw new InvalidInputException("Invalid Input");
 		}
 		return Utility.mapObject(data, DonorDTO.class);
 		
@@ -52,40 +55,47 @@ public class DonorServiceImp implements DonorService{
 	}
 
 	@Override
-	public List<DonorDTO> getByStatus(String type) {
-		if(Utility.getSessionUser().getRole().equals(ROLE.ADMIN)) {
-			if(type.equals("HISTORY")) {
-				List<DonorDO> donorList = donorRepository.findByStatus(DONOR_STATUS.CLOSE);
-				 List<DonorDTO> donorListDTO = Utility.mapList(donorList, DonorDTO.class);
+	public List<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
+		if(type == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+			
+		Slice<DonorDO> donorList;
+		if(type.equals("HISTORY")) {
+				donorList = donorRepository.findByStatusIn(List.of(DONOR_STATUS.CLOSE),search,paging);
+				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 				 return donorListDTO ;
 			}else if(type.equals("ACTIVE")) {
-				List<DonorDO> donorList =donorRepository.findByStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE));
-				 List<DonorDTO> donorListDTO = Utility.mapList(donorList, DonorDTO.class);
+				 donorList =donorRepository.findByStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),search,paging);
+				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 				 return donorListDTO ;
+			}else {
+				throw new InvalidInputException("Invalid Input");
 			}
-			return null;
-
-		}else {
-		
-			return null;
-		}
 	}
 
 	@Override
-	public List<DonorDTO> getByStatusAndAttenderId(String type) {
-		if(Utility.getSessionUser().getRole().equals(ROLE.ATTENDER)) {
+	public List<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
+		if(type == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+			
+		Slice<DonorDO> donorList;
 		if(type.equals("HISTORY")) {
-			List<DonorDO> donorList = donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.CLOSE),Utility.getSessionUser().getId());
-			 List<DonorDTO> donorListDTO = Utility.mapList(donorList, DonorDTO.class);
+			donorList = donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.CLOSE),Utility.getSessionUser().getId(),search,paging);
+			 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 			 return donorListDTO ;
 		}else if(type.equals("ACTIVE")) {
-			List<DonorDO> donorList =donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),Utility.getSessionUser().getId());
-			 List<DonorDTO> donorListDTO = Utility.mapList(donorList, DonorDTO.class);
+			donorList =donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),Utility.getSessionUser().getId(),search,paging);
+			 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 			 return donorListDTO ;
 		}
-		return null;
-		}else {
-			return null;
+		else {
+			throw new InvalidInputException("Invalid Input");
 		}
 	}
 
@@ -101,6 +111,18 @@ public class DonorServiceImp implements DonorService{
 		data.setLocation(updateData.getLocation());
 		donorRepository.save(data);
 		return new ResultDTO(id.toString(),"Updated Successfully!");
+	}
+
+	@Override
+	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy) {
+		if(group == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
+		List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
+		return donorListDTO;
 	}
     
 	

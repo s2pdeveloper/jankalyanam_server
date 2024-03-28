@@ -6,12 +6,14 @@ import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.dto.BloodRequestDTO;
@@ -41,25 +43,32 @@ public class DonorController {
 
 	}
 
-	@GetMapping("/{id}")
-	public DonorDTO getDonorDetails(@PathVariable(name = "id") Long id) {
 
-		return donorService.getDonorDetails(id);
-
-	}
 
 	// Admin
-	@RolesAllowed("ROLE_ADMIN")
-	@GetMapping("/admin-list/{type}")
-	public List<DonorDTO> getItemsByStatus(@PathVariable String type) {
-		return donorService.getByStatus(type);
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@GetMapping("/admin-list")
+	public List<DonorDTO> getItemsByStatus(
+    		@RequestParam  String type,
+    		@RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) String search
+            ) {
+		return donorService.getByStatus(type,pageNo,pageSize,sortBy,search);
 
 	}
 
 	// Attender
-	@GetMapping("/attender-list/{type}")
-	public List<DonorDTO> attenderHistoryList(@PathVariable String type) {
-		return donorService.getByStatusAndAttenderId(type);
+	@GetMapping("/attender-list")
+	public List<DonorDTO> attenderHistoryList(
+    		@RequestParam  String type,
+    		@RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) String search
+            ) {
+		return donorService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
 
 	}
 
@@ -69,5 +78,26 @@ public class DonorController {
 		return donorService.updateById(id, updateData);
 
 	}
+	
+	@GetMapping("/blood-donor")
+	public List<DonorDTO> donorByBloodGroup(
+			@RequestParam String group,
+			@RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+            ) {
+
+		return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
+
+	}
+	
+	@GetMapping("/{id}")
+	public DonorDTO getDonorDetails(@PathVariable(name = "id") Long id) {
+
+		return donorService.getDonorDetails(id);
+
+	}
+	
+	
 
 }

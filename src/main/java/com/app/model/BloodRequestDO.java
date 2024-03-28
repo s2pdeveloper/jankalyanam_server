@@ -20,27 +20,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
-import com.app.constant.ServiceConstant.BloodGroup;
 import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
 
 
 @NoArgsConstructor
 @AllArgsConstructor 
-@Getter
-@Setter
+@Data
 @Entity
 @Table (name = "BloodRequest")
 public class BloodRequestDO {
@@ -73,8 +65,7 @@ public class BloodRequestDO {
     private Long mobileNo;
     
     @Column(name = "blood_group")
-    @Enumerated(EnumType.STRING)
-    private BloodGroup bloodGroup;
+    private String bloodGroup;
     
     private int units;
     
@@ -86,6 +77,15 @@ public class BloodRequestDO {
     
     @Enumerated(EnumType.STRING)
     private PROVIDED provided;
+    
+    @Column(name = "blood_bank_name")
+    private String bloodBankName;
+    
+    @Column(name = "bank_state")
+    private String bankState;
+    
+    @Column(name = "bank_city")
+    private String bankCity;
     
     @Column(name = "created_at")
     @CreationTimestamp
@@ -104,15 +104,15 @@ public class BloodRequestDO {
     @Column(name = "donor_id")
     private Long donorId;
     
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acceptor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO acceptor;
   
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attender_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO attender;
     
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "donor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private DonorDO donor;
     

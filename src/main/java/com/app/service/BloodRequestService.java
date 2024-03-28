@@ -20,14 +20,17 @@ public interface BloodRequestService {
     
     public ResultDTO createRequest(BloodDTO bloodRequest);
     
-    public List<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String searchBy, String search) ;
+    public List<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy,  String search) ;
     
-    public List<BloodRequestDTO> getByStatusAndAttenderId(String type) ;
+    public List<BloodRequestDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy
+			, String search);
     
 	 public List<BloodRequestDTO> getAllRequest();
 
 	 public ResultDTO acceptRequest(Long id, BLOOD_STATUS status);
 
 	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData);
+
+	
 
 }

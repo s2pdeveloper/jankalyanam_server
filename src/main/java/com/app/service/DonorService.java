@@ -20,9 +20,11 @@ public interface DonorService {
     
     public ResultDTO createRequest(DonorRequestDTO donorRequestDTO);
 
-	public List<DonorDTO> getByStatus(String type);
+	public List<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search);
 
-	public List<DonorDTO> getByStatusAndAttenderId(String type);
+	public List<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search);
 
 	public ResultDTO updateById(Long id, DonorRequestUpdateDTO updateData);
+
+	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy);
 }

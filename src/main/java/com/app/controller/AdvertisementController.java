@@ -28,7 +28,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/advertise")
 @Api(tags = {"advertise"})
-@RolesAllowed("ROLE_ADMIN")
 public class AdvertisementController {
 	
 	@Autowired

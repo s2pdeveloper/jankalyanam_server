@@ -37,14 +37,14 @@ public class UserController {
 	 private UserService userService;
 	 
 
-	@RolesAllowed("ROLE_ADMIN")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/admins")
 	public List<UserDTO> getAllAdmins() {
 		return userService.getAllAdmins();
 		
 	}
 	
-	@RolesAllowed("ROLE_ADMIN")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/attenders")
 	public List<UserDTO> getAllAttenders() {
 		return userService.getAllAttenders();
@@ -68,7 +68,7 @@ public class UserController {
 		
 	}
 	
-	@RolesAllowed("ROLE_ADMIN")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable Long id) {
 		return userService.deleteUser(id);
@@ -77,7 +77,7 @@ public class UserController {
 	
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 //	@RolesAllowed("ROLE_ADMIN")
 	public UserDTO getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);

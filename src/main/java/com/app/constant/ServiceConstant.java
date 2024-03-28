@@ -15,27 +15,27 @@ public class ServiceConstant {
 		}
 	
 	public enum DONOR_STATUS {
-		PENDING,DONE,CLOSE
+		PENDING,ALLOCATED,REALLOCATED,ACCEPTED,DONE,CLOSE
 		}
 	
 	public enum PROVIDED {
-		 DONOR,BLOOD
+		 DONOR,BLOOD_BANK
 		}
 	
 	public enum GENDER {
 		 MALE,FEMALE,OTHER
 		}
 	
-	public enum BloodGroup {
-		   A_POSITIVE,  
-		    A_NEGATIVE ,
-		    B_POSITIVE,
-		    B_NEGATIVE,
-		    AB_POSITIVE,
-		    AB_NEGATIVE,
-		    O_POSITIVE,
-		    O_NEGATIVE 
-
-		   
-	}
+//	public enum BloodGroup {
+//		   A_POSITIVE,  
+//		    A_NEGATIVE ,
+//		    B_POSITIVE,
+//		    B_NEGATIVE,
+//		    AB_POSITIVE,
+//		    AB_NEGATIVE,
+//		    O_POSITIVE,
+//		    O_NEGATIVE 
+//
+//		   
+//	}
 }

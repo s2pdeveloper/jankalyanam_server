@@ -1,6 +1,8 @@
 package com.app.dto;
 
 
+import javax.persistence.Column;
+
 import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +18,10 @@ public class BloodRequestUpdateDTO {
 	 
 	 private PROVIDED provided;
 
+	 private String bloodBankName;
+	    
+	 private String bankState;
+	    
+	 private String bankCity;
 	
 }

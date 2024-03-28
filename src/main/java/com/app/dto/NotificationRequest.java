@@ -1,5 +1,8 @@
 package com.app.dto;
 
+import java.util.List;
+import java.util.Map;
+
 import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
@@ -11,9 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class NotificationRequest {
 
-	   private String title;
-	    private String body;
-	    private String topic;
-	    private String token;
+	   private Map<String,String> data;
+	    private List<String> tokens;
 	    
 }
