@@ -3,12 +3,7 @@ package com.app.dto;
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
-
-import com.app.constant.ServiceConstant.BloodGroup;
-import com.app.constant.ServiceConstant.DONOR_STATUS;
 import com.app.constant.ServiceConstant.GENDER;
-import com.app.model.BloodRequestDO;
-import com.app.model.UserDO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -37,5 +32,5 @@ public class DonorRequestDTO {
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private Date donationDate;
     private GENDER gender;
-    private BloodGroup bloodGroup;
+    private String bloodGroup;
 }

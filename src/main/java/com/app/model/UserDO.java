@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -112,13 +113,13 @@ public class UserDO implements UserDetails {
 	}
     
 	
-	@OneToMany(mappedBy = "acceptor")
+	@OneToMany(mappedBy = "acceptor",fetch = FetchType.LAZY)
     private List<BloodRequestDO> myList ;
 
-	@OneToMany(mappedBy = "attender")
+	@OneToMany(mappedBy = "attender",fetch = FetchType.LAZY)
     private List<BloodRequestDO> bloodRequestList ;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<DonorDO> bloodDonateList ;
   
 //    @JsonIgnoreProperties("user")

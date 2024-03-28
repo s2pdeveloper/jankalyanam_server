@@ -1,8 +1,6 @@
 package com.app.dto;
 
 
-import javax.validation.constraints.NotEmpty;
-
 import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
@@ -19,5 +17,10 @@ public class BloodRequestUpdateDTO {
 	 
 	 private PROVIDED provided;
 
+	 private String bloodBankName;
+	    
+	 private String bankState;
+	    
+	 private String bankCity;
 	
 }

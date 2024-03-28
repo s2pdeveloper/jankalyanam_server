@@ -29,7 +29,7 @@ import com.app.dto.UserDTO;
 import com.app.exception.InvalidInputException;
 import com.app.service.imp.CustomUserDetailsService;
 import com.app.utilities.Utility;
-import com.app.config.AuthenticationExceptionHandler;
+
 import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	   private JwtUtil tokenManager;
 	   
 	   @Autowired
-	   private AuthenticationExceptionHandler exceptionHandler ;
+	   private AuthenticationExceptionHandler exceptionHandler;
 	   
 	   @Value("${permit.urls}")
 	   private String permittedUrls;
@@ -56,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		   
 		   String[] endPoints = permittedSwaggerUrls.split(",");
 		   boolean matches = Arrays.stream(endPoints)
-		                           .map(endpoint -> endpoint.replace("/**", ""))
+		                           .map(endpoint -> endpoint.replace("/", ""))
 		                           .anyMatch(request.getRequestURI()::startsWith);
 
 
@@ -88,7 +88,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	      System.out.println("SecurityContextHolder.getContext().getAuthentication()------"+SecurityContextHolder.getContext().getAuthentication());
 	      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 	         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-	         System.out.println("userDetails-----"+userDetails);
+	         System.out.println("userDetails-----"+userDetails.getAuthorities().toString());
 	         if (tokenManager.validateToken(token, userDetails)) {
 	            UsernamePasswordAuthenticationToken
 	            authenticationToken = new UsernamePasswordAuthenticationToken(

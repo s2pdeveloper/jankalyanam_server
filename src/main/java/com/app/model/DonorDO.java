@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.app.constant.ServiceConstant.BloodGroup;
 import com.app.constant.ServiceConstant.DONOR_STATUS;
 import com.app.constant.ServiceConstant.GENDER;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -61,8 +61,7 @@ public class DonorDO {
     private Boolean illness;
     
     @Column(name = "blood_group")
-    @Enumerated(EnumType.STRING)
-    private BloodGroup bloodGroup;
+    private String bloodGroup;
     
     @Enumerated(EnumType.STRING)
     private DONOR_STATUS status = DONOR_STATUS.PENDING;
@@ -84,10 +83,10 @@ public class DonorDO {
     private LocalDateTime updatedAt;
     
     
-    @OneToOne(mappedBy="donor")
+    @OneToOne(mappedBy="donor",fetch = FetchType.LAZY)
     private BloodRequestDO bloodRequest;
     
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO user;
     

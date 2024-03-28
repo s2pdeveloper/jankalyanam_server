@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,24 +48,29 @@ public class BloodRequestController {
 	 
 
 	//Admin
-	 @RolesAllowed("ADMIN")
+	 @PreAuthorize("hasAuthority('ADMIN')")
 	 @GetMapping("/admin-list")
 	    public List<BloodRequestDTO> getItemsByStatus(
 	    		@RequestParam  String type,
 	    		@RequestParam(defaultValue = "0") Integer pageNo,
                 @RequestParam(defaultValue = "10") Integer pageSize,
-                @RequestParam(defaultValue = "id") String sortBy,
-                @RequestParam(required = false) String searchBy,
+                @RequestParam(defaultValue = "createdAt") String sortBy,
                 @RequestParam(required = false) String search
                 ) {
-	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,searchBy,search);
+	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,search);
 	      
 	  }
 	 
 	//Attender
-	 @GetMapping("/attender-list/{type}")
-	    public List<BloodRequestDTO> attenderHistoryList(@PathVariable String type) {
-	     return bloodRequestService.getByStatusAndAttenderId(type);
+	 @GetMapping("/attender-list")
+	    public List<BloodRequestDTO> attenderHistoryList(
+	    		@RequestParam  String type,
+	    		@RequestParam(defaultValue = "0") Integer pageNo,
+                @RequestParam(defaultValue = "10") Integer pageSize,
+                @RequestParam(defaultValue = "createdAt") String sortBy,
+                @RequestParam(required = false) String search
+                ) {
+	     return bloodRequestService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
 	      
 	  }
 	 
@@ -83,12 +89,13 @@ public class BloodRequestController {
 			
 	 }
 
-	@RolesAllowed("ROLE_ATTENDER")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/{id}")
 	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
 		
 		return bloodRequestService.getById(id);
 	}
+	
 //	 @GetMapping("/all")
 //		public List<BloodRequestDO> getAllRequest() {
 //			return bloodRequestService.getAllRequest();

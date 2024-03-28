@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,18 +20,47 @@ import com.app.model.BloodRequestDO;
 
 @Repository
 public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Long> {
-	Page <BloodRequestDO> findByStatus(BLOOD_STATUS status,Pageable pageable);
+	Slice <BloodRequestDO> findByStatus(BLOOD_STATUS status,Pageable pageable);
 	
 	
-	Page<BloodRequestDO> findByStatusIn(List<BLOOD_STATUS> status,Pageable pageable);
+    @Query("SELECT b FROM BloodRequestDO b WHERE b.status IN :status" +
+            "AND (:search IS NULL OR :search = '' OR " +
+            "(b.name LIKE %:search% OR " +
+            "b.fatherOrHusband LIKE %:search% OR " +
+            "b.gender LIKE %:search% OR " +
+            "b.state LIKE %:search% OR " +
+            "b.city LIKE %:search% OR " +
+            "b.illness LIKE %:search% OR " +
+            "b.location LIKE %:search% OR " +
+            "b.bloodGroup LIKE %:search%))")
+	Slice<BloodRequestDO> findByStatusIn(List<BLOOD_STATUS> status,String search,Pageable pageable);
 	
 
-	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in ?1 and b.acceptorId = ?2")
-	Page <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id,Pageable pageable);
+
+    @Query("SELECT b FROM BloodRequestDO b WHERE b.status IN :status AND b.acceptorId = :id " +
+            "AND (:search IS NULL OR :search = '' OR " +
+            "(b.name LIKE %:search% OR " +
+            "b.fatherOrHusband LIKE %:search% OR " +
+            "b.gender LIKE %:search% OR " +
+            "b.state LIKE %:search% OR " +
+            "b.city LIKE %:search% OR " +
+            "b.illness LIKE %:search% OR " +
+            "b.location LIKE %:search% OR " +
+            "b.bloodGroup LIKE %:search%))")
+	Slice <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id, String search,Pageable pageable);
 	
 	
-	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in ?1 and b.attenderId = ?2")
-	List <BloodRequestDO> findByStatusAndAttenderId(List<BLOOD_STATUS> status,Long id);
+//	@Query("SELECT b FROM BloodRequestDO b WHERE b.status In :status and b.attenderId = :id" +
+//            "AND (:search IS NULL OR :search = '' OR " +
+//            "(b.name LIKE %:search% OR " +
+//            "b.fatherOrHusband LIKE %:search% OR " +
+//            "b.gender LIKE %:search% OR " +
+//            "b.state LIKE %:search% OR " +
+//            "b.city LIKE %:search% OR " +
+//            "b.illness LIKE %:search% OR " +
+//            "b.location LIKE %:search% OR " +
+//            "b.bloodGroup LIKE %:search%))")
+	Slice <BloodRequestDO> findByStatusAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
 
 	@Modifying
 	@Transactional

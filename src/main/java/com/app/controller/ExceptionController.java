@@ -10,6 +10,7 @@ import com.app.dto.ApiError;
 import com.app.exception.InvalidInputException;
 import com.app.exception.ServerError;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,7 +90,10 @@ public class ExceptionController {
                              .body(new ApiError(e.getMessage(), "Null Pointer Exception"));
     }
     
- 
-    
+    @ExceptionHandler(FirebaseMessagingException.class)
+    public ResponseEntity<ApiError> handleFirebaseMessagingException(FirebaseMessagingException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(new ApiError(e.getMessage(), "Something went wrong"));
+    }
 
 }

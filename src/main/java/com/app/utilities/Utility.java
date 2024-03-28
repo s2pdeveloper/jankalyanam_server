@@ -21,7 +21,6 @@ public class Utility {
 
     // Map one object to another
     public static <S, D> D mapObject(S source, Class<D> destinationType) {
-    	System.out.println("v-------"+source.toString());
         return modelMapper.map(source, destinationType);
     }
     

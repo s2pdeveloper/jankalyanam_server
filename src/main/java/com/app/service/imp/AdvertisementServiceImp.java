@@ -107,15 +107,15 @@ public class AdvertisementServiceImp implements AdvertisementService{
 
 	
 	
-	
 	@Override
 	public FileDTO getById(Long id) {
-			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
-			AdvertisementDO b = data.orElse(null);
-			if(b == null) {
+		AdvertisementDO data = advertisementRepository.getOne(id);
+//			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
+//			AdvertisementDO b = data.orElse(null);
+			if(data == null) {
 				throw new InvalidInputException("No Advertisement Present");
 			}
-			FileDTO result = Utility.mapObject(b,FileDTO.class);
+			FileDTO result = Utility.mapObject(data,FileDTO.class);
 			result.setUrl(this.filePath+result.getUrl());	
 			return result;
 	}

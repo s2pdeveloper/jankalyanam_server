@@ -22,14 +22,19 @@ import com.app.model.UserDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
 import com.app.utilities.Utility;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
 
 
 @Service
+@Slf4j
 public class BloodRequestServiceImp implements BloodRequestService{
    
 	@Autowired
@@ -67,39 +72,36 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
     
 	@Override
-    public List<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String searchBy, String search) { 
+    public List<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search) { 
 	
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
-		 System.out.println(type+pageNo+pageSize+"*******"+sortBy);
-		 System.out.println(searchBy+"&&&&&&&&"+search);
-		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending()); 
-		Page<BloodRequestDO> BloodRequestList;
-		if(searchBy == null && search == null) {
+
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+		Slice<BloodRequestDO> BloodRequestList;
 			if(type.equals("HISTORY")) {
-				 BloodRequestList = bloodRequestRepository.findByStatus(BLOOD_STATUS.DONE,paging);
-				 System.out.println("BloodRequestList----"+BloodRequestList.toString());
+				 BloodRequestList = bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.DONE),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("ACTIVE")) {
-				 BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),paging);
-				 System.out.println("BloodRequestList----"+BloodRequestList.toString());
+				 BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("MYLIST")) {
 				
-				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(), paging);
+				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return BloodRequestlist ;
+				return BloodRequestlist ;
 			
-		
+			}else {
+				throw new InvalidInputException("Invalid Input");
 			}
 			
-		}
+
 		
 		
-		return null;
+	
        
     }
 
@@ -112,21 +114,26 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
 
 	@Override
-	public List<BloodRequestDTO> getByStatusAndAttenderId(String type) {
-		if(Utility.getSessionUser().getRole().equals(ROLE.ATTENDER)) {
+	public List<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search) {
+		if(type == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+		Slice<BloodRequestDO> BloodRequestList;
 		if(type.equals("HISTORY")) {
-			List<BloodRequestDO> BloodRequestList = bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId());
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+			 BloodRequestList = bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId(),search, paging);
+			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return BloodRequestlist ;
 		}else if(type.equals("ACTIVE")) {
-			List<BloodRequestDO> BloodRequestList =bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId());
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList, BloodRequestDTO.class);
+			 BloodRequestList =bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return BloodRequestlist ;
 		}
-		return null;
-		}else {
-			return null;
+		else {
+			throw new InvalidInputException("Invalid Input");
 		}
+		
 	}
 
 	@Override
@@ -146,6 +153,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			  changeStatus = BLOOD_STATUS.DONE;
 			    break;
 		  default:
+			  throw new InvalidInputException("Invalid Input");
 		     
 		}
 		bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
