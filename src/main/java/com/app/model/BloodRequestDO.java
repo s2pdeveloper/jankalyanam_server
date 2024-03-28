@@ -26,13 +26,16 @@ import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 
 @NoArgsConstructor
 @AllArgsConstructor 
-@Data
+@Getter
+@Setter
 @Entity
 @Table (name = "BloodRequest")
 public class BloodRequestDO {
