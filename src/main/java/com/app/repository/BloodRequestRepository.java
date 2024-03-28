@@ -23,7 +23,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	Slice <BloodRequestDO> findByStatus(BLOOD_STATUS status,Pageable pageable);
 	
 	
-    @Query("SELECT b FROM BloodRequestDO b WHERE b.status IN :status" +
+    @Query("SELECT b FROM BloodRequestDO b WHERE b.status IN :status " +
             "AND (:search IS NULL OR :search = '' OR " +
             "(b.name LIKE %:search% OR " +
             "b.fatherOrHusband LIKE %:search% OR " +
@@ -33,7 +33,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.illness LIKE %:search% OR " +
             "b.location LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
-	Slice<BloodRequestDO> findByStatusIn(List<BLOOD_STATUS> status,String search,Pageable pageable);
+	Slice<BloodRequestDO> findAllByStatus(List<BLOOD_STATUS> status,String search,Pageable pageable);
 	
 
 
@@ -50,7 +50,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	Slice <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id, String search,Pageable pageable);
 	
 	
-	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in :status and b.attenderId = :id" +
+	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in :status and b.attenderId = :id " +
             "AND (:search IS NULL OR :search = '' OR " +
             "(b.name LIKE %:search% OR " +
             "b.fatherOrHusband LIKE %:search% OR " +
@@ -60,7 +60,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.illness LIKE %:search% OR " +
             "b.location LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
-	Slice <BloodRequestDO> findByStatusAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
+	Slice <BloodRequestDO> findByStatusInAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
 
 	@Modifying
 	@Transactional

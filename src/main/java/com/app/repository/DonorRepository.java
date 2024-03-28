@@ -20,7 +20,7 @@ public interface DonorRepository extends JpaRepository<DonorDO, Long>{
 
 	List <DonorDO> findByStatus(DONOR_STATUS status);
 	
-	@Query("SELECT b FROM DonorDO b WHERE b.status IN :status" +
+	@Query("SELECT b FROM DonorDO b WHERE b.status IN :status " +
             "AND (:search IS NULL OR :search = '' OR " +
             "(b.name LIKE %:search% OR " +
             "b.gender LIKE %:search% OR " +
@@ -49,6 +49,6 @@ public interface DonorRepository extends JpaRepository<DonorDO, Long>{
 	@Query("UPDATE DonorDO b SET b.status = ?2 where b.id = ?1")
 	void findByIdAndUpdateStatus(Long id,DONOR_STATUS status);
 
-	Slice<DonorDO> findByBloodGroupAndStatusIn(List<DONOR_STATUS> status, Pageable paging);
+	Slice<DonorDO> findByBloodGroupAndStatusIn(String group,List<DONOR_STATUS> status, Pageable paging);
 
 }

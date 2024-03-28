@@ -120,7 +120,7 @@ public class DonorServiceImp implements DonorService{
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
+		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
 		List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 		return donorListDTO;
 	}
