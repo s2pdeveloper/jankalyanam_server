@@ -30,4 +30,6 @@ public interface DonorService {
 	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy);
 
 	ResultDTO changeStatus(Long id, DONOR_STATUS status);
+	
+	ResultDTO assignOrRemoveToBloodRequest(Long id,Boolean allocate);
 }

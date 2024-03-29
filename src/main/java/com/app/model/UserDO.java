@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -59,7 +60,7 @@ public class UserDO implements UserDetails {
     
     private String  email;
     
-    @Column(name = "mobile_no")
+    @Column(name = "mobile_no",unique=true)
     private String  mobileNo;
     
     private String  state;
@@ -113,15 +114,18 @@ public class UserDO implements UserDetails {
 	}
     
 	
-	@OneToMany(mappedBy = "acceptor")
+	@OneToMany(mappedBy = "acceptor",fetch = FetchType.LAZY)
     private List<BloodRequestDO> myList ;
 
-	@OneToMany(mappedBy = "attender")
+	@OneToMany(mappedBy = "attender",fetch = FetchType.LAZY)
     private List<BloodRequestDO> bloodRequestList ;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<DonorDO> bloodDonateList ;
-  
+	
+    @OneToOne(mappedBy = "userDetail", fetch = FetchType.LAZY)
+    private UserDeviceIdDO device;
+    
 //    @JsonIgnoreProperties("user")
   
 //    @JsonBackReference

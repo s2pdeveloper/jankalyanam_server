@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.PROVIDED;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
@@ -21,6 +22,7 @@ import com.app.model.DonorDO;
 import com.app.model.UserDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
+import com.app.service.DonorService;
 import com.app.utilities.Utility;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,9 @@ public class BloodRequestServiceImp implements BloodRequestService{
 
 	@Autowired
 	private FCMService fcmService;
+	
+	@Autowired
+	private DonorService donorService;
 	  
 	@Override
 	public BloodRequestDTO getById(Long id) {
@@ -142,21 +147,25 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		switch(status) {
 		  case ACCEPTED:
 			  changeStatus = BLOOD_STATUS.ACCEPTED;
+			  bloodRequestRepository.findAndChangeAdmin(id,changeStatus,Utility.getSessionUser().getId());
 		    break;
 		  case PENDING:
 			  changeStatus = BLOOD_STATUS.PENDING;
+			  bloodRequestRepository.findAndChangeAdmin(id,changeStatus,null);
 		    break;
 		  case RECEIVED:
 			  changeStatus = BLOOD_STATUS.RECEIVED;
-			    break;
+			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+			  break;
 		  case DONE:
 			  changeStatus = BLOOD_STATUS.DONE;
-			    break;
+			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+			  break;
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 		     
 		}
-		bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+		
 		return new ResultDTO(id.toString(),"Blood Request Accepted Successfully!");
 	}
 
@@ -165,11 +174,30 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		Optional<BloodRequestDO> bloodRequest = bloodRequestRepository.findById(id);
 		BloodRequestDO data = bloodRequest.orElse(null);
 		if(data == null) {
-			
+			throw new InvalidInputException("Invalid Input");
 		}
 		
+		if(updateData.getDonorId() == null && updateData.getBloodBankName() == null) {
+			throw new InvalidInputException("Please Fill Atleast One Information");
+		}
+		if(data.getDonorId() != null) {
+			donorService.assignOrRemoveToBloodRequest(data.getDonorId(),false);
+		}
+		if(updateData.getProvided().equals(PROVIDED.DONOR) && updateData.getDonorId() != null) {
+		
+			donorService.assignOrRemoveToBloodRequest(updateData.getDonorId(),true);
+			data.setBloodBankName(null);
+			data.setBankState(null);
+			data.setState(null);
+		}else {
+			data.setBloodBankName(updateData.getBloodBankName());
+			data.setBankState(updateData.getBankState());
+			data.setState(updateData.getBankCity());
+			data.setDonorId(null);		
+			
+		}
 		data.setProvided(updateData.getProvided());
-		data.setDonorId(updateData.getDonorId() != null ? updateData.getDonorId() : data.getDonorId());
+		data.setState(BLOOD_STATUS.ALLOCATED.name());
 		bloodRequestRepository.save(data);
 		return new ResultDTO(id.toString(),"Updated Successfully!");
 		

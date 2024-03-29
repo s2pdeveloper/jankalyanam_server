@@ -93,7 +93,7 @@ public class DonorDO {
     
     
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO user;
     

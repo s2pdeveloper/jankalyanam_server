@@ -98,24 +98,26 @@ public class BloodRequestDO {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
-    @Column(name = "acceptor_id")
+    @Column(name = "acceptor_id",updatable = true)
     private Long acceptorId;
     
     @Column(name = "attender_id")
     private Long attenderId;
     
-    @Column(name = "donor_id")
+    @Column(name = "donor_id",updatable = true)
     private Long donorId;
     
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acceptor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO acceptor;
   
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attender_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO attender;
     
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "donor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private DonorDO donor;
     

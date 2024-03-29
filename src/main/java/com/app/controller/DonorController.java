@@ -90,8 +90,7 @@ public class DonorController {
             @RequestParam(defaultValue = "createdAt") String sortBy
     
             ) {
-//System.out.println("-----------------------"+group) ;
-return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
+        return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
 
 	}
 	
