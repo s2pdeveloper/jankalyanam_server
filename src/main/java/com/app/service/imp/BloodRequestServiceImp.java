@@ -81,11 +81,11 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
 		Slice<BloodRequestDO> BloodRequestList;
 			if(type.equals("HISTORY")) {
-				 BloodRequestList = bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.DONE),search,paging);
+				 BloodRequestList = bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.DONE),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("ACTIVE")) {
-				 BloodRequestList =bloodRequestRepository.findByStatusIn(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),search,paging);
+				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return BloodRequestlist ;
 			}else if(type.equals("MYLIST")) {
@@ -122,11 +122,11 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
 		Slice<BloodRequestDO> BloodRequestList;
 		if(type.equals("HISTORY")) {
-			 BloodRequestList = bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId(),search, paging);
+			 BloodRequestList = bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId(),search, paging);
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return BloodRequestlist ;
 		}else if(type.equals("ACTIVE")) {
-			 BloodRequestList =bloodRequestRepository.findByStatusAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return BloodRequestlist ;
 		}

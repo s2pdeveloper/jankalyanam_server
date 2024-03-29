@@ -38,6 +38,11 @@ import lombok.ToString;
 @Table (name = "Donation")
 public class DonorDO {
 
+//    public DonorDO() {
+//        this.bloodRequest = null; // Initializing address with null by default
+//    }
+	
+
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -82,11 +87,13 @@ public class DonorDO {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
-    
-    @OneToOne(mappedBy="donor",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy="donor")
     private BloodRequestDO bloodRequest;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    
+    
+    
+    @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO user;
     

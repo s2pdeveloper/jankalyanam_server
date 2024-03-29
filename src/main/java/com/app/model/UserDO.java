@@ -113,13 +113,13 @@ public class UserDO implements UserDetails {
 	}
     
 	
-	@OneToMany(mappedBy = "acceptor",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "acceptor")
     private List<BloodRequestDO> myList ;
 
-	@OneToMany(mappedBy = "attender",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "attender")
     private List<BloodRequestDO> bloodRequestList ;
 	
-	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user")
     private List<DonorDO> bloodDonateList ;
   
 //    @JsonIgnoreProperties("user")

@@ -88,9 +88,10 @@ public class DonorController {
 			@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "createdAt") String sortBy
+    
             ) {
-
-		return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
+//System.out.println("-----------------------"+group) ;
+return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
 
 	}
 	
@@ -103,7 +104,7 @@ public class DonorController {
 	
 	@PutMapping("/updateStatus")
 	public ResultDTO accept(@RequestParam("id") Long id,@RequestParam("status") DONOR_STATUS status) {
-
+		System.out.print("here------------");
 		return donorService.changeStatus(id,status);
 		
  }

@@ -26,13 +26,16 @@ import com.app.constant.ServiceConstant.PROVIDED;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 
 @NoArgsConstructor
 @AllArgsConstructor 
-@Data
+@Getter
+@Setter
 @Entity
 @Table (name = "BloodRequest")
 public class BloodRequestDO {
@@ -104,15 +107,15 @@ public class BloodRequestDO {
     @Column(name = "donor_id")
     private Long donorId;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "acceptor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO acceptor;
   
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "attender_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserDO attender;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     @JoinColumn(name = "donor_id", referencedColumnName = "id", insertable = false, updatable = false)
     private DonorDO donor;
     

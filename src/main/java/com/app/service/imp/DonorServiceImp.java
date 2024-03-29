@@ -50,6 +50,7 @@ public class DonorServiceImp implements DonorService{
 	public ResultDTO createRequest(DonorRequestDTO donorRequestDTO) {
 		DonorDO donor = Utility.mapObject(donorRequestDTO, DonorDO.class);
 		donor.setUserId(Utility.getSessionUser().getId());
+        donor.setBloodRequest(null);
 		DonorDO donorSave = donorRepository.save(donor);
 		return new ResultDTO(donorSave.getId().toString(),"Save Successfully!");
 	 
@@ -121,7 +122,7 @@ public class DonorServiceImp implements DonorService{
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(List.of(DONOR_STATUS.PENDING),paging);
+		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
 		List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 		return donorListDTO;
 	}
@@ -129,7 +130,9 @@ public class DonorServiceImp implements DonorService{
 	
 	@Override
 	public ResultDTO changeStatus(Long id,DONOR_STATUS status) {
+		System.out.print("here------------");
 		DONOR_STATUS newStatus = null;
+		System.out.print("here------------");
 		switch(status) {
 		  case ALLOCATED:
 			  newStatus = DONOR_STATUS.ALLOCATED;
@@ -149,6 +152,7 @@ public class DonorServiceImp implements DonorService{
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 	}
+		System.out.print("here------------");
 		donorRepository.findByIdAndUpdateStatus(id,newStatus);
 		return new ResultDTO(id.toString(),"Donor Status Change Successfully!");
 	}
