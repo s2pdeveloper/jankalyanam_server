@@ -66,4 +66,9 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	@Transactional
 	@Query("UPDATE BloodRequestDO b SET b.status = ?2 where b.id = ?1")
 	void findByIdAndUpdateStatus(Long id,BLOOD_STATUS status);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE BloodRequestDO b SET b.status = :status ,b.attenderId = :acceptorId where b.id = :id")
+	void findAndChangeAdmin(Long id,BLOOD_STATUS status,Long acceptorId);
 }

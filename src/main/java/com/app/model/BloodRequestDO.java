@@ -108,7 +108,7 @@ public class BloodRequestDO {
     private Long donorId;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acceptor_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "acceptor_id", referencedColumnName = "id", insertable = false, updatable = true)
     private UserDO acceptor;
   
     @ManyToOne(fetch = FetchType.LAZY)
@@ -116,7 +116,7 @@ public class BloodRequestDO {
     private UserDO attender;
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "donor_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "donor_id", referencedColumnName = "id", insertable = false, updatable = true)
     private DonorDO donor;
     
     

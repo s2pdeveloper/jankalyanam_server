@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -121,6 +122,9 @@ public class UserDO implements UserDetails {
 	
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<DonorDO> bloodDonateList ;
+	
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    private UserDeviceIdDO device;
   
 //    @JsonIgnoreProperties("user")
   

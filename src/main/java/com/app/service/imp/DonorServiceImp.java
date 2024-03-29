@@ -20,6 +20,7 @@ import com.app.dto.ResultDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
 import com.app.model.DonorDO;
+import com.app.repository.BloodRequestRepository;
 import com.app.repository.DonorRepository;
 import com.app.service.DonorService;
 import com.app.utilities.Utility;
@@ -32,6 +33,9 @@ public class DonorServiceImp implements DonorService{
    
 	@Autowired
     private DonorRepository donorRepository;
+	
+	@Autowired
+    private BloodRequestRepository bloodRequestRepository;
 
 	@Override
 	public DonorDTO getDonorDetails(Long id) {
@@ -104,15 +108,35 @@ public class DonorServiceImp implements DonorService{
 		Optional<DonorDO> donorDetails = donorRepository.findById(id);
 		DonorDO data = donorDetails.orElse(null);
 		if(data == null) {
-			
+			throw new InvalidInputException("Invalid Input");
+		}
+		data.setStatus(DONOR_STATUS.ALLOCATED);
+		data.setLocation(updateData.getLocation());
+		data.setBloodRequest(null);
+		donorRepository.save(data);
+		return new ResultDTO(id.toString(),"Updated Successfully!");
+	}
+	
+	@Override
+	public ResultDTO assignOrRemoveToBloodRequest(Long id,Boolean allocate) {
+		Optional<DonorDO> donorDetails = donorRepository.findById(id);
+		DonorDO data = donorDetails.orElse(null);
+		if(data == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+	
+		if(allocate) {
+			data.setStatus(DONOR_STATUS.ALLOCATED);
+		}else {
+			data.setStatus(DONOR_STATUS.PENDING);
 		}
 		
-		data.setStatus(updateData.getStatus() == null ? data.getStatus() : updateData.getStatus());
-		data.setLocation(updateData.getLocation());
+		data.setLocation(null);
 		donorRepository.save(data);
 		return new ResultDTO(id.toString(),"Updated Successfully!");
 	}
 
+	
 	@Override
 	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy) {
 		if(group == null) {

@@ -27,4 +27,6 @@ public interface DonorService {
 	public ResultDTO updateById(Long id, DonorRequestUpdateDTO updateData);
 
 	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy);
+
+	ResultDTO assignOrRemoveToBloodRequest(Long id,Boolean allocate);
 }
