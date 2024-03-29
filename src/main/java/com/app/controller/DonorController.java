@@ -103,7 +103,6 @@ public class DonorController {
 	
 	@PutMapping("/updateStatus")
 	public ResultDTO accept(@RequestParam("id") Long id,@RequestParam("status") DONOR_STATUS status) {
-		System.out.print("here------------");
 		return donorService.changeStatus(id,status);
 		
  }

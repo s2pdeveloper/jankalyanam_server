@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
@@ -34,13 +35,23 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/admins")
-	public List<UserDTO> getAllAdmins() {
+	public List<UserDTO> getAllAdmins(
+//			@RequestParam(defaultValue = "0") Integer pageNo,
+//          @RequestParam(defaultValue = "10") Integer pageSize,
+//          @RequestParam(defaultValue = "createdAt") String sortBy,
+//          @RequestParam(required = false) String search
+			) {
 		return userService.getAllAdmins();	
 	}
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/attenders")
-	public List<UserDTO> getAllAttenders() {
+	public List<UserDTO> getAllAttenders(
+//			@RequestParam(defaultValue = "0") Integer pageNo,
+//            @RequestParam(defaultValue = "10") Integer pageSize,
+//            @RequestParam(defaultValue = "createdAt") String sortBy,
+//            @RequestParam(required = false) String search
+            ) {
 		return userService.getAllAttenders();
 	}
 	

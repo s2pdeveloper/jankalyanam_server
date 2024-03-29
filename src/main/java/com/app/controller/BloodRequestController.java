@@ -71,12 +71,10 @@ public class BloodRequestController {
                 @RequestParam(required = false) String search
                 ) {
 	     return bloodRequestService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
-	      
 	  }
 	 
 	@PutMapping("/update")
 		public ResultDTO accept(@RequestParam("id") Long id,@RequestParam("status") BLOOD_STATUS status) {
-
 			return bloodRequestService.acceptRequest(id,status);
 			
 	 }
@@ -92,7 +90,6 @@ public class BloodRequestController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/{id}")
 	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
-		
 		return bloodRequestService.getById(id);
 	}
 	

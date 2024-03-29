@@ -1,5 +1,8 @@
 package com.app.model;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,13 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.app.constant.ServiceConstant.ROLE;
+import com.app.constant.ServiceConstant.STATUS;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor 
+@Data
 @Entity
 public class UserDeviceIdDO {
 
@@ -28,6 +36,9 @@ public class UserDeviceIdDO {
 	    
 	    @Column(name = "user_id")
 	   	private Long userId;
+	    
+	    @Column(name = "role")
+	    private ROLE role ;
 
 	    
 	    @OneToOne(fetch = FetchType.LAZY)
