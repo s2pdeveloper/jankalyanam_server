@@ -19,7 +19,9 @@ public class FCMInitializer {
 
     @Value("${app.firebase-configuration-file}")
     private String firebaseConfigPath;
+    
     Logger logger = LoggerFactory.getLogger(FCMInitializer.class);
+    
     @PostConstruct
     public void initialize() throws Exception {
         try {

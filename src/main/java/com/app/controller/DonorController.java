@@ -50,7 +50,7 @@ public class DonorController {
 
 
 	// Admin
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@GetMapping("/admin-list")
 	public ResponseDTO<DonorDTO> getItemsByStatus(
     		@RequestParam  String type,
@@ -76,6 +76,7 @@ public class DonorController {
 
 	}
 
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@PutMapping("/update/{id}")
 	public ResultDTO updateById(@PathVariable(name = "id") Long id, @RequestBody @Valid DonorRequestUpdateDTO updateData) {
 
@@ -83,6 +84,7 @@ public class DonorController {
 
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@GetMapping("/blood-donor")
 	public ResponseDTO<DonorDTO> donorByBloodGroup(
 			@RequestParam String group,
@@ -95,6 +97,7 @@ public class DonorController {
 
 	}
 	
+	 @PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	 @GetMapping("/all")
 	 public ResponseDTO<DonorDTO> getAllRequest(
 	    		@RequestParam(defaultValue = "0") Integer pageNo,

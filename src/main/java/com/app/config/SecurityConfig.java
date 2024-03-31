@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //       return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
 //   }
 
+   
    @Bean
    public PasswordEncoder passwordEncoder() {
        return new BCryptPasswordEncoder();

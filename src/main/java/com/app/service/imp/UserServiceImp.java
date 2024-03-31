@@ -172,9 +172,11 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public void checkSuperAdmin() {
+
 		UserDO user = userRepository.findByRole(ROLE.SUPER_ADMIN).orElse(null);
 		if(user == null) {
-			userRepository.save(new UserDO("Super","Admin","superadmin@gmail.com","9999999999","Superadmin@1234",ROLE.SUPER_ADMIN));
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			userRepository.save(new UserDO("Super","Admin","superadmin@gmail.com","9999999999",encoder.encode("Superadmin@1234"),ROLE.SUPER_ADMIN));
 		}
 		
 	}

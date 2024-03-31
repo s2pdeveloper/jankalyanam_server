@@ -35,7 +35,7 @@ public class UserController {
 	 private UserService userService;
 	 
 
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@GetMapping("/admins")
 	public ResponseDTO<UserDTO> getAllAdmins(
 			@RequestParam(defaultValue = "0") Integer pageNo,
@@ -45,7 +45,7 @@ public class UserController {
 		return userService.getAllAdmins(pageNo,pageSize,sortBy,search);	
 	}
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@GetMapping("/attenders")
 	public ResponseDTO<UserDTO> getAllAttenders(
 			@RequestParam(defaultValue = "0") Integer pageNo,
@@ -76,7 +76,7 @@ public class UserController {
 		return userService.updateUser(id,userDTO);	
 	}
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable Long id) {
 		return userService.deleteUser(id);	
@@ -84,7 +84,7 @@ public class UserController {
 	
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	public UserDTO getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);	
 	}

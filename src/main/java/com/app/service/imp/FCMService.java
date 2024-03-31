@@ -59,10 +59,10 @@ public class FCMService {
 	    private MulticastMessage getPreconfiguredMessageBuilder(NotificationRequest request) {
 //	        AndroidConfig androidConfig = getAndroidConfig(request.getTopic());
 //	        ApnsConfig apnsConfig = getApnsConfig(request.getTopic());
-//	        Notification notification = Notification.builder()
-//	                                        .setTitle(request.getTitle())
-//	                                        .setBody(request.getBody())
-//	                                        .build();
-	        return MulticastMessage.builder().putAllData(request.getData()).addAllTokens(request.getTokens()).build();
+	        Notification notification = Notification.builder()
+	                                        .setTitle(request.getTitle())
+	                                        .setBody(request.getBody())
+	                                        .build();
+	        return MulticastMessage.builder().setNotification(notification).addAllTokens(request.getTokens()).build();
 	    }
 }

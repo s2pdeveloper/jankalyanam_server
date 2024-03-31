@@ -3,6 +3,7 @@ package com.app.service.imp;
 import java.lang.reflect.Field;
 import java.util.* ;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,6 +17,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.app.constant.ServiceConstant;
@@ -37,7 +39,9 @@ import com.app.model.UserDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
 import com.app.service.DonorService;
+import com.app.service.UserDeviceIdService;
 import com.app.utilities.Utility;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,20 +66,15 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	@Autowired
 	private DonorService donorService;
 	
+	@Autowired
+	@Qualifier("cachedThreadPool")
+	private ExecutorService executorService;
 	
-	  
+	@Autowired
+	private UserDeviceIdService userDeviceIdService;
+	
 	@Override
 	public BloodRequestDTO getById(Long id) {
-//		NotificationRequest notify = new NotificationRequest("Title","Body","Topic","dQ0HVLFtQcy3NCcijiMaAk:APA91bE1l9i4e85sFkMdXuM-qE1BC8BTfIHYVTqeec6Fk6frUjR1YXk7b5R2nkqgqxA-nVTQQn3j7mH_7wSyox3lFDLjOH8MPh2w-UavYdRmfShpvD5QhNdDwT9PMHIUVovnwl8c18Av");
-//		try {
-//			fcmService.sendMessageToToken(notify);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		Optional<BloodRequestDO> data = bloodRequestRepository.findById(id);
 		BloodRequestDO b = data.orElse(null);
 		BloodRequestDTO result = Utility.mapObject(b,BloodRequestDTO.class);
@@ -87,8 +86,27 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	public ResultDTO createRequest(BloodDTO bloodRequest) {
 		BloodRequestDO mapBloodRequest = Utility.mapObject(bloodRequest, BloodRequestDO.class);
 		mapBloodRequest.setAttenderId(Utility.getSessionUser().getId());
-	  bloodRequestRepository.save(mapBloodRequest);
-	  return new ResultDTO("","Successfully Created!");
+		bloodRequestRepository.save(mapBloodRequest);
+		executorService.execute(() -> {
+			List<String> deviceIds = userDeviceIdService.getAdminsAndDeviceId();
+			if(deviceIds.size() > 0) {
+				String title = "Blood Request";
+				String body = String.format("New Request for %s Blood Group By %s Location: %s",
+                        bloodRequest.getBloodGroup(),
+                        bloodRequest.getName(),
+                        bloodRequest.getLocation());
+				NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
+			
+		});
+		return new ResultDTO("","Successfully Created!");
 	  
 	}
     
@@ -125,61 +143,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 
 
 	@Override
-	public ResponseDTO<BloodRequestDTO> getAllRequest(Integer pageNo, Integer pageSize, String sortBy,String status,String startDate,String endDate ,String search) {
-	
-//		System.out.println(status+startDate+endDate+search);
-//		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-//	    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//	        CriteriaQuery<BloodRequestDO> query = cb.createQuery(BloodRequestDO.class);
-//	        Root<BloodRequestDO> root = query.from(BloodRequestDO.class);
-//	        List<Predicate> predicates = new ArrayList<>();
-//	        
-//	        
-//	        
-//	        if (status != null && !status.isEmpty()) {
-//	        	predicates.add(cb.equal(root.get("status"), ServiceConstant.BLOOD_STATUS.valueOf(status)));
-//	        }
-//
-//	        if (startDate != null && !startDate.isEmpty()) {
-//	        	predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), Utility.parseDate(startDate)));
-//	        }
-//
-//	        if (endDate != null && !endDate.isEmpty()) {
-//	        	predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), Utility.parseDate(endDate)));
-//	        }
-//
-//	        if (search != null && !search.isEmpty()) {
-//	            // Wrap search string with percentage signs for wildcard search
-//	            String searchString = "%" + search.toLowerCase() + "%";
-//	            List<Predicate> attributePredicates = new ArrayList<>();
-//	            // Iterate over attributes of the entity
-//	            for (SingularAttribute<? super BloodRequestDO, ?> attribute : root.getModel().getSingularAttributes()) {
-//	                // Handle only String attributes
-//	                if (attribute.getJavaType() == String.class) {
-//	                    Expression<?> attributePath = root.get(attribute);
-//	                    if (attributePath.getJavaType() == String.class) {
-//	                    	attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
-//	                    }
-//	                } 
-//	            }
-//	            if (!attributePredicates.isEmpty()) {
-//	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
-//	            }
-//	           
-//	        }
-//	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
-//	        query.where(finalPredicate);
-//	        query.orderBy(cb.desc(root.get("id")));
-//
-//	        
-//	        List<BloodRequestDO> results = entityManager.createQuery(query)
-//	                .setFirstResult((int) pageable.getOffset())
-//	                .setMaxResults(pageable.getPageSize())
-//	                .getResultList();
-//	    
-//	    	List<BloodRequestDTO> BloodRequestlist = Utility.mapList(results, BloodRequestDTO.class);
-//	        return new ResponseDTO<BloodRequestDTO>((long) 1,1,BloodRequestlist);
-		
+	public ResponseDTO<BloodRequestDTO> getAllRequest(Integer pageNo, Integer pageSize, String sortBy,String status,String startDate,String endDate ,String search) {	
 		
 	    Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 

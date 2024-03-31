@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class NotificationRequest {
 
-	   private Map<String,String> data;
+	
+//	   private Map<String,String> data;
+	   private String title;
+	   private String body;
 	    private List<String> tokens;
 	    
 }

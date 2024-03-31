@@ -17,7 +17,7 @@ import com.app.service.UserService;
 public class JankalyanamApplication implements CommandLineRunner{
 
 	 @Autowired
-	 static UserService userService;
+	 UserService userService;
 	
 	
 	public static void main(String[] args) {
