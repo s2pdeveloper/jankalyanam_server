@@ -8,6 +8,7 @@ import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.BloodRequestDO;
@@ -20,12 +21,12 @@ public interface BloodRequestService {
     
     public ResultDTO createRequest(BloodDTO bloodRequest);
     
-    public List<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy,  String search) ;
+    public ResponseDTO<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy,  String search) ;
     
-    public List<BloodRequestDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy
+    public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy
 			, String search);
     
-	 public List<BloodRequestDTO> getAllRequest();
+	 public ResponseDTO<BloodRequestDTO> getAllRequest(Integer pageNo, Integer pageSize, String sortBy,String status,String startDate,String endDate ,String search);
 
 	 public ResultDTO acceptRequest(Long id, BLOOD_STATUS status);
 

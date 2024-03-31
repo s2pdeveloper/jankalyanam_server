@@ -42,6 +42,8 @@ public class DonorDTO {
     
     private String location;
     
+    private String BloodBankName;
+    
     private BloodDTO bloodRequest;
     
     private UserDTO user;

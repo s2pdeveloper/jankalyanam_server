@@ -1,5 +1,6 @@
 package com.app.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
@@ -28,8 +29,8 @@ private	String state;
 private	int age;
 private	String name;
 private	PROVIDED provided;
-@JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-private	Date bloodRequireDate;
+@JsonFormat(pattern="dd-MM-yyyy")
+private	LocalDate bloodRequireDate;
 private	BLOOD_STATUS status;
 private	int units;
 private String bloodBankName;

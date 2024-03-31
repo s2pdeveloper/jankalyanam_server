@@ -2,12 +2,14 @@ package com.app.repository;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.dto.*;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -19,7 +21,7 @@ import com.app.model.BloodRequestDO;
 
 
 @Repository
-public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Long> {
+public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Long> ,JpaSpecificationExecutor<BloodRequestDO>{
 	Slice <BloodRequestDO> findByStatus(BLOOD_STATUS status,Pageable pageable);
 	
 	
@@ -33,7 +35,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.illness LIKE %:search% OR " +
             "b.location LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
-	Slice<BloodRequestDO> findAllByStatus(List<BLOOD_STATUS> status,String search,Pageable pageable);
+    Page<BloodRequestDO> findAllByStatus(List<BLOOD_STATUS> status,String search,Pageable pageable);
 	
 
 
@@ -47,7 +49,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.illness LIKE %:search% OR " +
             "b.location LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
-	Slice <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id, String search,Pageable pageable);
+    Page <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id, String search,Pageable pageable);
 	
 	
 	@Query("SELECT b FROM BloodRequestDO b WHERE b.status in :status and b.attenderId = :id " +
@@ -60,8 +62,11 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.illness LIKE %:search% OR " +
             "b.location LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
-	Slice <BloodRequestDO> findByStatusInAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
+	Page <BloodRequestDO> findByStatusInAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
 
+	
+//	Page <BloodRequestDO> findAllRequest(String status,Date startDate,Date endDate,String search,Pageable pageable);
+	
 	@Modifying
 	@Transactional
 	@Query("UPDATE BloodRequestDO b SET b.status = ?2 where b.id = ?1")
@@ -69,6 +74,8 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
 	
 	@Modifying
 	@Transactional
-	@Query("UPDATE BloodRequestDO b SET b.status = :status ,b.attenderId = :acceptorId where b.id = :id")
+	@Query("UPDATE BloodRequestDO b SET b.status = :status ,b.acceptorId = :acceptorId where b.id = :id")
 	void findAndChangeAdmin(Long id,BLOOD_STATUS status,Long acceptorId);
+
+
 }

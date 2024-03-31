@@ -1,5 +1,6 @@
 package com.app.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
@@ -30,7 +31,7 @@ public class DonorRequestDTO {
 //	@NotEmpty(message = "The Illeness is required.")
     private Boolean illness;
 //    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private Date donationDate;
+    private LocalDate donationDate;
     private GENDER gender;
 	@NotEmpty(message = "The Blood Group is required.")
     private String bloodGroup;

@@ -36,9 +36,6 @@ public class AdvertisementController {
 	 private AdvertisementService advertisementService;
 	
 	
-	@Autowired
-	private FilesStorageService files ;
-	
 	@PostMapping("")
 	public ResultDTO save(FileUploadDTO fileUploadDTO) {
 		return advertisementService.upload(fileUploadDTO);

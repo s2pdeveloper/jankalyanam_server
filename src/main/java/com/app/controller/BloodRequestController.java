@@ -1,5 +1,6 @@
 package com.app.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.BloodRequestDO;
@@ -50,11 +52,11 @@ public class BloodRequestController {
 	//Admin
 	 @PreAuthorize("hasAuthority('ADMIN')")
 	 @GetMapping("/admin-list")
-	    public List<BloodRequestDTO> getItemsByStatus(
+	    public ResponseDTO<BloodRequestDTO> getItemsByStatus(
 	    		@RequestParam  String type,
 	    		@RequestParam(defaultValue = "0") Integer pageNo,
                 @RequestParam(defaultValue = "10") Integer pageSize,
-                @RequestParam(defaultValue = "createdAt") String sortBy,
+                @RequestParam(defaultValue = "id") String sortBy,
                 @RequestParam(required = false) String search
                 ) {
 	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,search);
@@ -63,11 +65,11 @@ public class BloodRequestController {
 	 
 	//Attender
 	 @GetMapping("/attender-list")
-	    public List<BloodRequestDTO> attenderHistoryList(
+	    public ResponseDTO<BloodRequestDTO> attenderHistoryList(
 	    		@RequestParam  String type,
 	    		@RequestParam(defaultValue = "0") Integer pageNo,
                 @RequestParam(defaultValue = "10") Integer pageSize,
-                @RequestParam(defaultValue = "createdAt") String sortBy,
+                @RequestParam(defaultValue = "id") String sortBy,
                 @RequestParam(required = false) String search
                 ) {
 	     return bloodRequestService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
@@ -89,18 +91,27 @@ public class BloodRequestController {
 			
 	 }
 
-	@PreAuthorize("hasAuthority('ADMIN')")
-	@GetMapping("/{id}")
-	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
-		
-		return bloodRequestService.getById(id);
-	}
+
 	
-//	 @GetMapping("/all")
-//		public List<BloodRequestDO> getAllRequest() {
-//			return bloodRequestService.getAllRequest();
-//		}
+	 @GetMapping("/all")
+		public ResponseDTO<BloodRequestDTO> getAllRequest(
+	    		@RequestParam(defaultValue = "0") Integer pageNo,
+                @RequestParam(defaultValue = "10") Integer pageSize,
+                @RequestParam(defaultValue = "id") String sortBy,
+                @RequestParam(required = false) String status,
+                @RequestParam(required = false) String startDate,
+                @RequestParam(required = false) String endDate,
+                @RequestParam(required = false) String search) {
+			return bloodRequestService.getAllRequest(pageNo,pageSize,sortBy,status,startDate,endDate,search);
+		}
 	
+	 
+		@PreAuthorize("hasAuthority('ADMIN')")
+		@GetMapping("/{id}")
+		public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {
+			
+			return bloodRequestService.getById(id);
+		}
 
 	 
 }

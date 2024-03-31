@@ -6,6 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -22,6 +26,7 @@ import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.exception.InvalidInputException;
@@ -29,6 +34,8 @@ import com.app.model.UserDO;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
 import com.app.utilities.Utility;
+
+import ch.qos.logback.core.status.Status;
 
 @Service
 public class UserServiceImp implements UserService{
@@ -115,18 +122,20 @@ public class UserServiceImp implements UserService{
 
 
 	@Override
-	public List<UserDTO> getAllAdmins() {
-	       List<UserDO> userList = userRepository.findByRoleAndStatus(ROLE.ADMIN,STATUS.ACTIVE);
-	       List<UserDTO> userDTOlist = Utility.mapList(userList, UserDTO.class);
-	        return userDTOlist;
+	public ResponseDTO<UserDTO> getAllAdmins(Integer pageNo, Integer pageSize, String sortBy,String search) {
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());   
+		Page<UserDO> userList = userRepository.findByRoleAndStatus(ROLE.ADMIN,STATUS.ACTIVE,paging,search);
+	    List<UserDTO> userDTOlist = Utility.mapList(userList.getContent(), UserDTO.class);
+	    return new ResponseDTO<UserDTO>(userList.getTotalElements(),userList.getTotalPages(),userDTOlist);
 	}
 
 
 	@Override
-	public List<UserDTO> getAllAttenders() {
-	      List<UserDO> userList = userRepository.findByRoleAndStatus(ROLE.ATTENDER,STATUS.ACTIVE);
-	      List<UserDTO> userDTOlist = Utility.mapList(userList, UserDTO.class);
-	      return userDTOlist;
+	public ResponseDTO<UserDTO> getAllAttenders(Integer pageNo, Integer pageSize, String sortBy, String search) {
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());   
+		Page<UserDO> userList = userRepository.findByRoleAndStatus(ROLE.ATTENDER,STATUS.ACTIVE,paging,search);
+	    List<UserDTO> userDTOlist = Utility.mapList(userList.getContent(), UserDTO.class);
+	    return new ResponseDTO<UserDTO>(userList.getTotalElements(),userList.getTotalPages(),userDTOlist);
 	}
 
 
@@ -140,16 +149,13 @@ public class UserServiceImp implements UserService{
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(changePasswordDTO.getNewPassword()));
 		userRepository.save(user);
-		new ResultDTO(user.getId().toString(),"Password change successfully");
+		return new ResultDTO(user.getId().toString(),"Password change successfully");
 		
-	
-		return null;
 	}
 
 
 	@Override
 	public UserDTO getUserById(Long id) {
-	    System.out.println("userDetails-------"+Utility.getSessionUser().toString());
 		UserDO user = userRepository.findById(id).orElse(null);
 		if(user == null) {
 			 throw new InvalidInputException("No User Present");
@@ -164,7 +170,31 @@ public class UserServiceImp implements UserService{
 		return null;
 	}
 
-	
+	@Override
+	public void checkSuperAdmin() {
+		UserDO user = userRepository.findByRole(ROLE.SUPER_ADMIN).orElse(null);
+		if(user == null) {
+			userRepository.save(new UserDO("Super","Admin","superadmin@gmail.com","9999999999","Superadmin@1234",ROLE.SUPER_ADMIN));
+		}
+		
+	}
+
+
+	@Override
+	public ResultDTO updateUser(Long id,UserDTO userDTO) {
+		UserDO user = userRepository.findById(id).orElse(null);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+		
+		UserDO newUser = Utility.mapObject(userDTO, UserDO.class);
+		
+		UserDO updatedUser = Utility.updateObjectWithNonNullFields(user, newUser);
+		
+		userRepository.save(updatedUser);
+		return new ResultDTO(user.getId().toString(),"Updated successfully");
+		
+	}
 
 
 

@@ -3,6 +3,7 @@ package com.app.model;
 
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -41,13 +42,21 @@ import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor 
-@Getter
-@Setter
+@ToString
+@Data
 @Entity
 @Table (name = "User")
 public class UserDO implements UserDetails {
     private static final long serialVersionUID = 1L;
 
+    public UserDO(String firstName,String lastName,String email,String  mobileNo,String password,ROLE role){
+    	this.firstName = firstName;
+    	this.lastName = lastName;
+    	this.email = email;
+    	this.mobileNo = mobileNo;
+    	this.password = password;
+    	this.role = role;
+    }
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -81,11 +90,11 @@ public class UserDO implements UserDetails {
     
     @Column(name = "created_at",nullable = false, updatable=false)
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     
     @Column(name = "updated_at",nullable = false, updatable=true)
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
     
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

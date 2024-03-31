@@ -1,5 +1,6 @@
 package com.app.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -74,18 +75,21 @@ public class DonorDO {
     private String location;
     
     @Column(name = "donation_date")
-    private Date donationDate;
+    private LocalDate donationDate;
+    
+    @Column(name = "blood_bank_name")
+    private String BloodBankName;
 
     @Column(name = "user_id")
     private Long userId;
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
     
     @OneToOne(mappedBy="donor")
     private BloodRequestDO bloodRequest;

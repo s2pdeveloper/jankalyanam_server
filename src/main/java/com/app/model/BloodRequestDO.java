@@ -1,5 +1,6 @@
 package com.app.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -73,7 +74,7 @@ public class BloodRequestDO {
     private int units;
     
     @Column(name = "blood_require_date")
-    private Date bloodRequireDate;
+    private LocalDate bloodRequireDate;
 
     @Enumerated(EnumType.STRING)
     private BLOOD_STATUS status = BLOOD_STATUS.PENDING;
@@ -92,11 +93,11 @@ public class BloodRequestDO {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
     
     @Column(name = "acceptor_id",updatable = true)
     private Long acceptorId;

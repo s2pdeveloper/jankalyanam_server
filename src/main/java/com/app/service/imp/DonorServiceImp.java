@@ -1,22 +1,35 @@
 package com.app.service.imp;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.app.constant.ServiceConstant;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.constant.ServiceConstant.DONOR_STATUS;
 import com.app.constant.ServiceConstant.ROLE;
+import com.app.dto.BloodRequestDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
@@ -34,9 +47,6 @@ public class DonorServiceImp implements DonorService{
    
 	@Autowired
     private DonorRepository donorRepository;
-	
-	@Autowired
-    private BloodRequestRepository bloodRequestRepository;
 
 	@Override
 	public DonorDTO getDonorDetails(Long id) {
@@ -61,44 +71,44 @@ public class DonorServiceImp implements DonorService{
 	}
 
 	@Override
-	public List<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
+	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
 			
-		Slice<DonorDO> donorList;
+		Page<DonorDO> donorList;
 		if(type.equals("HISTORY")) {
 				donorList = donorRepository.findByStatusIn(List.of(DONOR_STATUS.CLOSE),search,paging);
 				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
-				 return donorListDTO ;
+				 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 			}else if(type.equals("ACTIVE")) {
 				 donorList =donorRepository.findByStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),search,paging);
 				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
-				 return donorListDTO ;
+				 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 			}else {
 				throw new InvalidInputException("Invalid Input");
 			}
 	}
 
 	@Override
-	public List<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
+	public ResponseDTO<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search) {
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
 			
-		Slice<DonorDO> donorList;
+		Page<DonorDO> donorList;
 		if(type.equals("HISTORY")) {
 			donorList = donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.CLOSE),Utility.getSessionUser().getId(),search,paging);
 			 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
-			 return donorListDTO ;
+			 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 		}else if(type.equals("ACTIVE")) {
 			donorList =donorRepository.findByStatusAndAttenderId(List.of(DONOR_STATUS.ALLOCATED,DONOR_STATUS.PENDING,DONOR_STATUS.ACCEPTED,DONOR_STATUS.DONE),Utility.getSessionUser().getId(),search,paging);
 			 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
-			 return donorListDTO ;
+			 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 		}
 		else {
 			throw new InvalidInputException("Invalid Input");
@@ -114,6 +124,8 @@ public class DonorServiceImp implements DonorService{
 		}
 		data.setStatus(DONOR_STATUS.ALLOCATED);
 		data.setLocation(updateData.getLocation());
+		data.setBloodBankName(updateData.getBloodBankName());
+		data.setDonationDate(updateData.getDonationDate());	
 		data.setBloodRequest(null);
 		donorRepository.save(data);
 		return new ResultDTO(id.toString(),"Updated Successfully!");
@@ -140,23 +152,21 @@ public class DonorServiceImp implements DonorService{
 
 	
 	@Override
-	public List<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy) {
+	public ResponseDTO<DonorDTO> donorByBloodGroup(String group,Integer pageNo, Integer pageSize, String sortBy) {
 		if(group == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Slice<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
+		Page<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
 		List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
-		return donorListDTO;
+		 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 	}
     
 	
 	@Override
 	public ResultDTO changeStatus(Long id,DONOR_STATUS status) {
-		System.out.print("here------------");
 		DONOR_STATUS newStatus = null;
-		System.out.print("here------------");
 		switch(status) {
 		  case ALLOCATED:
 			  newStatus = DONOR_STATUS.ALLOCATED;
@@ -173,9 +183,108 @@ public class DonorServiceImp implements DonorService{
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 	}
-		System.out.print("here------------");
 		donorRepository.findByIdAndUpdateStatus(id,newStatus);
 		return new ResultDTO(id.toString(),"Donor Status Change Successfully!");
+	}
+
+	@Override
+	public ResponseDTO<DonorDTO> getAllDonor(Integer pageNo, Integer pageSize, String sortBy, String status,
+			String startDate, String endDate, String search) {
+	
+//			System.out.println(status+startDate+endDate+search);
+//			Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+//			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//	        CriteriaQuery<DonorDO> query = cb.createQuery(DonorDO.class);
+//	        Root<DonorDO> root = query.from(DonorDO.class);
+//	        List<Predicate> predicates = new ArrayList<>();
+//	        
+//	        
+//	        
+//	        if (status != null && !status.isEmpty()) {
+//	        	predicates.add(cb.equal(root.get("status"), ServiceConstant.DONOR_STATUS.valueOf(status)));
+//	        }
+//
+//	        if (startDate != null && !startDate.isEmpty()) {
+//	        	predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), Utility.parseDate(startDate)));
+//	        }
+//
+//	        if (endDate != null && !endDate.isEmpty()) {
+//	        	predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), Utility.parseDate(endDate)));
+//	        }
+//
+//	        if (search != null && !search.isEmpty()) {
+//	            // Wrap search string with percentage signs for wildcard search
+//	            String searchString = "%" + search.toLowerCase() + "%";
+//	            List<Predicate> attributePredicates = new ArrayList<>();
+//	            // Iterate over attributes of the entity
+//	            for (SingularAttribute<? super DonorDO, ?> attribute : root.getModel().getSingularAttributes()) {
+//	                // Handle only String attributes
+//	                if (attribute.getJavaType() == String.class) {
+//	                    Expression<?> attributePath = root.get(attribute);
+//	                    if (attributePath.getJavaType() == String.class) {
+//	                    	attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+//	                    }
+//	                } 
+//	            }
+//	            if (!attributePredicates.isEmpty()) {
+//	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+//	            }
+//	           
+//	        }
+//	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+//	        query.where(finalPredicate);
+//	        query.orderBy(cb.desc(root.get("id")));
+//
+//	        
+//	        List<DonorDO> results = entityManager.createQuery(query)
+//	                .setFirstResult((int) pageable.getOffset())
+//	                .setMaxResults(pageable.getPageSize())
+//	                .getResultList();
+//	    
+//	    	List<DonorDTO> donorRequestlist = Utility.mapList(results, DonorDTO.class);
+//	        return new ResponseDTO<DonorDTO>((long) 1,1,donorRequestlist);
+
+	    Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+	    Page<DonorDO> pageResult = donorRepository.findAll((root, query, cb) -> {
+	        List<Predicate> predicates = new ArrayList<>();
+
+	        if (status != null && !status.isEmpty()) {
+	            predicates.add(cb.equal(root.get("status"), ServiceConstant.DONOR_STATUS.valueOf(status)));
+	        }
+
+	        if (startDate != null && !startDate.isEmpty()) {
+	            predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), Utility.parseDate(startDate)));
+	        }
+
+	        if (endDate != null && !endDate.isEmpty()) {
+	            predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), Utility.parseDate(endDate)));
+	        }
+
+	        if (search != null && !search.isEmpty()) {
+	            String searchString = "%" + search.toLowerCase() + "%";
+	            List<Predicate> attributePredicates = new ArrayList<>();
+	            for (SingularAttribute<? super DonorDO, ?> attribute : root.getModel().getSingularAttributes()) {
+	                if (attribute.getJavaType() == String.class) {
+	                    Expression<?> attributePath = root.get(attribute);
+	                    if (attributePath.getJavaType() == String.class) {
+	                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+	                    }
+	                }
+	            }
+	            if (!attributePredicates.isEmpty()) {
+	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+	            }
+
+	        }
+	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+	        return finalPredicate;
+	    }, pageable);
+
+	    List<DonorDTO> BloodRequestlist = Utility.mapList(pageResult.getContent(), DonorDTO.class);
+	    return new ResponseDTO<DonorDTO>(pageResult.getTotalElements(), pageResult.getTotalPages(), BloodRequestlist);
+
+	
 	}
 
 	

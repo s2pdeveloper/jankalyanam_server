@@ -1,6 +1,9 @@
 package com.app.dto;
 
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import javax.validation.constraints.NotEmpty;
 
 import com.app.constant.ServiceConstant.DONOR_STATUS;
@@ -17,7 +20,14 @@ public class DonorRequestUpdateDTO {
 	
 	@NotEmpty(message = "The Location is required.")
     private String location;
-    private DONOR_STATUS status;
+	
+	@NotEmpty(message = "The Blood Bank Name is required.")
+	private String BloodBankName;
+	
+	@NotEmpty(message = "The Date is required.")
+	private LocalDate donationDate;
+   
+	private DONOR_STATUS status;
 
 	
 }

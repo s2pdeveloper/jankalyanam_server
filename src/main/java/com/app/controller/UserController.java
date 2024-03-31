@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.UserDO;
@@ -34,14 +37,22 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/admins")
-	public List<UserDTO> getAllAdmins() {
-		return userService.getAllAdmins();	
+	public ResponseDTO<UserDTO> getAllAdmins(
+			@RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) String search) {
+		return userService.getAllAdmins(pageNo,pageSize,sortBy,search);	
 	}
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/attenders")
-	public List<UserDTO> getAllAttenders() {
-		return userService.getAllAttenders();
+	public ResponseDTO<UserDTO> getAllAttenders(
+			@RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) String search) {
+		return userService.getAllAttenders(pageNo,pageSize,sortBy,search);
 	}
 	
 	@PostMapping("/register")
@@ -60,6 +71,11 @@ public class UserController {
 		return userService.changePassword(changePasswordDTO);	
 	}
 	
+	@PutMapping("/{id}")
+	public ResultDTO update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
+		return userService.updateUser(id,userDTO);	
+	}
+	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable Long id) {
@@ -69,7 +85,6 @@ public class UserController {
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-//	@RolesAllowed("ROLE_ADMIN")
 	public UserDTO getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);	
 	}

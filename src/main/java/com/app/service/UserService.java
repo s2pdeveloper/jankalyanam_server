@@ -13,6 +13,7 @@ import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.RegisterDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.model.UserDO;
@@ -33,14 +34,19 @@ public interface UserService {
    
 	 public ResultDTO deleteUser(Long id);
 
-	 public List<UserDTO> getAllAdmins();
+	 public ResponseDTO<UserDTO> getAllAdmins(Integer pageNo, Integer pageSize, String sortBy, String search);
 
-	 public List<UserDTO> getAllAttenders();
+	 public ResponseDTO<UserDTO> getAllAttenders(Integer pageNo, Integer pageSize, String sortBy, String search);
 
 	 public ResultDTO changePassword(ChangePasswordDTO changePasswordDTO);
 
 	 public UserDTO getUserById(Long id);
 	 
+	 public void checkSuperAdmin();
 	 
 	 public UserDTO getByRoleAndStatus(ROLE role , STATUS status) ;
+
+	public ResultDTO updateUser(Long id, UserDTO userDTO);
+
+	
 }

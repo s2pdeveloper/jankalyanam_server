@@ -24,6 +24,7 @@ import com.app.dto.BloodRequestUpdateDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.model.DonorDO;
 import com.app.service.DonorService;
@@ -51,11 +52,11 @@ public class DonorController {
 	// Admin
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/admin-list")
-	public List<DonorDTO> getItemsByStatus(
+	public ResponseDTO<DonorDTO> getItemsByStatus(
     		@RequestParam  String type,
     		@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String search
             ) {
 		return donorService.getByStatus(type,pageNo,pageSize,sortBy,search);
@@ -64,11 +65,11 @@ public class DonorController {
 
 	// Attender
 	@GetMapping("/attender-list")
-	public List<DonorDTO> attenderHistoryList(
+	public ResponseDTO<DonorDTO> attenderHistoryList(
     		@RequestParam  String type,
     		@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String search
             ) {
 		return donorService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
@@ -83,16 +84,28 @@ public class DonorController {
 	}
 	
 	@GetMapping("/blood-donor")
-	public List<DonorDTO> donorByBloodGroup(
+	public ResponseDTO<DonorDTO> donorByBloodGroup(
 			@RequestParam String group,
 			@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "createdAt") String sortBy
+            @RequestParam(defaultValue = "id") String sortBy
     
             ) {
         return donorService.donorByBloodGroup(group,pageNo,pageSize,sortBy);
 
 	}
+	
+	 @GetMapping("/all")
+	 public ResponseDTO<DonorDTO> getAllRequest(
+	    		@RequestParam(defaultValue = "0") Integer pageNo,
+               @RequestParam(defaultValue = "10") Integer pageSize,
+               @RequestParam(defaultValue = "id") String sortBy,
+               @RequestParam(required = false) String status,
+               @RequestParam(required = false) String startDate,
+               @RequestParam(required = false) String endDate,
+               @RequestParam(required = false) String search) {
+			return donorService.getAllDonor(pageNo,pageSize,sortBy,status,startDate,endDate,search);
+		}
 	
 	@GetMapping("/{id}")
 	public DonorDTO getDonorDetails(@PathVariable(name = "id") Long id) {
@@ -103,7 +116,6 @@ public class DonorController {
 	
 	@PutMapping("/updateStatus")
 	public ResultDTO accept(@RequestParam("id") Long id,@RequestParam("status") DONOR_STATUS status) {
-		System.out.print("here------------");
 		return donorService.changeStatus(id,status);
 		
  }

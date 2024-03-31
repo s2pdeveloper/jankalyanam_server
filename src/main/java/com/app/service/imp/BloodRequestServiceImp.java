@@ -1,11 +1,24 @@
 package com.app.service.imp;
 
+import java.lang.reflect.Field;
 import java.util.* ;
 import java.util.concurrent.ExecutionException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.constant.ServiceConstant;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.constant.ServiceConstant.PROVIDED;
 import com.app.constant.ServiceConstant.ROLE;
@@ -14,6 +27,7 @@ import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.NotificationRequest;
+import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.exception.InvalidInputException;
@@ -47,6 +61,8 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	
 	@Autowired
 	private DonorService donorService;
+	
+	
 	  
 	@Override
 	public BloodRequestDTO getById(Long id) {
@@ -77,63 +93,152 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
     
 	@Override
-    public List<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search) { 
+    public ResponseDTO<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search) { 
 	
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Slice<BloodRequestDO> BloodRequestList;
+		Page<BloodRequestDO> BloodRequestList;
 			if(type.equals("HISTORY")) {
 				 BloodRequestList = bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.DONE),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return BloodRequestlist ;
+				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			}else if(type.equals("ACTIVE")) {
 				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return BloodRequestlist ;
+				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			}else if(type.equals("MYLIST")) {
 				
 				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				return BloodRequestlist ;
+				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			
 			}else {
 				throw new InvalidInputException("Invalid Input");
 			}
-			
-
-		
-		
 	
-       
+	  
     }
 
 
 
 	@Override
-	public List<BloodRequestDTO> getAllRequest() {
+	public ResponseDTO<BloodRequestDTO> getAllRequest(Integer pageNo, Integer pageSize, String sortBy,String status,String startDate,String endDate ,String search) {
+	
+//		System.out.println(status+startDate+endDate+search);
+//		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+//	    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//	        CriteriaQuery<BloodRequestDO> query = cb.createQuery(BloodRequestDO.class);
+//	        Root<BloodRequestDO> root = query.from(BloodRequestDO.class);
+//	        List<Predicate> predicates = new ArrayList<>();
+//	        
+//	        
+//	        
+//	        if (status != null && !status.isEmpty()) {
+//	        	predicates.add(cb.equal(root.get("status"), ServiceConstant.BLOOD_STATUS.valueOf(status)));
+//	        }
+//
+//	        if (startDate != null && !startDate.isEmpty()) {
+//	        	predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), Utility.parseDate(startDate)));
+//	        }
+//
+//	        if (endDate != null && !endDate.isEmpty()) {
+//	        	predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), Utility.parseDate(endDate)));
+//	        }
+//
+//	        if (search != null && !search.isEmpty()) {
+//	            // Wrap search string with percentage signs for wildcard search
+//	            String searchString = "%" + search.toLowerCase() + "%";
+//	            List<Predicate> attributePredicates = new ArrayList<>();
+//	            // Iterate over attributes of the entity
+//	            for (SingularAttribute<? super BloodRequestDO, ?> attribute : root.getModel().getSingularAttributes()) {
+//	                // Handle only String attributes
+//	                if (attribute.getJavaType() == String.class) {
+//	                    Expression<?> attributePath = root.get(attribute);
+//	                    if (attributePath.getJavaType() == String.class) {
+//	                    	attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+//	                    }
+//	                } 
+//	            }
+//	            if (!attributePredicates.isEmpty()) {
+//	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+//	            }
+//	           
+//	        }
+//	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+//	        query.where(finalPredicate);
+//	        query.orderBy(cb.desc(root.get("id")));
+//
+//	        
+//	        List<BloodRequestDO> results = entityManager.createQuery(query)
+//	                .setFirstResult((int) pageable.getOffset())
+//	                .setMaxResults(pageable.getPageSize())
+//	                .getResultList();
+//	    
+//	    	List<BloodRequestDTO> BloodRequestlist = Utility.mapList(results, BloodRequestDTO.class);
+//	        return new ResponseDTO<BloodRequestDTO>((long) 1,1,BloodRequestlist);
 		
-		return null;
+		
+	    Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+	    Page<BloodRequestDO> pageResult = bloodRequestRepository.findAll((root, query, cb) -> {
+	        List<Predicate> predicates = new ArrayList<>();
+
+	        if (status != null && !status.isEmpty()) {
+	            predicates.add(cb.equal(root.get("status"), ServiceConstant.BLOOD_STATUS.valueOf(status)));
+	        }
+
+	        if (startDate != null && !startDate.isEmpty()) {
+	            predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), Utility.parseDate(startDate)));
+	        }
+
+	        if (endDate != null && !endDate.isEmpty()) {
+	            predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), Utility.parseDate(endDate)));
+	        }
+
+	        if (search != null && !search.isEmpty()) {
+	            String searchString = "%" + search.toLowerCase() + "%";
+	            List<Predicate> attributePredicates = new ArrayList<>();
+	            for (SingularAttribute<? super BloodRequestDO, ?> attribute : root.getModel().getSingularAttributes()) {
+	                if (attribute.getJavaType() == String.class) {
+	                    Expression<?> attributePath = root.get(attribute);
+	                    if (attributePath.getJavaType() == String.class) {
+	                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+	                    }
+	                }
+	            }
+	            if (!attributePredicates.isEmpty()) {
+	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+	            }
+
+	        }
+	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+	        return finalPredicate;
+	    }, pageable);
+
+	    List<BloodRequestDTO> BloodRequestlist = Utility.mapList(pageResult.getContent(), BloodRequestDTO.class);
+	    return new ResponseDTO<BloodRequestDTO>(pageResult.getTotalElements(), pageResult.getTotalPages(),BloodRequestlist);
+
 	}
 
 	@Override
-	public List<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search) {
+	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search) {
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Slice<BloodRequestDO> BloodRequestList;
+		Page<BloodRequestDO> BloodRequestList;
 		if(type.equals("HISTORY")) {
 			 BloodRequestList = bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId(),search, paging);
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-			 return BloodRequestlist ;
+			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 		}else if(type.equals("ACTIVE")) {
 			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-			 return BloodRequestlist ;
+			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 		}
 		else {
 			throw new InvalidInputException("Invalid Input");

@@ -1,5 +1,6 @@
 package com.app.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
@@ -37,11 +38,11 @@ private	int age;
 	@NotEmpty(message = "The Name is required.")
 private	String name;
 //    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-private	Date bloodRequireDate;
+private	LocalDate bloodRequireDate;
 //	@NotEmpty(message = "The Units of Blood Required is required.")
 private	int units;
 private GENDER gender;
-	@NotEmpty(message = "The FFather or Husband is required.")
+
 private String fatherOrHusband;
 
 	

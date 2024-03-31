@@ -1,7 +1,7 @@
 package com.app.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
@@ -25,8 +25,8 @@ public class UserDTO {
     private STATUS status;
     private ROLE role;
     private String token;
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime updatedAt;
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdAt;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    private LocalDate updatedAt;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    private LocalDate createdAt;
 }
