@@ -9,6 +9,9 @@ public class ServiceConstant {
 	public enum STATUS {
 		   ACTIVE,INACTIVE,DELETED
 		}
+	public enum ADVERTISE_TYPE {
+		  SLIDE
+		}
 	
 	public enum BLOOD_STATUS {
 		   PENDING,ACCEPTED,ALLOCATED,RECEIVED,DONE
