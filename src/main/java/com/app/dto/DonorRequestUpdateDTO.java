@@ -24,7 +24,6 @@ public class DonorRequestUpdateDTO {
 	@NotEmpty(message = "The Blood Bank Name is required.")
 	private String BloodBankName;
 	
-	@NotEmpty(message = "The Date is required.")
 	private LocalDate donationDate;
    
 	private DONOR_STATUS status;
