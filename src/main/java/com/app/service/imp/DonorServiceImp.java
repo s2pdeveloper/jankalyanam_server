@@ -84,7 +84,7 @@ public class DonorServiceImp implements DonorService{
 				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 				 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 			}else if(type.equals("ACTIVE")) {
-				 donorList =donorRepository.findByStatusIn(List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),search,paging);
+				 donorList =donorRepository.findByStatusIn(List.of(DONOR_STATUS.ALLOCATED,DONOR_STATUS.PENDING,DONOR_STATUS.ACCEPTED,DONOR_STATUS.DONE),search,paging);
 				 List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 				 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 			}else {

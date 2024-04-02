@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @Data
 public class BloodRequestDTO {
-	
+
+private	Long id;
 private	String bloodGroup;
 private GENDER gender;
 private String fatherOrHusband;

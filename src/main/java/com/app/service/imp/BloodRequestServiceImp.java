@@ -124,12 +124,12 @@ public class BloodRequestServiceImp implements BloodRequestService{
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			}else if(type.equals("ACTIVE")) {
-				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),search,paging);
+				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),search,paging);
 				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			}else if(type.equals("MYLIST")) {
 				
-				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 			
