@@ -45,6 +45,20 @@ public class UserDeviceIdServiceImp implements UserDeviceIdService {
 	    		    .collect(Collectors.toList());
 	     
 	    }
+	
+	
+	@Override
+	public List<String> getAttenderAndDeviceId(){
+		 List<UserDeviceIdDO> attender = userDeviceRepository.findByRole(ROLE.ATTENDER);
+	      if(attender.size()  == 0){
+	    	  return new ArrayList<>();
+	      }
+	     return attender.stream()
+	    		    .map(UserDeviceIdDO::getDeviceId) 
+	    		    .filter(Objects::nonNull) 
+	    		    .collect(Collectors.toList());
+	     
+	    }
 		
 	@Override
 	public String getDeviceId(Long id){

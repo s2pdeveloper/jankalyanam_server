@@ -35,8 +35,7 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor 
-@Getter
-@Setter
+@Data
 @Entity
 @Table (name = "BloodRequest")
 public class BloodRequestDO {

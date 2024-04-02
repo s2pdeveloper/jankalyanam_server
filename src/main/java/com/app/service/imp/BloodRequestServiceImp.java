@@ -213,30 +213,86 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	@Override
 	public ResultDTO acceptRequest(Long id,BLOOD_STATUS status) {
 		BLOOD_STATUS changeStatus = null;
+		  bloodRequestRepository.findAndChangeAdmin(id,changeStatus,Utility.getSessionUser().getId());
+		  List<String> deviceIds = userDeviceIdService.getAttenderAndDeviceId();
 		switch(status) {
 		  case ACCEPTED:
 			  changeStatus = BLOOD_STATUS.ACCEPTED;
-			  bloodRequestRepository.findAndChangeAdmin(id,changeStatus,Utility.getSessionUser().getId());
+			
+				if(deviceIds.size() > 0) {
+					String title = "Blood Request";
+					BloodRequestDO bloodRequest = bloodRequestRepository.getById(id) ;
+					String body = String.format("Your Blood Request for Patient Name %s Blood Group %s Location %s is Accpted by %s : ",
+		                    bloodRequest.getAttender(),
+		                    bloodRequest.getBloodGroup(),
+		                    bloodRequest.getLocation(),
+		                    bloodRequest.getAcceptor()
+		                    );
+					NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
+					try {
+						fcmService.sendMessageToToken(notify);
+					} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+						log.info("--------ERROR IN FIREBASE---------");
+						e.printStackTrace();
+						
+					}
+				}
 		    break;
 		  case PENDING:
 			  changeStatus = BLOOD_STATUS.PENDING;
 			  bloodRequestRepository.findAndChangeAdmin(id,changeStatus,null);
 		    break;
 		  case RECEIVED:
-			  changeStatus = BLOOD_STATUS.RECEIVED;
-			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+			  changeStatus = BLOOD_STATUS.RECEIVED;		
+				if(deviceIds.size() > 0) {
+					String title = "Blood Request";
+					BloodRequestDO bloodRequest = bloodRequestRepository.getById(id) ;
+					String body = String.format("Your Blood Request for Patient Name %s Blood Group %s Location %s is Recieved ",
+		                    bloodRequest.getAttender(),
+		                    bloodRequest.getBloodGroup(),
+		                    bloodRequest.getLocation()
+		                    );
+					NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
+					try {
+						fcmService.sendMessageToToken(notify);
+					} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+						log.info("--------ERROR IN FIREBASE---------");
+						e.printStackTrace();
+						
+					}
+				}
 			  break;
 		  case DONE:
 			  changeStatus = BLOOD_STATUS.DONE;
-			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+				if(deviceIds.size() > 0) {
+					String title = "Blood Request";
+					BloodRequestDO bloodRequest = bloodRequestRepository.getById(id) ;
+					String body = String.format("Your Blood Request for Patient Name %s Blood Group %s Location %s is Completed ",
+		                    bloodRequest.getAttender(),
+		                    bloodRequest.getBloodGroup(),
+		                    bloodRequest.getLocation()
+		                    );
+					NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
+					try {
+						fcmService.sendMessageToToken(notify);
+					} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+						log.info("--------ERROR IN FIREBASE---------");
+						e.printStackTrace();
+						
+					}
+				}
 			  break;
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 		     
 		}
 		
+		
 		return new ResultDTO(id.toString(),"Blood Request Accepted Successfully!");
 	}
+	
+	
+	
 
 	@Override
 	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData) {
@@ -258,6 +314,25 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			data.setBloodBankName(null);
 			data.setBankState(null);
 			data.setState(null);
+			List<String> deviceIds = userDeviceIdService.getAttenderAndDeviceId();
+			if(deviceIds.size() > 0) {
+				String title = "Blood Request";
+				BloodRequestDO bloodNotify = bloodRequestRepository.getById(id) ;
+				String body = String.format("Your Blood Request for Patient Name %s Blood Group %s Location %s is Provided with Donor %s: ",
+	                    bloodNotify.getAttender(),
+	                    bloodNotify.getBloodGroup(),
+	                    bloodNotify.getLocation(),
+	                    bloodNotify.getDonor() 
+	                    );
+				NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
 		}else {
 			data.setBloodBankName(updateData.getBloodBankName());
 			data.setBankState(updateData.getBankState());
