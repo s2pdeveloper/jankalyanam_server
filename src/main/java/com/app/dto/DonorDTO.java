@@ -33,7 +33,7 @@ public class DonorDTO {
     
     private String bloodGroup;
     
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern="dd-MM-yyyy")
     private Date donationDate;
     
     private GENDER gender;
