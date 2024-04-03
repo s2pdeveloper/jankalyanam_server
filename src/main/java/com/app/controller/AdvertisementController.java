@@ -42,26 +42,20 @@ public class AdvertisementController {
 		
 	}
 	
-	@PutMapping("update/{id}")
+	@PutMapping("/{id}")
 		public ResultDTO updateById(@PathVariable(name = "id") Long id, FileUploadDTO updateData) {
 		return advertisementService.update(updateData , id);
 	}
 
 
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResultDTO delete(@PathVariable(name = "id") Long id) {
 		
 		return advertisementService.delete(id);
 		
 	}
 	
-	@GetMapping("/{id}")
-	public FileDTO getById(@PathVariable(name = "id") Long id) {
-		
-		return advertisementService.getById(id);
-		
-	}
 	
 	@GetMapping("/all")
 	public List<FileDTO> getAll() {
@@ -74,6 +68,13 @@ public class AdvertisementController {
 	public List<FileDTO> latestData() {
 		
 		return advertisementService.latestAdvertise();
+		
+	}
+	
+	@GetMapping("/{id}")
+	public FileDTO getById(@PathVariable(name = "id") Long id) {
+		
+		return advertisementService.getById(id);
 		
 	}
 	

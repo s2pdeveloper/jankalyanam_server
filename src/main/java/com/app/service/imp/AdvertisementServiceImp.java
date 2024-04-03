@@ -6,10 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,7 @@ import com.app.model.DonorDO;
 import com.app.model.UserDO;
 import com.app.repository.AdvertisementRepository;
 import com.app.service.AdvertisementService;
+import com.app.service.CloudinaryService;
 import com.app.service.FilesStorageService;
 import com.app.utilities.Utility;
 import org.springframework.context.annotation.PropertySource;
@@ -38,32 +41,30 @@ public class AdvertisementServiceImp implements AdvertisementService{
    
 	@Autowired AdvertisementRepository advertisementRepository;
 	
-	@Autowired  FilesStorageService filesStorageService;
+	@Autowired CloudinaryService cloudinaryService;
 	
-//	 @Autowired
-//	 private Environment env;
-
-//	    public String getFileUrl() {
-//	        return env.getProperty("app.file.url");
-//	    }
-
-	    
-	private final Path advertise = Paths.get("uploads/advertise");
+	@Autowired
+	@Qualifier("cachedThreadPool")
+	private ExecutorService executorService;
 	
-
-	 private String filePath = "http://localhost:1996/uploads/"+"advertise/" ;
+	@Value("${cloudinary.url}")
+	private String filePath;
+	
 	 
 	@Override
 	public ResultDTO upload(FileUploadDTO fileUploadDTO) {
-		var fileName = System.currentTimeMillis() +"_"+ fileUploadDTO.getFile().getOriginalFilename();
-		
-		filesStorageService.save(fileUploadDTO.getFile(),fileName , this.advertise);
-		
+		var fileName = "advertise/" + System.currentTimeMillis() +"_"+ fileUploadDTO.getFile().getOriginalFilename().substring(0,fileUploadDTO.getFile().getOriginalFilename().lastIndexOf('.'));
 		AdvertisementDO advertise = new AdvertisementDO();
 		advertise.setName(fileUploadDTO.getName());
 		advertise.setUrl(fileName);
 		advertise.setStatus(STATUS.ACTIVE);
 		advertisementRepository.save(advertise);
+		
+//		executorService.execute(() -> {
+			 cloudinaryService.upload(fileUploadDTO.getFile(), fileName);
+
+//		});
+		
 		return new ResultDTO("","Uploaded Successfully!");
 	}
 
@@ -75,8 +76,8 @@ public class AdvertisementServiceImp implements AdvertisementService{
 				throw new InvalidInputException("No Advertisement Present");
 				}
 			if(updateData.getFile() != null) {
-				var fileName = System.currentTimeMillis() +"_"+ updateData.getFile().getOriginalFilename();
-				filesStorageService.update(updateData.getFile() , fileName ,b.getUrl() , this.advertise);
+				var fileName = "advertise/" + System.currentTimeMillis() +"_"+ updateData.getFile().getOriginalFilename().substring(0,updateData.getFile().getOriginalFilename().lastIndexOf('.'));
+				cloudinaryService.update(updateData.getFile() , fileName ,b.getUrl());
 				b.setUrl(fileName);
 			}
 			
@@ -95,11 +96,15 @@ public class AdvertisementServiceImp implements AdvertisementService{
 			if(b == null) {
 				throw new InvalidInputException("No Advertisement Present");
 			}
-			if(b.getUrl() != null) {
-				filesStorageService.delete(b.getUrl(), this.advertise);
-			}
 			
 			advertisementRepository.deleteById(id);
+			
+			if(b.getUrl() != null) {
+//				executorService.execute(() -> {
+				cloudinaryService.delete(b.getUrl());
+//				});
+			}
+	
 			return new ResultDTO(id.toString(),"Deleted Successfully!"); 
 			
 	   }
@@ -109,10 +114,9 @@ public class AdvertisementServiceImp implements AdvertisementService{
 	
 	@Override
 	public FileDTO getById(Long id) {
-		AdvertisementDO data = advertisementRepository.getOne(id);
-//			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
-//			AdvertisementDO b = data.orElse(null);
-			if(data == null) {
+			Optional<AdvertisementDO> data = advertisementRepository.findById(id);
+			AdvertisementDO b = data.orElse(null);
+			if(b == null) {
 				throw new InvalidInputException("No Advertisement Present");
 			}
 			FileDTO result = Utility.mapObject(data,FileDTO.class);
