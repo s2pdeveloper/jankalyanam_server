@@ -1,5 +1,6 @@
 package com.app.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import com.app.constant.ServiceConstant.DONOR_STATUS;
 import com.app.constant.ServiceConstant.GENDER;
@@ -34,7 +35,7 @@ public class DonorDTO {
     private String bloodGroup;
     
     @JsonFormat(pattern="dd-MM-yyyy")
-    private Date donationDate;
+    private LocalDate donationDate;
     
     private GENDER gender;
     
@@ -42,7 +43,7 @@ public class DonorDTO {
     
     private String location;
     
-    private String BloodBankName;
+    private String bloodBankName;
     
     private BloodDTO bloodRequest;
     

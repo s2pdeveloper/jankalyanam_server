@@ -78,7 +78,7 @@ public class DonorDO {
     private LocalDate donationDate;
     
     @Column(name = "blood_bank_name")
-    private String BloodBankName;
+    private String bloodBankName;
 
     @Column(name = "user_id")
     private Long userId;
@@ -93,9 +93,6 @@ public class DonorDO {
     
     @OneToOne(mappedBy="donor")
     private BloodRequestDO bloodRequest;
-    
-    
-    
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "id", insertable = false, updatable = false)

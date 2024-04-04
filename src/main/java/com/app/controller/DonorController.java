@@ -41,7 +41,7 @@ public class DonorController {
 	private DonorService donorService;
 
 	@PostMapping("")
-	public ResultDTO save(@RequestBody @Valid DonorRequestDTO donor) {
+	public DonorDTO save(@RequestBody @Valid DonorRequestDTO donor) {
 
 		return donorService.createRequest(donor);
 

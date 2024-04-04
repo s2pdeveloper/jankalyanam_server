@@ -19,6 +19,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.app.constant.ServiceConstant;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
@@ -86,7 +87,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	public ResultDTO createRequest(BloodDTO bloodRequest) {
 		BloodRequestDO mapBloodRequest = Utility.mapObject(bloodRequest, BloodRequestDO.class);
 		mapBloodRequest.setAttenderId(Utility.getSessionUser().getId());
-		bloodRequestRepository.save(mapBloodRequest);
+	    bloodRequestRepository.save(mapBloodRequest);
 		executorService.execute(() -> {
 			List<String> deviceIds = userDeviceIdService.getAdminsAndDeviceId();
 			if(deviceIds.size() > 0) {
@@ -213,6 +214,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	@Override
 	public ResultDTO acceptRequest(Long id,BLOOD_STATUS status) {
 		BLOOD_STATUS changeStatus = null;
+	
 		switch(status) {
 		  case ACCEPTED:
 			  changeStatus = BLOOD_STATUS.ACCEPTED;
@@ -235,6 +237,41 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		     
 		}
 		
+	
+		executorService.execute(() -> {
+			String title = "Blood Request";
+			String body = null;
+			String deviceId = null;
+			if(status.equals(BLOOD_STATUS.ACCEPTED)) {
+				  BloodRequestDO bloodRequest = bloodRequestRepository.findById(id).orElse(null);
+				  body =String.format("Request By %s is Accepted By %s %s",
+	                      bloodRequest.getName(),
+	                      Utility.getSessionUser().getFirstName(),
+	                      Utility.getSessionUser().getLastName());
+				  deviceId = userDeviceIdService.getDeviceId(bloodRequest.getAttenderId());	  
+			
+			}
+			else if(status.equals(BLOOD_STATUS.RECEIVED)) {
+				  BloodRequestDO bloodRequest = bloodRequestRepository.findById(id).orElse(null);
+				  body =String.format("%s Received Blood",
+	                      bloodRequest.getName());
+				  deviceId = userDeviceIdService.getDeviceId(bloodRequest.getAcceptorId());	  
+			
+			}
+
+			if(StringUtils.hasText(deviceId)) {
+				NotificationRequest notify = new NotificationRequest(title,body,Arrays.asList(deviceId));
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
+			
+		});
+		
 		return new ResultDTO(id.toString(),"Blood Request Accepted Successfully!");
 	}
 
@@ -245,12 +282,16 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		if(data == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
-		
+		 String deviceId = userDeviceIdService.getDeviceId(data.getAttenderId());
+	
 		if(updateData.getDonorId() == null && updateData.getBloodBankName() == null) {
 			throw new InvalidInputException("Please Fill Atleast One Information");
 		}
 		if(data.getDonorId() != null) {
-			donorService.assignOrRemoveToBloodRequest(data.getDonorId(),false);
+			executorService.execute(() -> {
+				donorService.assignOrRemoveToBloodRequest(data.getDonorId(),false);
+			});
+			
 		}
 		if(updateData.getProvided().equals(PROVIDED.DONOR) && updateData.getDonorId() != null) {
 		
@@ -258,16 +299,46 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			data.setBloodBankName(null);
 			data.setBankState(null);
 			data.setState(null);
+			
 		}else {
 			data.setBloodBankName(updateData.getBloodBankName());
 			data.setBankState(updateData.getBankState());
-			data.setState(updateData.getBankCity());
+			data.setBankCity(updateData.getBankCity());
 			data.setDonorId(null);		
-			
+	
 		}
 		data.setProvided(updateData.getProvided());
-		data.setState(BLOOD_STATUS.ALLOCATED.name());
+		data.setStatus(BLOOD_STATUS.ALLOCATED);
 		bloodRequestRepository.save(data);
+
+		
+		executorService.execute(() -> {
+			String title = "Blood Request";
+			 String body = null;
+			if(StringUtils.hasText(deviceId)) {
+				if(updateData.getProvided().equals(PROVIDED.DONOR)) {
+					body =String.format("Donor Allocated for Request by %s %s",
+			                 Utility.getSessionUser().getFirstName(),
+			                 Utility.getSessionUser().getLastName());
+				}else {
+					body =String.format("Blood from Blood Bank %s Allocated for Request by %s %s",
+							updateData.getBloodBankName(),
+							Utility.getSessionUser().getFirstName(),
+			                Utility.getSessionUser().getLastName());
+				}
+			
+				NotificationRequest notify = new NotificationRequest(title,body,Arrays.asList(deviceId));
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
+			
+		});
+		
 		return new ResultDTO(id.toString(),"Updated Successfully!");
 		
 	}

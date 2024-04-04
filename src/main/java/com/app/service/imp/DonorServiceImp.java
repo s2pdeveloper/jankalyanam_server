@@ -1,9 +1,13 @@
 package com.app.service.imp;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,12 +18,14 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.app.constant.ServiceConstant;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
@@ -29,6 +35,7 @@ import com.app.dto.BloodRequestDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
+import com.app.dto.NotificationRequest;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.exception.InvalidInputException;
@@ -37,7 +44,9 @@ import com.app.model.DonorDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.repository.DonorRepository;
 import com.app.service.DonorService;
+import com.app.service.UserDeviceIdService;
 import com.app.utilities.Utility;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +56,17 @@ public class DonorServiceImp implements DonorService{
    
 	@Autowired
     private DonorRepository donorRepository;
+	
+	@Autowired
+	private FCMService fcmService;
+	
+	@Autowired
+	@Qualifier("cachedThreadPool")
+	private ExecutorService executorService;
+	
+	@Autowired
+	private UserDeviceIdService userDeviceIdService;
+	
 
 	@Override
 	public DonorDTO getDonorDetails(Long id) {
@@ -55,18 +75,18 @@ public class DonorServiceImp implements DonorService{
 		if(data == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
-		return Utility.mapObject(data, DonorDTO.class);
-		
+		return Utility.mapObject(data, DonorDTO.class);	
 		
 	}
 
 	@Override
-	public ResultDTO createRequest(DonorRequestDTO donorRequestDTO) {
+	public DonorDTO createRequest(DonorRequestDTO donorRequestDTO) {
 		DonorDO donor = Utility.mapObject(donorRequestDTO, DonorDO.class);
 		donor.setUserId(Utility.getSessionUser().getId());
         donor.setBloodRequest(null);
 		DonorDO donorSave = donorRepository.save(donor);
-		return new ResultDTO(donorSave.getId().toString(),"Save Successfully!");
+	
+		return Utility.mapObject(donorSave, DonorDTO.class);
 	 
 	}
 
@@ -128,6 +148,26 @@ public class DonorServiceImp implements DonorService{
 		data.setDonationDate(updateData.getDonationDate());	
 		data.setBloodRequest(null);
 		donorRepository.save(data);
+		executorService.execute(() -> {
+			String title = "Donation";
+			String deviceId = userDeviceIdService.getDeviceId(data.getUserId());	 
+			String body =String.format("%s You can Donate Blood in Blood Bank %s.",
+					data.getName(),
+					updateData.getBloodBankName());
+			
+		
+			if(StringUtils.hasText(deviceId)) {
+				NotificationRequest notify = new NotificationRequest(title,body,Arrays.asList(deviceId));
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
+			
+		});
 		return new ResultDTO(id.toString(),"Updated Successfully!");
 	}
 	
@@ -147,6 +187,39 @@ public class DonorServiceImp implements DonorService{
 		
 		data.setLocation(null);
 		donorRepository.save(data);
+		executorService.execute(() -> {
+			String title = "Donation";
+			String body = null;
+			String deviceId = null;
+			if(allocate) {
+				  DonorDO donor = donorRepository.findById(id).orElse(null);
+				  body =String.format("A Beneficier %s has been Allocated.Location %s",
+						  donor.getBloodRequest().getName(),
+	                     donor.getBloodRequest().getLocation());
+				  deviceId = userDeviceIdService.getDeviceId(donor.getUserId());	  
+			
+			}
+			else  {
+				  DonorDO donor = donorRepository.findById(id).orElse(null);
+				  body =String.format("Thanks for your support %s But the beneficier got another Donor.You can donate blood to the specified blood bank",
+	                     donor.getName());
+				  deviceId = userDeviceIdService.getDeviceId(donor.getUserId());	  
+			
+			}
+
+			if(StringUtils.hasText(deviceId)) {
+				NotificationRequest notify = new NotificationRequest(title,body,Arrays.asList(deviceId));
+				try {
+					fcmService.sendMessageToToken(notify);
+				} catch (FirebaseMessagingException | InterruptedException | ExecutionException e) {
+					log.info("--------ERROR IN FIREBASE---------");
+					e.printStackTrace();
+					
+				}
+			}
+			
+		});
+		
 		return new ResultDTO(id.toString(),"Updated Successfully!");
 	}
 
@@ -158,7 +231,7 @@ public class DonorServiceImp implements DonorService{
 		}
 
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Page<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusIn(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
+		Page<DonorDO> donorList =donorRepository.findByBloodGroupAndStatusInAndBloodRequestIsNull(group,List.of(DONOR_STATUS.PENDING,DONOR_STATUS.DONE),paging);
 		List<DonorDTO> donorListDTO = Utility.mapList(donorList.getContent(), DonorDTO.class);
 		 return   new ResponseDTO<DonorDTO>(donorList.getTotalElements(),donorList.getTotalPages(),donorListDTO);
 	}
@@ -183,7 +256,9 @@ public class DonorServiceImp implements DonorService{
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 	}
+		
 		donorRepository.findByIdAndUpdateStatus(id,newStatus);
+		
 		return new ResultDTO(id.toString(),"Donor Status Change Successfully!");
 	}
 

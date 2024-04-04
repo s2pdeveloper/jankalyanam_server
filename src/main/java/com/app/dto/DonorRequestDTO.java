@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @Data
 public class DonorRequestDTO {
-    
+  
 	@NotEmpty(message = "The Name is required.")
     private String name;
 //	@NotEmpty(message = "The Age is required.")

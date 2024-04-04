@@ -52,6 +52,6 @@ public interface DonorRepository extends JpaRepository<DonorDO, Long>,JpaSpecifi
 	@Query("UPDATE DonorDO b SET b.status = ?2 where b.id = ?1")
 	void findByIdAndUpdateStatus(Long id,DONOR_STATUS status);
 
-	Page<DonorDO> findByBloodGroupAndStatusIn(String group,List<DONOR_STATUS> status, Pageable paging);
-
+	@Query("SELECT b FROM DonorDO b LEFT JOIN b.bloodRequest br WHERE b.bloodGroup = :group AND b.status IN :status AND br IS NULL")
+    Page<DonorDO> findByBloodGroupAndStatusInAndBloodRequestIsNull(String group, List<DONOR_STATUS> status, Pageable paging);
 }

@@ -22,7 +22,7 @@ public class DonorRequestUpdateDTO {
     private String location;
 	
 	@NotEmpty(message = "The Blood Bank Name is required.")
-	private String BloodBankName;
+	private String bloodBankName;
 	
 	private LocalDate donationDate;
    

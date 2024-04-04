@@ -20,7 +20,7 @@ public interface DonorService {
 
     public DonorDTO getDonorDetails(Long id);
     
-    public ResultDTO createRequest(DonorRequestDTO donorRequestDTO);
+    public DonorDTO createRequest(DonorRequestDTO donorRequestDTO);
 
 	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search);
 
