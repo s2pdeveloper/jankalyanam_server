@@ -296,9 +296,10 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		if(updateData.getProvided().equals(PROVIDED.DONOR) && updateData.getDonorId() != null) {
 		
 			donorService.assignOrRemoveToBloodRequest(updateData.getDonorId(),true);
+			data.setDonorId(updateData.getDonorId());
 			data.setBloodBankName(null);
 			data.setBankState(null);
-			data.setState(null);
+			data.setBankCity(null);
 			
 		}else {
 			data.setBloodBankName(updateData.getBloodBankName());
