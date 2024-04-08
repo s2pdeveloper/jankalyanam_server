@@ -10,4 +10,6 @@ import java.util.List ;
 public interface UserDeviceIdRepositoy extends JpaRepository<UserDeviceIdDO, Long>{
 
 	List<UserDeviceIdDO> findByRole(ROLE admin);
+
+	UserDeviceIdDO findByUserId(Long id);
 }

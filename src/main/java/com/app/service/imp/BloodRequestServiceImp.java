@@ -86,7 +86,11 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	@Override
 	public ResultDTO createRequest(BloodDTO bloodRequest) {
 		BloodRequestDO mapBloodRequest = Utility.mapObject(bloodRequest, BloodRequestDO.class);
-		mapBloodRequest.setAttenderId(Utility.getSessionUser().getId());
+		System.out.println("bloodRequest---"+bloodRequest.toString());
+		if(bloodRequest.getIsWebsite() == null || !bloodRequest.getIsWebsite()) {
+			mapBloodRequest.setAttenderId(Utility.getSessionUser().getId());
+		}
+		System.out.println("mapBloodRequest---"+mapBloodRequest.toString());
 	    bloodRequestRepository.save(mapBloodRequest);
 		executorService.execute(() -> {
 			List<String> deviceIds = userDeviceIdService.getAdminsAndDeviceId();
@@ -201,7 +205,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 		}else if(type.equals("ACTIVE")) {
-			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
 			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
 			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
 		}

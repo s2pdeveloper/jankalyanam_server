@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -85,9 +86,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                .authorizeRequests(requests -> {
 
                    try {
-                       requests.antMatchers("/user/login", "/user/register").permitAll()
-                               .antMatchers(AUTH_WHITE_LIST).permitAll()
-                               .anyRequest().authenticated().and().exceptionHandling(ex -> ex.authenticationEntryPoint(point));
+                       requests.antMatchers(permittedUrls).permitAll()
+                       .antMatchers(HttpMethod.POST,"/blood-request").permitAll()
+                       .antMatchers(HttpMethod.POST,"/donate").permitAll()
+                       .antMatchers(AUTH_WHITE_LIST).permitAll()
+                       .anyRequest().authenticated().and().exceptionHandling(ex -> ex.authenticationEntryPoint(point));
                    } catch (Exception e) {
 
                        e.printStackTrace();

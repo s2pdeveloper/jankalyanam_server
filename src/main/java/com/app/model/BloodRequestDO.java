@@ -23,7 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
 import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -90,6 +90,9 @@ public class BloodRequestDO {
     
     @Column(name = "bank_city")
     private String bankCity;
+    
+    @Column(name = "is_website")
+    private Boolean isWebsite = false;
     
     @Column(name = "created_at")
     @CreationTimestamp

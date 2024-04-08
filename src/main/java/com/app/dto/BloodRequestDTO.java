@@ -30,7 +30,7 @@ private	String state;
 private	int age;
 private	String name;
 private	PROVIDED provided;
-@JsonFormat(pattern="dd-MM-yyyy")
+//@JsonFormat(pattern="dd-MM-yyyy")
 private	LocalDate bloodRequireDate;
 private	BLOOD_STATUS status;
 private	int units;

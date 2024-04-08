@@ -14,7 +14,7 @@ import com.app.dto.ResultDTO;
 import com.app.service.UserDeviceIdService;
 
 @RestController
-@RequestMapping("UserDeviceId")
+@RequestMapping("user-device")
 public class UserDeviceIdController {
 
 	@Autowired UserDeviceIdService userDeviceService ;

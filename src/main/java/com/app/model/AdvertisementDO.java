@@ -36,7 +36,7 @@ public class AdvertisementDO {
     
     private String name;
     
-    private String url;
+    private String file;
     
     @Enumerated(EnumType.STRING)
     private ADVERTISE_TYPE type ;

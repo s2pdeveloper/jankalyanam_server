@@ -56,7 +56,7 @@ public class AdvertisementServiceImp implements AdvertisementService{
 		var fileName = "advertise/" + System.currentTimeMillis() +"_"+ fileUploadDTO.getFile().getOriginalFilename().substring(0,fileUploadDTO.getFile().getOriginalFilename().lastIndexOf('.'));
 		AdvertisementDO advertise = new AdvertisementDO();
 		advertise.setName(fileUploadDTO.getName());
-		advertise.setUrl(fileName);
+		advertise.setFile(fileName);
 		advertise.setStatus(STATUS.ACTIVE);
 		advertisementRepository.save(advertise);
 		
@@ -77,8 +77,8 @@ public class AdvertisementServiceImp implements AdvertisementService{
 				}
 			if(updateData.getFile() != null) {
 				var fileName = "advertise/" + System.currentTimeMillis() +"_"+ updateData.getFile().getOriginalFilename().substring(0,updateData.getFile().getOriginalFilename().lastIndexOf('.'));
-				cloudinaryService.update(updateData.getFile() , fileName ,b.getUrl());
-				b.setUrl(fileName);
+				cloudinaryService.update(updateData.getFile() , fileName ,b.getFile());
+				b.setFile(fileName);
 			}
 			
  				b.setName(updateData.getName());
@@ -99,9 +99,9 @@ public class AdvertisementServiceImp implements AdvertisementService{
 			
 			advertisementRepository.deleteById(id);
 			
-			if(b.getUrl() != null) {
+			if(b.getFile() != null) {
 //				executorService.execute(() -> {
-				cloudinaryService.delete(b.getUrl());
+				cloudinaryService.delete(b.getFile());
 //				});
 			}
 	
@@ -120,7 +120,7 @@ public class AdvertisementServiceImp implements AdvertisementService{
 				throw new InvalidInputException("No Advertisement Present");
 			}
 			FileDTO result = Utility.mapObject(data,FileDTO.class);
-			result.setUrl(this.filePath+result.getUrl());	
+			result.setFile(this.filePath+result.getFile());	
 			return result;
 	}
 
@@ -136,7 +136,7 @@ public class AdvertisementServiceImp implements AdvertisementService{
 		List<FileDTO> result = Utility.mapList(data, FileDTO.class);
 		// TODO Auto-generated method stub
 		List<FileDTO> modifiedResult = result.stream().map(ads -> {
-			ads.setUrl(this.filePath+ads.getUrl());
+			ads.setFile(this.filePath+ads.getFile());
 			return ads;
 		}).collect(Collectors.toList());
 		return modifiedResult;

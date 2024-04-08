@@ -82,7 +82,10 @@ public class DonorServiceImp implements DonorService{
 	@Override
 	public DonorDTO createRequest(DonorRequestDTO donorRequestDTO) {
 		DonorDO donor = Utility.mapObject(donorRequestDTO, DonorDO.class);
-		donor.setUserId(Utility.getSessionUser().getId());
+		if(donorRequestDTO.getIsWebsite() == null || !donorRequestDTO.getIsWebsite()) {
+			donor.setUserId(Utility.getSessionUser().getId());
+		}
+	
         donor.setBloodRequest(null);
 		DonorDO donorSave = donorRepository.save(donor);
 	

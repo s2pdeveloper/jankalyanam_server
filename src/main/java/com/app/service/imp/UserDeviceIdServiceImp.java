@@ -25,11 +25,18 @@ public class UserDeviceIdServiceImp implements UserDeviceIdService {
 	
 	@Override
 	public  ResultDTO save(String deviceId) {
-		UserDeviceIdDO userDevice =  new UserDeviceIdDO();
-		userDevice.setDeviceId(deviceId);
-		userDevice.setUserId(Utility.getSessionUser().getId());
-		userDevice.setRole(Utility.getSessionUser().getRole());
-		userDeviceRepository.save(userDevice) ;
+		UserDeviceIdDO  userDeviceData = userDeviceRepository.findByUserId(Utility.getSessionUser().getId());
+		if(userDeviceData == null) {
+			UserDeviceIdDO userDevice =  new UserDeviceIdDO();
+			userDevice.setDeviceId(deviceId);
+			userDevice.setUserId(Utility.getSessionUser().getId());
+			userDevice.setRole(Utility.getSessionUser().getRole());
+			userDeviceRepository.save(userDevice) ;
+		}else {
+			userDeviceData.setDeviceId(deviceId);
+			userDeviceRepository.save(userDeviceData) ;
+		}
+	
 		return new ResultDTO("","Save Successfully!");
 	}
 	

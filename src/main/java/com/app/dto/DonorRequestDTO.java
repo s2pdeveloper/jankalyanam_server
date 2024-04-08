@@ -30,9 +30,10 @@ public class DonorRequestDTO {
     private double hemoglobin;
 //	@NotEmpty(message = "The Illeness is required.")
     private Boolean illness;
-//    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
+//    @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate donationDate;
     private GENDER gender;
 	@NotEmpty(message = "The Blood Group is required.")
     private String bloodGroup;
+	private Boolean isWebsite;
 }

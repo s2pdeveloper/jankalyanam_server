@@ -83,6 +83,9 @@ public class DonorDO {
     @Column(name = "user_id")
     private Long userId;
     
+    @Column(name = "is_website")
+    private Boolean isWebsite = false;
+    
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDate createdAt;

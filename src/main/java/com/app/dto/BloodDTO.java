@@ -42,6 +42,7 @@ private	LocalDate bloodRequireDate;
 //	@NotEmpty(message = "The Units of Blood Required is required.")
 private	int units;
 private GENDER gender;
+private Boolean isWebsite;
 
 private String fatherOrHusband;
 

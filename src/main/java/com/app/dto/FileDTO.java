@@ -16,7 +16,7 @@ public class FileDTO {
 	 
 	 private String name;
 	 
-	 private String url;
+	 private String file;
 	 
 	 private ADVERTISE_TYPE type ;
 	 
