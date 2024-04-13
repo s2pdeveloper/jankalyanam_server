@@ -73,7 +73,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/profile")
-	public ResultDTO update(ProfileUploadDTO profileUploadDTO) {
+	public String update(ProfileUploadDTO profileUploadDTO) {
 		return userService.uploadProfile(profileUploadDTO);	
 	}
 	

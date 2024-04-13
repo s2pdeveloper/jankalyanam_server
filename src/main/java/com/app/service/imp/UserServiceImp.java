@@ -213,7 +213,7 @@ public class UserServiceImp implements UserService{
 
 
 	@Override
-	public ResultDTO uploadProfile(ProfileUploadDTO profileUploadDTO) {
+	public String uploadProfile(ProfileUploadDTO profileUploadDTO) {
 		UserDO user = userRepository.findById(profileUploadDTO.getId()).orElse(null);
 		if(user == null) {
 			 throw new InvalidInputException("No User Present");
@@ -232,7 +232,7 @@ public class UserServiceImp implements UserService{
 		user.setImage(fileName);
 		userRepository.save(user);
 		System.out.println("user-----"+user.toString());
-		return new ResultDTO("","Uploaded Successfully!");
+		return this.filePath+fileName;
 	}
 
 

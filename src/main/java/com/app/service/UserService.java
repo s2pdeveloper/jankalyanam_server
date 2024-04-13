@@ -49,7 +49,7 @@ public interface UserService {
 
 	public ResultDTO updateUser(Long id, UserDTO userDTO);
 
-	public ResultDTO uploadProfile(ProfileUploadDTO profileUploadDTO);
+	public String uploadProfile(ProfileUploadDTO profileUploadDTO);
 
 	
 }
