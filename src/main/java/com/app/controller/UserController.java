@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
+import com.app.dto.ProfileUploadDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
@@ -71,6 +72,11 @@ public class UserController {
 		return userService.changePassword(changePasswordDTO);	
 	}
 	
+	@PutMapping("/profile")
+	public ResultDTO update(ProfileUploadDTO profileUploadDTO) {
+		return userService.uploadProfile(profileUploadDTO);	
+	}
+	
 	@PutMapping("/{id}")
 	public ResultDTO update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
 		return userService.updateUser(id,userDTO);	
@@ -84,7 +90,6 @@ public class UserController {
 	
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	public UserDTO getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);	
 	}

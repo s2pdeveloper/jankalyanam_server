@@ -12,6 +12,7 @@ import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
+import com.app.dto.ProfileUploadDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
@@ -47,6 +48,8 @@ public interface UserService {
 	 public UserDTO getByRoleAndStatus(ROLE role , STATUS status) ;
 
 	public ResultDTO updateUser(Long id, UserDTO userDTO);
+
+	public ResultDTO uploadProfile(ProfileUploadDTO profileUploadDTO);
 
 	
 }

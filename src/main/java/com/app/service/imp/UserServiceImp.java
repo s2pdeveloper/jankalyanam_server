@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +26,16 @@ import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
+import com.app.dto.ProfileUploadDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
 import com.app.exception.InvalidInputException;
+import com.app.model.AdvertisementDO;
 import com.app.model.UserDO;
 import com.app.repository.UserRepository;
+import com.app.service.CloudinaryService;
 import com.app.service.UserService;
 import com.app.utilities.Utility;
 
@@ -42,6 +46,8 @@ public class UserServiceImp implements UserService{
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired CloudinaryService cloudinaryService;
+    
     @Autowired
     private JwtUtil jwtService;
 
@@ -51,6 +57,9 @@ public class UserServiceImp implements UserService{
     
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    
+	@Value("${cloudinary.url}")
+	private String filePath;
     
 
 
@@ -160,7 +169,11 @@ public class UserServiceImp implements UserService{
 		if(user == null) {
 			 throw new InvalidInputException("No User Present");
 		}
-		return Utility.mapObject(user, UserDTO.class);
+		UserDTO userDTO = Utility.mapObject(user, UserDTO.class);
+		if(userDTO.getImage() != null) {
+			userDTO.setImage(this.filePath+userDTO.getImage());
+		}
+		return userDTO;
 	}
 
 
@@ -196,6 +209,30 @@ public class UserServiceImp implements UserService{
 		userRepository.save(updatedUser);
 		return new ResultDTO(user.getId().toString(),"Updated successfully");
 		
+	}
+
+
+	@Override
+	public ResultDTO uploadProfile(ProfileUploadDTO profileUploadDTO) {
+		UserDO user = userRepository.findById(profileUploadDTO.getId()).orElse(null);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+		
+		var fileName = "profile/" + System.currentTimeMillis() +"_"+ profileUploadDTO.getImage().getOriginalFilename().substring(0,profileUploadDTO.getImage().getOriginalFilename().lastIndexOf('.'));
+	
+		System.out.println("user.getImage()-----"+user.getImage());
+		if(user.getImage() != null) {
+			cloudinaryService.delete(user.getImage() );
+		}
+//		executorService.execute(() -> {
+			 cloudinaryService.upload(profileUploadDTO.getImage(), fileName);
+
+//		});
+		user.setImage(fileName);
+		userRepository.save(user);
+		System.out.println("user-----"+user.toString());
+		return new ResultDTO("","Uploaded Successfully!");
 	}
 
 

@@ -25,6 +25,7 @@ public class UserDTO {
     private STATUS status;
     private ROLE role;
     private String token;
+    private String image;
     @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate updatedAt;
     @JsonFormat(pattern="dd-MM-yyyy")

@@ -82,6 +82,8 @@ public class UserDO implements UserDetails {
     
     private String  password;
     
+    private String  image;
+    
     @Enumerated(EnumType.STRING)
     private STATUS status = STATUS.ACTIVE; 
     
