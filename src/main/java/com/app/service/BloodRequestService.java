@@ -5,9 +5,11 @@ import java.util.* ;
 import org.springframework.stereotype.Service;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.MonthlyCountDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
@@ -31,6 +33,8 @@ public interface BloodRequestService {
 	 public ResultDTO acceptRequest(Long id, BLOOD_STATUS status);
 
 	public ResultDTO updateById(Long id, BloodRequestUpdateDTO updateData);
+
+	public List<MonthlyCountDTO>  getAnalyticsByYear(Integer year, String status);
 
 	
 

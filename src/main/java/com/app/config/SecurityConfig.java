@@ -87,6 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                    try {
                        requests.antMatchers(permittedUrls).permitAll()
+                       .antMatchers(HttpMethod.GET,"/advertise/all").permitAll()
                        .antMatchers(HttpMethod.POST,"/blood-request").permitAll()
                        .antMatchers(HttpMethod.POST,"/donate").permitAll()
                        .antMatchers(AUTH_WHITE_LIST).permitAll()

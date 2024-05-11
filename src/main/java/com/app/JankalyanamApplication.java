@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.app.service.FilesStorageService;
@@ -12,7 +14,7 @@ import com.app.service.UserService;
 
 @SpringBootApplication
 @ComponentScan
-public class JankalyanamApplication implements CommandLineRunner{
+public class JankalyanamApplication extends SpringBootServletInitializer{
 
 	 @Autowired
 	 UserService userService;
@@ -25,10 +27,16 @@ public class JankalyanamApplication implements CommandLineRunner{
 	}
      
 
-     @Override
-	public void run(String... arg) throws Exception {
- 		userService.checkSuperAdmin();
-//	    storageService.deleteAll();
-//	    storageService.init();
-	  }
+//     @Override
+//	public void run(String... arg) throws Exception {
+// 		userService.checkSuperAdmin();
+////	    storageService.deleteAll();
+////	    storageService.init();
+//	  }
+     
+	  @Override
+	    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+	        return application.sources(JankalyanamApplication.class);
+	    }
+     
 }

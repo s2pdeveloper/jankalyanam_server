@@ -55,7 +55,7 @@ public class UserDeviceIdServiceImp implements UserDeviceIdService {
 		
 	@Override
 	public String getDeviceId(Long id){
-		UserDeviceIdDO userDevice = userDeviceRepository.findById(id).orElse(null);
+		UserDeviceIdDO userDevice = userDeviceRepository.findByUserId(id);
 	      return userDevice != null ? userDevice.getDeviceId() : null;
 	    }
 

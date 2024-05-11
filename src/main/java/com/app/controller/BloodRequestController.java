@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.MonthlyCountDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 
@@ -104,6 +106,11 @@ public class BloodRequestController {
 	}
 	
 	 
+	@GetMapping("/analytics/monthly")
+	public List<MonthlyCountDTO> getAnalyticsByYear(@RequestParam("year") Integer year,@RequestParam("status") String status) {
+		
+		 return bloodRequestService.getAnalyticsByYear(year,status);
+	}
 
 	@GetMapping("/{id}")
 	public BloodRequestDTO getBloodRequestById(@PathVariable(name = "id") Long id) {

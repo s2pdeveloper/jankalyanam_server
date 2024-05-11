@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
+import com.app.dto.ProfileResponseDTO;
 import com.app.dto.ProfileUploadDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
@@ -35,6 +36,11 @@ public class UserController {
 	@Autowired
 	 private UserService userService;
 	 
+	
+	@GetMapping("/health")
+	public String healthCheck() {
+		return userService.healthCheck();	
+	}
 
 	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	@GetMapping("/admins")
@@ -73,7 +79,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/profile")
-	public String update(ProfileUploadDTO profileUploadDTO) {
+	public ProfileResponseDTO update(ProfileUploadDTO profileUploadDTO) {
 		return userService.uploadProfile(profileUploadDTO);	
 	}
 	

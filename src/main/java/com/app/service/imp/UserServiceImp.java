@@ -26,6 +26,7 @@ import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
 import com.app.dto.LoginDTO;
+import com.app.dto.ProfileResponseDTO;
 import com.app.dto.ProfileUploadDTO;
 import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
@@ -213,15 +214,16 @@ public class UserServiceImp implements UserService{
 
 
 	@Override
-	public String uploadProfile(ProfileUploadDTO profileUploadDTO) {
+	public ProfileResponseDTO uploadProfile(ProfileUploadDTO profileUploadDTO) {
 		UserDO user = userRepository.findById(profileUploadDTO.getId()).orElse(null);
 		if(user == null) {
 			 throw new InvalidInputException("No User Present");
 		}
 		
-		var fileName = "profile/" + System.currentTimeMillis() +"_"+ profileUploadDTO.getImage().getOriginalFilename().substring(0,profileUploadDTO.getImage().getOriginalFilename().lastIndexOf('.'));
+		var fileName = "profile/" + System.currentTimeMillis() +"_"+ profileUploadDTO.getImage().getOriginalFilename();
 	
-		System.out.println("user.getImage()-----"+user.getImage());
+		System.out.println("user.getImage()-----"+user.getImage()+profileUploadDTO.getImage().getOriginalFilename());
+		System.out.println("fileName-----"+fileName);
 		if(user.getImage() != null) {
 			cloudinaryService.delete(user.getImage() );
 		}
@@ -231,8 +233,14 @@ public class UserServiceImp implements UserService{
 //		});
 		user.setImage(fileName);
 		userRepository.save(user);
-		System.out.println("user-----"+user.toString());
-		return this.filePath+fileName;
+
+		return new ProfileResponseDTO(this.filePath+fileName);
+	}
+
+
+	@Override
+	public String healthCheck() {
+		return "SERVER IS RUNINING";
 	}
 
 

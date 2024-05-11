@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.app.dto.NotificationRequest;
@@ -25,6 +26,8 @@ import com.google.gson.GsonBuilder;
 public class FCMService {
 	 private Logger logger = LoggerFactory.getLogger(FCMService.class);
 
+	 	@Value("${cloudinary.url}")
+		private String filePath;
 
 	    public void sendMessageToToken(NotificationRequest request)
 	            throws InterruptedException, ExecutionException, FirebaseMessagingException {
