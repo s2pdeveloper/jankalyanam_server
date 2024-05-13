@@ -10,16 +10,19 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.app.service.FilesStorageService;
 import com.app.service.UserService;
+import com.corundumstudio.socketio.SocketIOServer;
 
 
 @SpringBootApplication
 @ComponentScan
-public class JankalyanamApplication extends SpringBootServletInitializer{
+public class JankalyanamApplication implements CommandLineRunner{
 
 	 @Autowired
 	 UserService userService;
 	
-	
+	 @Autowired
+	 SocketIOServer server;
+	 
 	public static void main(String[] args) {
 		
 	 SpringApplication.run(JankalyanamApplication.class, args);
@@ -27,16 +30,14 @@ public class JankalyanamApplication extends SpringBootServletInitializer{
 	}
      
 
-//     @Override
-//	public void run(String... arg) throws Exception {
-// 		userService.checkSuperAdmin();
-////	    storageService.deleteAll();
-////	    storageService.init();
-//	  }
+     @Override
+	public void run(String... arg) throws Exception {
+    	server.start();
+ 		userService.checkSuperAdmin();
+//	    storageService.deleteAll();
+//	    storageService.init();
+	  }
      
-	  @Override
-	    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-	        return application.sources(JankalyanamApplication.class);
-	    }
+	 
      
 }

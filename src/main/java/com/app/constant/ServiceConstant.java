@@ -29,6 +29,7 @@ public class ServiceConstant {
 		 MALE,FEMALE,OTHER
 		}
 	
+	
 //	public enum BloodGroup {
 //		   A_POSITIVE,  
 //		    A_NEGATIVE ,
