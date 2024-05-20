@@ -40,6 +40,7 @@ import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
+import com.app.model.ChatMessageDO;
 import com.app.model.DonorDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.repository.DonorRepository;
@@ -365,9 +366,6 @@ public class DonorServiceImp implements DonorService{
 	
 	}
 
-	
-	
-	
-	
+
 
 }

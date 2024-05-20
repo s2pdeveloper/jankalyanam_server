@@ -15,6 +15,6 @@ import ch.qos.logback.core.status.Status;
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessageDO, Long>{
 
-	List<ChatMessageDO> findAllByRoom(String room);
+	List<ChatMessageDO> findByRoomOrderBycreatedAtAsc(String room);
 
 }

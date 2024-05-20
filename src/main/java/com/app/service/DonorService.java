@@ -12,6 +12,7 @@ import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
+import com.app.model.ChatMessageDO;
 import com.app.model.DonorDO;
 
 
@@ -36,4 +37,6 @@ public interface DonorService {
 
 	public ResponseDTO<DonorDTO> getAllDonor(Integer pageNo, Integer pageSize, String sortBy, String status,
 			String startDate, String endDate, String search);
+
+	
 }

@@ -59,7 +59,7 @@ public class ChatMessageDO {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
 
 }

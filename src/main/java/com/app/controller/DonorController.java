@@ -7,6 +7,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
+import com.app.model.ChatMessageDO;
 import com.app.model.DonorDO;
 import com.app.service.DonorService;
 
@@ -121,8 +124,10 @@ public class DonorController {
 	public ResultDTO accept(@RequestParam("id") Long id,@RequestParam("status") DONOR_STATUS status) {
 		return donorService.changeStatus(id,status);
 		
- }
+		
+	}
 	
+
 	
 
 }
