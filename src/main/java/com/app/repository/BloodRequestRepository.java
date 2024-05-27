@@ -31,9 +31,12 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.fatherOrHusband LIKE %:search% OR " +
             "b.gender LIKE %:search% OR " +
             "b.state LIKE %:search% OR " +
-            "b.city LIKE %:search% OR " +
+            "b.district LIKE %:search% OR " +
+            "b.tahsil LIKE %:search% OR " +
+            "b.village LIKE %:search% OR " +
             "b.illness LIKE %:search% OR " +
-            "b.location LIKE %:search% OR " +
+            "b.hospitalName LIKE %:search% OR " +
+            "b.bloodType LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
     Page<BloodRequestDO> findAllByStatus(List<BLOOD_STATUS> status,String search,Pageable pageable);
 	
@@ -45,9 +48,12 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.fatherOrHusband LIKE %:search% OR " +
             "b.gender LIKE %:search% OR " +
             "b.state LIKE %:search% OR " +
-            "b.city LIKE %:search% OR " +
+            "b.district LIKE %:search% OR " +
+            "b.tahsil LIKE %:search% OR " +
+            "b.village LIKE %:search% OR " +
             "b.illness LIKE %:search% OR " +
-            "b.location LIKE %:search% OR " +
+            "b.hospitalName LIKE %:search% OR " +
+            "b.bloodType LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
     Page <BloodRequestDO> findByStatusAndAdminId(List<BLOOD_STATUS> status,Long id, String search,Pageable pageable);
 	
@@ -58,9 +64,12 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequestDO, Lo
             "b.fatherOrHusband LIKE %:search% OR " +
             "b.gender LIKE %:search% OR " +
             "b.state LIKE %:search% OR " +
-            "b.city LIKE %:search% OR " +
+            "b.district LIKE %:search% OR " +
+            "b.tahsil LIKE %:search% OR " +
+            "b.village LIKE %:search% OR " +
             "b.illness LIKE %:search% OR " +
-            "b.location LIKE %:search% OR " +
+            "b.hospitalName LIKE %:search% OR " +
+            "b.bloodType LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search%))")
 	Page <BloodRequestDO> findByStatusInAndAttenderId(List<BLOOD_STATUS> status,Long id,String search,Pageable pageable);
 

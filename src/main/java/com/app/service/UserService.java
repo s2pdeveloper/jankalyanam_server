@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
+import com.app.dto.ForgetResponseDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.ProfileResponseDTO;
 import com.app.dto.ProfileUploadDTO;
@@ -53,6 +54,14 @@ public interface UserService {
 	public ProfileResponseDTO uploadProfile(ProfileUploadDTO profileUploadDTO);
 
 	public String healthCheck();
+
+	public ForgetResponseDTO forget(String mobileNo);
+
+	public ResultDTO sendMail(String mobileNo, String email);
+
+	public ResultDTO verify(String mobileNo, String otp);
+
+	public ResultDTO setPassword(String mobileNo, String password);
 
 	
 }

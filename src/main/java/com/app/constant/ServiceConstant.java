@@ -14,11 +14,11 @@ public class ServiceConstant {
 		}
 	
 	public enum BLOOD_STATUS {
-		   PENDING,ACCEPTED,ALLOCATED,RECEIVED,DONE
+		   PENDING,ACCEPTED,ALLOCATED,RECEIVED,DONE,CANCEL
 		}
 	
 	public enum DONOR_STATUS {
-		PENDING,ALLOCATED,ACCEPTED,DONE,CLOSE
+		PENDING,ALLOCATED,ACCEPTED,DONE,CLOSE,CANCEL
 		}
 	
 	public enum PROVIDED {
@@ -27,6 +27,10 @@ public class ServiceConstant {
 	
 	public enum GENDER {
 		 MALE,FEMALE,OTHER
+		}
+	
+	public enum BLOOD_TYPE {
+		   REGULAR,PLATELETS
 		}
 	
 //	public enum BloodGroup {

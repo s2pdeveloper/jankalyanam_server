@@ -41,6 +41,9 @@ public class UserDeviceIdDO {
 	    @Column(name = "user_id")
 	   	private Long userId;
 	    
+	    @Column(name = "blood_group")
+	    private String bloodGroup;
+	    
 	    @Column(name = "role")
 	    @Enumerated(EnumType.STRING)
 	    private ROLE role ;

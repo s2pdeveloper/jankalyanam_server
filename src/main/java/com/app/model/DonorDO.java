@@ -55,9 +55,13 @@ public class DonorDO {
     
     private int age;
     
-    private String state;
-
-    private String city;
+    private String  state;
+    
+    private String  district;
+    
+    private String  tahsil;
+    
+    private String  village;
     
     @Column(name = "mobile_no")
     private String mobileNo;
@@ -86,13 +90,15 @@ public class DonorDO {
     @Column(name = "is_website")
     private Boolean isWebsite = false;
     
+    private String  image;
+    
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     
     @OneToOne(mappedBy="donor")
     private BloodRequestDO bloodRequest;

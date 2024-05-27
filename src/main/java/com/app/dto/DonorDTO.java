@@ -22,9 +22,13 @@ public class DonorDTO {
     
     private int age;
     
-    private String state;
-
-    private String city;
+    private String  state;
+    
+    private String  district;
+    
+    private String  tahsil;
+    
+    private String  village;
     
     private String mobileNo;
     

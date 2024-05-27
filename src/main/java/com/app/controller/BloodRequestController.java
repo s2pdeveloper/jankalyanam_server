@@ -57,9 +57,12 @@ public class BloodRequestController {
 	    		@RequestParam(defaultValue = "0") Integer pageNo,
                 @RequestParam(defaultValue = "10") Integer pageSize,
                 @RequestParam(defaultValue = "id") String sortBy,
-                @RequestParam(required = false) String search
+                @RequestParam(required = false) String search,
+                @RequestParam(required = false) String bloodType,
+                @RequestParam(required = false) String bloodGroup,
+                @RequestParam(required = false) String hospitalName
                 ) {
-	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,search);
+	     return bloodRequestService.getByStatus(type,pageNo,pageSize,sortBy,search,bloodType,bloodGroup,hospitalName);
 	      
 	  }
 	 
@@ -70,9 +73,12 @@ public class BloodRequestController {
 	    		@RequestParam(defaultValue = "0") Integer pageNo,
                 @RequestParam(defaultValue = "10") Integer pageSize,
                 @RequestParam(defaultValue = "id") String sortBy,
-                @RequestParam(required = false) String search
+                @RequestParam(required = false) String search,
+                @RequestParam(required = false) String bloodType,
+                @RequestParam(required = false) String bloodGroup,
+                @RequestParam(required = false) String hospitalName
                 ) {
-	     return bloodRequestService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
+	     return bloodRequestService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search,bloodType,bloodGroup,hospitalName);
 	  }
 	 
 	@PutMapping("/update")

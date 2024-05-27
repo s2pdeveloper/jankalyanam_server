@@ -24,6 +24,8 @@ import com.app.dto.BloodRequestUpdateDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.DonorRequestDTO;
 import com.app.dto.DonorRequestUpdateDTO;
+import com.app.dto.ProfileResponseDTO;
+import com.app.dto.ProfileUploadDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.model.DonorDO;
@@ -57,9 +59,12 @@ public class DonorController {
     		@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String bloodBankName,
+            @RequestParam(required = false) String bloodGroup,
+            @RequestParam(required = false) String donationDate
             ) {
-		return donorService.getByStatus(type,pageNo,pageSize,sortBy,search);
+		return donorService.getByStatus(type,pageNo,pageSize,sortBy,search,bloodBankName,bloodGroup,donationDate);
 
 	}
 
@@ -70,9 +75,12 @@ public class DonorController {
     		@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String bloodBankName,
+            @RequestParam(required = false) String bloodGroup,
+            @RequestParam(required = false) String donationDate
             ) {
-		return donorService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search);
+		return donorService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search,bloodBankName,bloodGroup,donationDate);
 
 	}
 
@@ -124,5 +132,8 @@ public class DonorController {
  }
 	
 	
-
+	@PutMapping("/upload")
+	public ProfileResponseDTO update(ProfileUploadDTO profileUploadDTO) {
+		return donorService.uploadImage(profileUploadDTO);	
+	}
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.dto.ChangePasswordDTO;
+import com.app.dto.ForgetResponseDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.ProfileResponseDTO;
 import com.app.dto.ProfileUploadDTO;
@@ -99,4 +100,24 @@ public class UserController {
 	public UserDTO getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);	
 	}
+	
+	@PostMapping("/forget")
+	public ForgetResponseDTO forget(@RequestParam String mobileNo) throws Exception{
+		return userService.forget(mobileNo);
+		}
+	
+	@PostMapping("/sendMail")
+	public ResultDTO sendMail(@RequestParam String mobileNo, @RequestParam String email) throws Exception{
+		return userService.sendMail(mobileNo,email);
+		}
+	
+	@PostMapping("/verify")
+	public ResultDTO verify(@RequestParam String mobileNo, @RequestParam String otp) throws Exception{
+		return userService.verify(mobileNo,otp);
+		}
+	
+	@PostMapping("/setPassword")
+	public ResultDTO setPassword(@RequestParam String mobileNo, @RequestParam String password) throws Exception{
+		return userService.setPassword(mobileNo,password);
+		}
 }

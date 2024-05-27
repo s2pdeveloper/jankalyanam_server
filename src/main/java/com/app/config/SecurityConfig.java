@@ -89,7 +89,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                        requests.antMatchers(permittedUrls).permitAll()
                        .antMatchers(HttpMethod.GET,"/advertise/all").permitAll()
                        .antMatchers(HttpMethod.POST,"/blood-request").permitAll()
-                       .antMatchers(HttpMethod.POST,"/donate").permitAll()
+                       .antMatchers(HttpMethod.POST,"/user/forget").permitAll()
+                       .antMatchers(HttpMethod.POST,"/user/sendMail").permitAll()
+                       .antMatchers(HttpMethod.POST,"/user/verify").permitAll()
+                       .antMatchers(HttpMethod.POST,"/user/setPassword").permitAll()
+                       .antMatchers(HttpMethod.GET,"/address/list").permitAll()
                        .antMatchers(AUTH_WHITE_LIST).permitAll()
                        .anyRequest().authenticated().and().exceptionHandling(ex -> ex.authenticationEntryPoint(point));
                    } catch (Exception e) {

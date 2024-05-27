@@ -74,15 +74,24 @@ public class UserDO implements UserDetails {
     
     private String  state;
     
-    private String  city;
+    private String  district;
     
-    private String  address;
+    private String  tahsil;
+    
+    private String  village;
     
     private Long  pincode;
     
     private String  password;
     
     private String  image;
+    
+    private int  otp;
+    
+    private LocalDate  DOB;
+    
+    @Column(name = "blood_group")
+    private String bloodGroup;
     
     @Enumerated(EnumType.STRING)
     private STATUS status = STATUS.ACTIVE; 
@@ -92,11 +101,11 @@ public class UserDO implements UserDetails {
     
     @Column(name = "created_at",nullable = false, updatable=false)
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at",nullable = false, updatable=true)
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

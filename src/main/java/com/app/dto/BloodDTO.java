@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.BLOOD_TYPE;
 import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -23,16 +24,19 @@ public class BloodDTO {
 private	String bloodGroup;
 //	@NotEmpty(message = "The Mobile Number is required.")
 private	Long mobileNo;
-	@NotEmpty(message = "The Location is required.")
-private	String location;
 	@NotEmpty(message = "The Illeness is required.")
 private	String illness;
 //	@NotEmpty(message = "The Hemoglobin is required.")
 private	double hemoglobin;
-	@NotEmpty(message = "The City is required.")
-private	String city;
-	@NotEmpty(message = "The State is required.")
-private	String state;
+
+private String  state;
+
+private String  district;
+
+private String  tahsil;
+
+private String  village;
+
 //	@NotEmpty(message = "The Age is required.")
 private	int age;
 	@NotEmpty(message = "The Name is required.")
@@ -45,6 +49,10 @@ private GENDER gender;
 private Boolean isWebsite;
 
 private String fatherOrHusband;
+
+private String bloodType;
+
+private String hospitalName;
 
 	
 }

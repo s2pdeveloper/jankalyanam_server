@@ -21,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.app.constant.ServiceConstant.BLOOD_STATUS;
+import com.app.constant.ServiceConstant.BLOOD_TYPE;
 import com.app.constant.ServiceConstant.GENDER;
 import com.app.constant.ServiceConstant.PROVIDED;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -55,15 +56,20 @@ public class BloodRequestDO {
     
     private int age;
     
-    private String state;
-
-    private String city;
+    private String  state;
+    
+    private String  district;
+    
+    private String  tahsil;
+    
+    private String  village;
     
     private double hemoglobin;
 
     private String illness;
     
-    private String location;
+    @Column(name = "hospital_name")
+    private String hospitalName;
     
     @Column(name = "mobile_no")
     private Long mobileNo;
@@ -78,6 +84,10 @@ public class BloodRequestDO {
 
     @Enumerated(EnumType.STRING)
     private BLOOD_STATUS status = BLOOD_STATUS.PENDING;
+    
+    @Column(name = "blood_type")
+    @Enumerated(EnumType.STRING)
+    private BLOOD_TYPE bloodType = BLOOD_TYPE.REGULAR;
     
     @Enumerated(EnumType.STRING)
     private PROVIDED provided;
@@ -96,11 +106,11 @@ public class BloodRequestDO {
     
     @Column(name = "created_at")
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     
     @Column(name = "acceptor_id",updatable = true)
     private Long acceptorId;

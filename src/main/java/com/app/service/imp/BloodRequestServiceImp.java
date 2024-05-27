@@ -42,7 +42,7 @@ import com.app.model.DonorDO;
 import com.app.model.UserDO;
 import com.app.repository.BloodRequestRepository;
 import com.app.service.BloodRequestService;
-import com.app.service.DonorService;
+import com.app.service.HelperService;
 import com.app.service.UserDeviceIdService;
 import com.app.utilities.Utility;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -52,10 +52,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-
-
+import org.springframework.data.jpa.domain.Specification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Slf4j
@@ -68,7 +68,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	private FCMService fcmService;
 	
 	@Autowired
-	private DonorService donorService;
+	private HelperService helperService;
 	
 	@Autowired
 	@Qualifier("cachedThreadPool")
@@ -113,13 +113,16 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		System.out.println("mapBloodRequest---"+mapBloodRequest.toString());
 	    bloodRequestRepository.save(mapBloodRequest);
 		executorService.execute(() -> {
-			List<String> deviceIds = userDeviceIdService.getAdminsAndDeviceId();
+			List<String> deviceIds = new ArrayList<>();
+			deviceIds.addAll(userDeviceIdService.getAdminsAndDeviceId());
+			deviceIds.addAll(userDeviceIdService.getAttenterByBloodGroup(bloodRequest.getBloodGroup()));
+			
 			if(deviceIds.size() > 0) {
 				String title = "Blood Request";
 				String body = String.format("New Request for %s Blood Group By %s Location: %s",
                         bloodRequest.getBloodGroup(),
                         bloodRequest.getName(),
-                        bloodRequest.getLocation());
+                        bloodRequest.getHospitalName());
 				NotificationRequest notify = new NotificationRequest(title,body,deviceIds);
 				try {
 					fcmService.sendMessageToToken(notify);
@@ -136,34 +139,92 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
     
 	@Override
-    public ResponseDTO<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search) { 
+    public ResponseDTO<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search,String bloodType, String bloodGroup, String hospitalName) { 
 	
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
 
+		Page<BloodRequestDO> bloodRequestList;
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Page<BloodRequestDO> BloodRequestList;
-			if(type.equals("HISTORY")) {
-				 BloodRequestList = bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.DONE),search,paging);
-				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
-			}else if(type.equals("ACTIVE")) {
-				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),search,paging);
-				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
-			}else if(type.equals("MYLIST")) {
-				
-				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
-				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
-			
-			}else {
-				throw new InvalidInputException("Invalid Input");
-			}
+//		Page<BloodRequestDO> BloodRequestList;
+//			if(type.equals("HISTORY")) {
+//				 BloodRequestList = bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.DONE,BLOOD_STATUS.CANCEL),search,paging);
+//				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
+//				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
+//			}else if(type.equals("ACTIVE")) {
+//				 BloodRequestList =bloodRequestRepository.findAllByStatus(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),search,paging);
+//				 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
+//				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
+//			}else if(type.equals("MYLIST")) {
+//				
+//				BloodRequestList = bloodRequestRepository.findByStatusAndAdminId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+//				List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
+//				 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
+//			
+//			}else {
+//				throw new InvalidInputException("Invalid Input");
+//			}
 	
-	  
-    }
+		   Specification<BloodRequestDO> specification = (root, query, cb) -> {
+		        List<Predicate> predicates = new ArrayList<>();
+		        
+		        if (bloodGroup != null && !bloodGroup.isEmpty()) {
+		            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+		        }
+
+		        if (bloodType != null && !bloodType.isEmpty()) {
+		            predicates.add(cb.equal(root.get("bloodType"), ServiceConstant.BLOOD_TYPE.valueOf(bloodType)));
+		        }
+
+		        if (hospitalName != null && !hospitalName.isEmpty()) {
+		            predicates.add(cb.equal(root.get("hospitalName"), hospitalName));
+		        }
+
+		        if (search != null && !search.isEmpty()) {
+		            String searchString = "%" + search.toLowerCase() + "%";
+		            List<Predicate> attributePredicates = new ArrayList<>();
+		            for (SingularAttribute<? super BloodRequestDO, ?> attribute : root.getModel().getSingularAttributes()) {
+		                if (attribute.getJavaType() == String.class) {
+		                    Expression<?> attributePath = root.get(attribute);
+		                    if (attributePath.getJavaType() == String.class) {
+		                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+		                    }
+		                }
+		            }
+		            if (!attributePredicates.isEmpty()) {
+		                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+		            }
+		        }
+
+		        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+		        return finalPredicate;
+		    };
+
+		    if (type.equals("HISTORY")) {
+		        specification = specification.and((root, query, cb) -> cb.and(
+		            root.get("status").in(List.of(BLOOD_STATUS.DONE, BLOOD_STATUS.CANCEL))
+		        ));
+		    } else if (type.equals("ACTIVE")) {  
+		    	specification = specification.and((root, query, cb) -> cb.and(
+		            root.get("status").in(List.of(BLOOD_STATUS.PENDING, BLOOD_STATUS.ACCEPTED, BLOOD_STATUS.ALLOCATED, BLOOD_STATUS.RECEIVED))
+		           
+		        ));
+		    }else if (type.equals("MYLIST")) {  
+		    	specification = specification.and((root, query, cb) -> cb.and(
+			            root.get("status").in(List.of(BLOOD_STATUS.PENDING, BLOOD_STATUS.ACCEPTED, BLOOD_STATUS.ALLOCATED, BLOOD_STATUS.RECEIVED)),
+			            cb.equal(root.get("adminId"), Utility.getSessionUser().getId())
+			           
+			        ));
+			  } else {
+		        throw new InvalidInputException("Invalid Input");
+		    }
+		   
+
+		    bloodRequestList = bloodRequestRepository.findAll(specification, paging);
+		    List<BloodRequestDTO> bloodRequestDTOList = Utility.mapList(bloodRequestList.getContent(), BloodRequestDTO.class);
+		    return new ResponseDTO<BloodRequestDTO>(bloodRequestList.getTotalElements(), bloodRequestList.getTotalPages(), bloodRequestDTOList);
+		}
 
 
 
@@ -212,28 +273,94 @@ public class BloodRequestServiceImp implements BloodRequestService{
 
 	}
 
+//	@Override
+//	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search,String bloodType, String bloodGroup, String hospitalName) {
+//		if(type == null) {
+//			throw new InvalidInputException("Invalid Input");
+//		}
+//
+//		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+//		Page<BloodRequestDO> BloodRequestList;
+//		if(type.equals("HISTORY")) {
+//			 BloodRequestList = bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.DONE,BLOOD_STATUS.CANCEL),Utility.getSessionUser().getId(),search, paging);
+//			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
+//			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
+//		}else if(type.equals("ACTIVE")) {
+//			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
+//			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
+//			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
+//		}
+//		else {
+//			throw new InvalidInputException("Invalid Input");
+//		}
+//		
+//	}
+	
 	@Override
-	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search) {
-		if(type == null) {
+	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search,String bloodType, String bloodGroup, String hospitalName) {
+	  
+	    if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
+	    
+	   
+	    Page<BloodRequestDO> bloodRequestList;
+	    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
+	    Specification<BloodRequestDO> specification = (root, query, cb) -> {
+	        List<Predicate> predicates = new ArrayList<>();
+	        
+	        if (bloodGroup != null && !bloodGroup.isEmpty()) {
+	            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+	        }
 
-		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending()); 
-		Page<BloodRequestDO> BloodRequestList;
-		if(type.equals("HISTORY")) {
-			 BloodRequestList = bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.DONE),Utility.getSessionUser().getId(),search, paging);
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
-		}else if(type.equals("ACTIVE")) {
-			 BloodRequestList =bloodRequestRepository.findByStatusInAndAttenderId(List.of(BLOOD_STATUS.PENDING,BLOOD_STATUS.ACCEPTED,BLOOD_STATUS.ALLOCATED,BLOOD_STATUS.RECEIVED),Utility.getSessionUser().getId(),search, paging);
-			 List<BloodRequestDTO> BloodRequestlist = Utility.mapList(BloodRequestList.getContent(), BloodRequestDTO.class);
-			 return new ResponseDTO<BloodRequestDTO>(BloodRequestList.getTotalElements(),BloodRequestList.getTotalPages(),BloodRequestlist);
-		}
-		else {
-			throw new InvalidInputException("Invalid Input");
-		}
-		
+	        if (bloodType != null && !bloodType.isEmpty()) {
+	            predicates.add(cb.equal(root.get("bloodType"), ServiceConstant.BLOOD_TYPE.valueOf(bloodType)));
+	        }
+
+	        if (hospitalName != null && !hospitalName.isEmpty()) {
+	            predicates.add(cb.equal(root.get("hospitalName"), hospitalName));
+	        }
+
+	        if (search != null && !search.isEmpty()) {
+	            String searchString = "%" + search.toLowerCase() + "%";
+	            List<Predicate> attributePredicates = new ArrayList<>();
+	            for (SingularAttribute<? super BloodRequestDO, ?> attribute : root.getModel().getSingularAttributes()) {
+	                if (attribute.getJavaType() == String.class) {
+	                    Expression<?> attributePath = root.get(attribute);
+	                    if (attributePath.getJavaType() == String.class) {
+	                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+	                    }
+	                }
+	            }
+	            if (!attributePredicates.isEmpty()) {
+	                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+	            }
+	        }
+
+	        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+	        return finalPredicate;
+	    };
+
+	    if (type.equals("HISTORY")) {
+	        specification = specification.and((root, query, cb) -> cb.and(
+	            root.get("status").in(List.of(BLOOD_STATUS.DONE, BLOOD_STATUS.CANCEL)),
+	            cb.equal(root.get("attenderId"), Utility.getSessionUser().getId())
+	        ));
+	    } else if (type.equals("ACTIVE")) {  
+	    	specification = specification.and((root, query, cb) -> cb.and(
+	            root.get("status").in(List.of(BLOOD_STATUS.PENDING, BLOOD_STATUS.ACCEPTED, BLOOD_STATUS.ALLOCATED, BLOOD_STATUS.RECEIVED)),
+	            cb.equal(root.get("attenderId"), Utility.getSessionUser().getId())
+	        ));
+	    } else {
+	        throw new InvalidInputException("Invalid Input");
+	    }
+	   
+
+	    bloodRequestList = bloodRequestRepository.findAll(specification, paging);
+	    List<BloodRequestDTO> bloodRequestDTOList = Utility.mapList(bloodRequestList.getContent(), BloodRequestDTO.class);
+	    return new ResponseDTO<BloodRequestDTO>(bloodRequestList.getTotalElements(), bloodRequestList.getTotalPages(), bloodRequestDTOList);
 	}
+
 
 	@Override
 	public ResultDTO acceptRequest(Long id,BLOOD_STATUS status) {
@@ -256,6 +383,12 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			  changeStatus = BLOOD_STATUS.DONE;
 			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
 			  break;
+		  case CANCEL:
+			  changeStatus = BLOOD_STATUS.CANCEL;
+			  helperService.CancelBloodRequest(id);
+			  bloodRequestRepository.findByIdAndUpdateStatus(id,changeStatus);
+			  break;
+	
 		  default:
 			  throw new InvalidInputException("Invalid Input");
 		     
@@ -313,13 +446,13 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		}
 		if(data.getDonorId() != null) {
 			executorService.execute(() -> {
-				donorService.assignOrRemoveToBloodRequest(data.getDonorId(),false);
+				helperService.assignOrRemoveToBloodRequest(data.getDonorId(),false);
 			});
 			
 		}
 		if(updateData.getProvided().equals(PROVIDED.DONOR) && updateData.getDonorId() != null) {
 		
-			donorService.assignOrRemoveToBloodRequest(updateData.getDonorId(),true);
+			helperService.assignOrRemoveToBloodRequest(updateData.getDonorId(),true);
 			data.setDonorId(updateData.getDonorId());
 			data.setBloodBankName(null);
 			data.setBankState(null);
@@ -330,10 +463,10 @@ public class BloodRequestServiceImp implements BloodRequestService{
 			data.setBankState(updateData.getBankState());
 			data.setBankCity(updateData.getBankCity());
 			data.setDonorId(null);		
-	
+			data.setStatus(BLOOD_STATUS.ALLOCATED);
 		}
 		data.setProvided(updateData.getProvided());
-		data.setStatus(BLOOD_STATUS.ALLOCATED);
+		
 		bloodRequestRepository.save(data);
 
 		

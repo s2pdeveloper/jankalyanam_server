@@ -1,5 +1,7 @@
 package com.app.dto;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -31,5 +33,22 @@ public class RegisterDTO {
 	@NotEmpty(message = "The Password is required.")
     private String  password;
 	
+	@NotEmpty(message = "The blood Group is required.")
+	private String bloodGroup;
+	
+	private LocalDate  DOB;
+	
     private ROLE role;
+ 
+    @NotEmpty(message = "The State is required.")
+    private String  state;
+    
+    @NotEmpty(message = "The District is required.")
+    private String  district;
+    
+    private String  tahsil;
+    
+    private String  village;
+    
+    private Long  pincode;
 }

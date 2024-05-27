@@ -28,7 +28,9 @@ public interface DonorRepository extends JpaRepository<DonorDO, Long>,JpaSpecifi
             "(b.name LIKE %:search% OR " +
             "b.gender LIKE %:search% OR " +
             "b.state LIKE %:search% OR " +
-            "b.city LIKE %:search% OR " +
+            "b.district LIKE %:search% OR " +
+            "b.tahsil LIKE %:search% OR " +
+            "b.village LIKE %:search% OR " +
             "b.mobileNo LIKE %:search% OR " +
             "b.bloodGroup LIKE %:search% OR " +
             "b.location LIKE %:search%))")
@@ -41,7 +43,9 @@ public interface DonorRepository extends JpaRepository<DonorDO, Long>,JpaSpecifi
 	            "(b.name LIKE %:search% OR " +
 	            "b.gender LIKE %:search% OR " +
 	            "b.state LIKE %:search% OR " +
-	            "b.city LIKE %:search% OR " +
+	            "b.district LIKE %:search% OR " +
+	            "b.tahsil LIKE %:search% OR " +
+	            "b.village LIKE %:search% OR " +
 	            "b.mobileNo LIKE %:search% OR " +
 	            "b.bloodGroup LIKE %:search% OR " +
 	            "b.location LIKE %:search%))")

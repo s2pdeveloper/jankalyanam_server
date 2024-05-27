@@ -17,4 +17,6 @@ public interface UserDeviceIdService {
     public List<String> getAdminsAndDeviceId() ;
 
     public String getDeviceId(Long id);
+
+	List<String> getAttenterByBloodGroup(String bloodGroup);
 }

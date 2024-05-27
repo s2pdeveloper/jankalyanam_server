@@ -21,13 +21,19 @@ public class UserDTO {
     private String  email;
     private Long  mobileNo;
     private String  state;
-    private String  city;    
+    private String  district; 
+    private String  tahsil;
+    private String  village;
+    private Long  pincode;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    private LocalDate  DOB;
+    private String bloodGroup;
     private STATUS status;
     private ROLE role;
     private String token;
     private String image;
     @JsonFormat(pattern="dd-MM-yyyy")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     @JsonFormat(pattern="dd-MM-yyyy")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

@@ -28,13 +28,16 @@ public interface UserRepository extends JpaRepository<UserDO, Long>{
             "b.lastName LIKE %:search% OR " +
             "b.mobileNo LIKE %:search% OR " +
             "b.state LIKE %:search% OR " +
-            "b.city LIKE %:search% OR " +
-            "b.address LIKE %:search%))")
+            "b.district LIKE %:search% OR " +
+            "b.tahsil LIKE %:search% OR " +
+            "b.village LIKE %:search%))")
 	Page<UserDO> findByRoleAndStatus(ROLE role,STATUS status,Pageable pageable,String search);
 	
 	Boolean existsByMobileNo(String  mobileNo);
 
 	Optional<UserDO> findByRole(ROLE superAdmin);
+	
+
 
 
 

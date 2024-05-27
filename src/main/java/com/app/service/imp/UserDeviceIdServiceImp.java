@@ -31,9 +31,11 @@ public class UserDeviceIdServiceImp implements UserDeviceIdService {
 			userDevice.setDeviceId(deviceId);
 			userDevice.setUserId(Utility.getSessionUser().getId());
 			userDevice.setRole(Utility.getSessionUser().getRole());
+			userDevice.setBloodGroup(Utility.getSessionUser().getBloodGroup());		
 			userDeviceRepository.save(userDevice) ;
 		}else {
 			userDeviceData.setDeviceId(deviceId);
+			userDeviceData.setBloodGroup(Utility.getSessionUser().getBloodGroup());			
 			userDeviceRepository.save(userDeviceData) ;
 		}
 	
@@ -47,6 +49,19 @@ public class UserDeviceIdServiceImp implements UserDeviceIdService {
 	    	  return new ArrayList<>();
 	      }
 	     return admins.stream()
+	    		    .map(UserDeviceIdDO::getDeviceId) 
+	    		    .filter(Objects::nonNull) 
+	    		    .collect(Collectors.toList());
+	     
+	    }
+	
+	@Override
+	public List<String> getAttenterByBloodGroup(String bloodGroup){
+		 List<UserDeviceIdDO> attenders = userDeviceRepository.findByRoleAndBloodGroup(ROLE.ATTENDER,bloodGroup);
+	      if(attenders.size()  == 0){
+	    	  return new ArrayList<>();
+	      }
+	     return attenders.stream()
 	    		    .map(UserDeviceIdDO::getDeviceId) 
 	    		    .filter(Objects::nonNull) 
 	    		    .collect(Collectors.toList());

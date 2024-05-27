@@ -25,6 +25,7 @@ import com.app.config.JwtUtil;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.ChangePasswordDTO;
+import com.app.dto.ForgetResponseDTO;
 import com.app.dto.LoginDTO;
 import com.app.dto.ProfileResponseDTO;
 import com.app.dto.ProfileUploadDTO;
@@ -38,8 +39,9 @@ import com.app.model.UserDO;
 import com.app.repository.UserRepository;
 import com.app.service.CloudinaryService;
 import com.app.service.UserService;
+import com.app.utilities.MailerService;
 import com.app.utilities.Utility;
-
+import org.thymeleaf.context.Context;
 import ch.qos.logback.core.status.Status;
 
 @Service
@@ -58,6 +60,9 @@ public class UserServiceImp implements UserService{
     
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    
+    @Autowired
+    private MailerService mailerService;
     
 	@Value("${cloudinary.url}")
 	private String filePath;
@@ -241,6 +246,69 @@ public class UserServiceImp implements UserService{
 	@Override
 	public String healthCheck() {
 		return "SERVER IS RUNINING";
+	}
+
+
+	@Override
+	public ForgetResponseDTO forget(String mobileNo) {
+		UserDO user = userRepository.findByMobileNo(mobileNo);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+		ForgetResponseDTO userDTO = Utility.mapObject(user, ForgetResponseDTO.class);
+		
+		 return userDTO;
+		
+	}
+
+
+
+	@Override
+	public ResultDTO sendMail(String mobileNo, String email) {
+		UserDO user = userRepository.findByMobileNo(mobileNo);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+		if(user.getEmail() == null || !user.getEmail().equals(email)) {
+			user.setEmail(email);
+		
+		}
+		int otp = mailerService.randomNumberService();
+		user.setOtp(otp);
+		userRepository.save(user);
+		Context context = new Context();
+	    context.setVariable("otp",otp);
+		mailerService.sendEmailWithHtmlTemplate(email, "OTP", "forget.html", context);
+		return new ResultDTO(email,"OTP has been send to your email");
+
+	}
+
+
+	@Override
+	public ResultDTO verify(String mobileNo, String otp) {
+		UserDO user = userRepository.findByMobileNo(mobileNo);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+		if(Integer.parseInt(otp) == user.getOtp()) {
+			return new ResultDTO("","Verify Successfully");
+		}else {
+			return new ResultDTO("","Incorrect OTP");
+		}
+	}
+
+
+	@Override
+	public ResultDTO setPassword(String mobileNo, String password) {
+		UserDO user = userRepository.findByMobileNo(mobileNo);
+		if(user == null) {
+			 throw new InvalidInputException("No User Present");
+		}
+	
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode(password));
+		userRepository.save(user);
+		return new ResultDTO(user.getId().toString(),"Password change successfully");
 	}
 
 

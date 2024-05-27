@@ -14,29 +14,26 @@ import com.app.service.UserService;
 
 @SpringBootApplication
 @ComponentScan
-public class JankalyanamApplication extends SpringBootServletInitializer{
+public class JankalyanamApplication implements CommandLineRunner{
 
 	 @Autowired
 	 UserService userService;
 	
-	
+	 
 	public static void main(String[] args) {
 		
 	 SpringApplication.run(JankalyanamApplication.class, args);
 
 	}
-     
+    
 
-//     @Override
-//	public void run(String... arg) throws Exception {
-// 		userService.checkSuperAdmin();
-////	    storageService.deleteAll();
-////	    storageService.init();
-//	  }
-     
-	  @Override
-	    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-	        return application.sources(JankalyanamApplication.class);
-	    }
-     
+    @Override
+	public void run(String... arg) throws Exception {
+		userService.checkSuperAdmin();
+//	    storageService.deleteAll();
+//	    storageService.init();
+	  }
+    
+	 
+    
 }

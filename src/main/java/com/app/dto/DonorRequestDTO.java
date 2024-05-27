@@ -20,10 +20,10 @@ public class DonorRequestDTO {
     private String name;
 //	@NotEmpty(message = "The Age is required.")
     private int age;
-	@NotEmpty(message = "The State is required.")
-    private String state;
-	@NotEmpty(message = "The City is required.")
-    private String city;
+    private String  state;
+    private String  district;
+    private String  tahsil;
+    private String  village;
 	@NotEmpty(message = "The Mobile Number is required.")
     private String mobileNo;
 //	@NotEmpty(message = "The Hemoglobin is required.")
@@ -35,5 +35,6 @@ public class DonorRequestDTO {
     private GENDER gender;
 	@NotEmpty(message = "The Blood Group is required.")
     private String bloodGroup;
+	
 	private Boolean isWebsite;
 }
