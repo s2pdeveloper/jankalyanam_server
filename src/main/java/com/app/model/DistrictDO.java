@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class DistrictDO {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "district_name")

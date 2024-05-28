@@ -32,7 +32,7 @@ import lombok.Setter;
 public class UserDeviceIdDO {
 
 	    @Id
-		@GeneratedValue(strategy = GenerationType.AUTO)
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	   
 	    @Column(name = "device_id")

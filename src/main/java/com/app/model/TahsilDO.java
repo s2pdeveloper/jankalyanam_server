@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class TahsilDO {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "tahsil_name")
