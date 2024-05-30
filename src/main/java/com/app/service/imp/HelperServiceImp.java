@@ -31,12 +31,18 @@ import com.app.constant.ServiceConstant.STATUS;
 import com.app.dto.BloodDTO;
 import com.app.dto.BloodRequestDTO;
 import com.app.dto.BloodRequestUpdateDTO;
+import com.app.dto.DistrictDTO;
 import com.app.dto.DonorDTO;
 import com.app.dto.MonthlyCountDTO;
 import com.app.dto.NotificationRequest;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
+import com.app.dto.StateDTO;
+import com.app.dto.TahsilDTO;
+import com.app.dto.TahsilRequestDTO;
 import com.app.dto.UserDTO;
+import com.app.dto.VillageDTO;
+import com.app.dto.VillageRequestDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
 import com.app.model.DistrictDO;
@@ -46,11 +52,11 @@ import com.app.model.TahsilDO;
 import com.app.model.UserDO;
 import com.app.model.VillageDO;
 import com.app.repository.BloodRequestRepository;
-import com.app.repository.DistrictRepositoy;
+import com.app.repository.DistrictRepository;
 import com.app.repository.DonorRepository;
-import com.app.repository.StateRepositoy;
-import com.app.repository.TahsilRepositoy;
-import com.app.repository.VillageRepositoy;
+import com.app.repository.StateRepository;
+import com.app.repository.TahsilRepository;
+import com.app.repository.VillageRepository;
 import com.app.service.BloodRequestService;
 import com.app.service.DonorService;
 import com.app.service.HelperService;
@@ -79,16 +85,16 @@ public class HelperServiceImp implements HelperService{
     private DonorRepository donorRepository;
 	
 	@Autowired
-    private StateRepositoy stateRepository;
+    private StateRepository stateRepository;
 	
 	@Autowired
-    private DistrictRepositoy districtRepositoy;
+    private DistrictRepository districtRepositoy;
 	
 	@Autowired
-    private TahsilRepositoy tahsilRepositoy;
+    private TahsilRepository tahsilRepositoy;
 	
 	@Autowired
-    private VillageRepositoy villageRepositoy;
+    private VillageRepository villageRepositoy;
 	
 	@Autowired
 	@Qualifier("cachedThreadPool")
@@ -229,5 +235,108 @@ public class HelperServiceImp implements HelperService{
 	@Override
 	public List<StateDO> getAll() {
 		return stateRepository.findAll();
+	}
+
+	@Override
+	public List<StateDTO> getAllState() {
+		List<StateDO> states = stateRepository.findAll();
+		List<StateDTO> statelist = Utility.mapList(states, StateDTO.class);
+		return statelist;
+	}
+
+	@Override
+	public List<DistrictDTO> getDistrictByStateId(Long stateId) {
+		List<DistrictDO> districts = districtRepositoy.findByStateId(stateId);
+		List<DistrictDTO> districtlist = Utility.mapList(districts, DistrictDTO.class);
+		return districtlist;
+	}
+
+	@Override
+	public List<TahsilDTO> getTahsilByDistrictId(Long districtId) {
+		List<TahsilDO> tahsils = tahsilRepositoy.findByDistrictId(districtId);
+		List<TahsilDTO> tahsillist = Utility.mapList(tahsils, TahsilDTO.class);
+		return tahsillist;
+	}
+
+	@Override
+	public List<VillageDTO> getVillageByTahsilId(Long tahsilId) {
+		List<VillageDO> villages = villageRepositoy.findByTahsilId(tahsilId);
+		List<VillageDTO> villageList = Utility.mapList(villages, VillageDTO.class);
+		return villageList;
+	}
+
+	@Override
+	public ResultDTO addTahsil(TahsilRequestDTO tahsil) {
+		TahsilDO mapTahsilRequest = Utility.mapObject(tahsil, TahsilDO.class);
+		tahsilRepositoy.save(mapTahsilRequest);
+		return new ResultDTO("","Successfully Created!");
+	}
+
+	@Override
+	public ResultDTO updateTahsil(Long id, TahsilRequestDTO tahsil) {
+		Optional<TahsilDO> tahsilData = tahsilRepositoy.findById(id);
+		TahsilDO data = tahsilData.orElse(null);
+		if(data == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+		data.setTahsilName(tahsil.getTahsilName());
+		data.setDistrictId(tahsil.getDistrictId());
+		tahsilRepositoy.save(data);
+		return new ResultDTO("","Successfully Updated!");
+	}
+
+	@Override
+	public ResultDTO deleteTahsil(Long id) {
+		tahsilRepositoy.deleteById(id);
+		return new ResultDTO("","Successfully Deleted!");
+	}
+
+	@Override
+	public TahsilDTO getTahsilById(Long id) {
+		Optional<TahsilDO> tahsilData = tahsilRepositoy.findById(id);
+		TahsilDO data = tahsilData.orElse(null);
+		if(data == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+		
+		TahsilDTO tahsil = Utility.mapObject(data, TahsilDTO.class);
+		return tahsil;
+	}
+
+	@Override
+	public ResultDTO addVillage(VillageRequestDTO village) {
+		VillageDO mapRequest = Utility.mapObject(village, VillageDO.class);
+		villageRepositoy.save(mapRequest);
+		return new ResultDTO("","Successfully Created!");
+	}
+
+	@Override
+	public ResultDTO updateVillage(Long id, VillageRequestDTO village) {
+		Optional<VillageDO> villageData = villageRepositoy.findById(id);
+		VillageDO data = villageData.orElse(null);
+		if(data == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+		data.setVillageName(village.getVillageName());
+		data.setTahsilId(village.getTahsilId());		
+		villageRepositoy.save(data);
+		return new ResultDTO("","Successfully Updated!");
+	}
+
+	@Override
+	public ResultDTO deleteVillage(Long id) {
+		villageRepositoy.deleteById(id);
+		return new ResultDTO("","Successfully Deleted!");
+	}
+
+	@Override
+	public VillageDTO getVillageById(Long id) {
+		Optional<VillageDO> villageData = villageRepositoy.findById(id);
+		VillageDO data = villageData.orElse(null);
+		if(data == null) {
+			throw new InvalidInputException("Invalid Input");
+		}
+		VillageDTO village = Utility.mapObject(data, VillageDTO.class);
+		return village;
 	}
 }

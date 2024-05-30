@@ -128,7 +128,7 @@ public class DonorServiceImp implements DonorService{
 	}
 
 	@Override
-	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search,String bloodBankName,String bloodGroup,String donationDate) {
+	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search,String bloodBankName,List<String> bloodGroup,String donationDate) {
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
@@ -152,7 +152,7 @@ public class DonorServiceImp implements DonorService{
 		        List<Predicate> predicates = new ArrayList<>();
 		        
 		        if (bloodGroup != null && !bloodGroup.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+		            predicates.add(root.get("bloodGroup").in(bloodGroup));
 		        }
 
 		        if (bloodBankName != null && !bloodBankName.isEmpty()) {
@@ -205,7 +205,7 @@ public class DonorServiceImp implements DonorService{
 	}
 
 	@Override
-	public ResponseDTO<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search,String bloodBankName,String bloodGroup,String donationDate) {
+	public ResponseDTO<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search,String bloodBankName,List<String> bloodGroup,String donationDate) {
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
 		}
@@ -230,7 +230,7 @@ public class DonorServiceImp implements DonorService{
 		        List<Predicate> predicates = new ArrayList<>();
 		        
 		        if (bloodGroup != null && !bloodGroup.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+		        	predicates.add(root.get("bloodGroup").in(bloodGroup));
 		        }
 
 		        if (bloodBankName != null && !bloodBankName.isEmpty()) {
@@ -266,12 +266,12 @@ public class DonorServiceImp implements DonorService{
 		    if (type.equals("HISTORY")) {
 		        specification = specification.and((root, query, cb) -> cb.and(
 		            root.get("status").in(List.of(DONOR_STATUS.CLOSE,DONOR_STATUS.CANCEL)),
-		            cb.equal(root.get("attenderId"), Utility.getSessionUser().getId())
+		            cb.equal(root.get("userId"), Utility.getSessionUser().getId())
 		        ));
 		    } else if (type.equals("ACTIVE")) {  
 		    	specification = specification.and((root, query, cb) -> cb.and(
 		            root.get("status").in(List.of(DONOR_STATUS.ALLOCATED,DONOR_STATUS.PENDING,DONOR_STATUS.ACCEPTED,DONOR_STATUS.DONE)),
-		            cb.equal(root.get("attenderId"), Utility.getSessionUser().getId())
+		            cb.equal(root.get("userId"), Utility.getSessionUser().getId())
 		           
 		        ));
 		    } else {

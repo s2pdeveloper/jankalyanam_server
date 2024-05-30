@@ -139,7 +139,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	}
     
 	@Override
-    public ResponseDTO<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search,String bloodType, String bloodGroup, String hospitalName) { 
+    public ResponseDTO<BloodRequestDTO> getByStatus(String type,Integer pageNo, Integer pageSize, String sortBy, String search,List<String> bloodType, List<String> bloodGroup, String hospitalName) { 
 	
 		if(type == null) {
 			throw new InvalidInputException("Invalid Input");
@@ -170,11 +170,11 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		        List<Predicate> predicates = new ArrayList<>();
 		        
 		        if (bloodGroup != null && !bloodGroup.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+		        	predicates.add(root.get("bloodGroup").in(bloodGroup));
 		        }
 
 		        if (bloodType != null && !bloodType.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodType"), ServiceConstant.BLOOD_TYPE.valueOf(bloodType)));
+		        	predicates.add(root.get("bloodType").in(bloodType));
 		        }
 
 		        if (hospitalName != null && !hospitalName.isEmpty()) {
@@ -213,7 +213,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		    }else if (type.equals("MYLIST")) {  
 		    	specification = specification.and((root, query, cb) -> cb.and(
 			            root.get("status").in(List.of(BLOOD_STATUS.PENDING, BLOOD_STATUS.ACCEPTED, BLOOD_STATUS.ALLOCATED, BLOOD_STATUS.RECEIVED)),
-			            cb.equal(root.get("adminId"), Utility.getSessionUser().getId())
+			            cb.equal(root.get("acceptorId"), Utility.getSessionUser().getId())
 			           
 			        ));
 			  } else {
@@ -297,7 +297,7 @@ public class BloodRequestServiceImp implements BloodRequestService{
 //	}
 	
 	@Override
-	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search,String bloodType, String bloodGroup, String hospitalName) {
+	public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type,Integer pageNo, Integer pageSize, String sortBy, String search,List<String> bloodType, List<String> bloodGroup, String hospitalName) {
 	  
 	    if(type == null) {
 			throw new InvalidInputException("Invalid Input");
@@ -310,11 +310,12 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	        List<Predicate> predicates = new ArrayList<>();
 	        
 	        if (bloodGroup != null && !bloodGroup.isEmpty()) {
-	            predicates.add(cb.equal(root.get("bloodGroup"), bloodGroup));
+	        	predicates.add(root.get("bloodGroup").in(bloodGroup));
 	        }
 
 	        if (bloodType != null && !bloodType.isEmpty()) {
-	            predicates.add(cb.equal(root.get("bloodType"), ServiceConstant.BLOOD_TYPE.valueOf(bloodType)));
+	        	predicates.add(root.get("bloodType").in(bloodType));
+//	            predicates.add(cb.equal(root.get("bloodType"), ServiceConstant.BLOOD_TYPE.valueOf(bloodType)));
 	        }
 
 	        if (hospitalName != null && !hospitalName.isEmpty()) {

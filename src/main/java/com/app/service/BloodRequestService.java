@@ -23,10 +23,10 @@ public interface BloodRequestService {
     
     public ResultDTO createRequest(BloodDTO bloodRequest);
     
-    public ResponseDTO<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy,  String search, String bloodType, String bloodGroup, String hospitalName) ;
+    public ResponseDTO<BloodRequestDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy,  String search, List<String> bloodType, List<String> bloodGroup, String hospitalName) ;
     
     public ResponseDTO<BloodRequestDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy
-			, String search, String bloodType, String bloodGroup, String hospitalName);
+			, String search, List<String> bloodType, List<String> bloodGroup, String hospitalName);
     
 	 public ResponseDTO<BloodRequestDTO> getAllRequest(Integer pageNo, Integer pageSize, String sortBy,String status,String startDate,String endDate ,String search);
 

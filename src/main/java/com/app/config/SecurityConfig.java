@@ -93,7 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                        .antMatchers(HttpMethod.POST,"/user/sendMail").permitAll()
                        .antMatchers(HttpMethod.POST,"/user/verify").permitAll()
                        .antMatchers(HttpMethod.POST,"/user/setPassword").permitAll()
-                       .antMatchers(HttpMethod.GET,"/address/list").permitAll()
+                       .antMatchers(HttpMethod.GET,"/address/getAllState").permitAll()
+                       .antMatchers(HttpMethod.GET,"/address/getDistrictByStateId/**").permitAll()
+                       .antMatchers(HttpMethod.GET,"/address/getTahsilByDistrictId/**").permitAll()
+                       .antMatchers(HttpMethod.GET,"/address/getVillageByTahsilId/**").permitAll()
                        .antMatchers(AUTH_WHITE_LIST).permitAll()
                        .anyRequest().authenticated().and().exceptionHandling(ex -> ex.authenticationEntryPoint(point));
                    } catch (Exception e) {

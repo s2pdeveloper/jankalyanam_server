@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import com.app.constant.ServiceConstant.ROLE;
 import com.app.model.DistrictDO;
 import com.app.model.StateDO;
-import com.app.model.TahsilDO;
 import com.app.model.UserDeviceIdDO;
 import java.util.List ;
 
-public interface TahsilRepositoy extends JpaRepository<TahsilDO, Long>{
+public interface DistrictRepository extends JpaRepository<DistrictDO, Long>{
+
+	List<DistrictDO> findByStateId(Long stateId);
 
 	
 }

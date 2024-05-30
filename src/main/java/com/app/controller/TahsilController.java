@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.StateDTO;
 import com.app.dto.TahsilDTO;
+import com.app.dto.TahsilRequestDTO;
 import com.app.dto.VillageDTO;
 import com.app.model.DistrictDO;
 import com.app.model.DonorDO;
@@ -44,76 +46,41 @@ import io.swagger.annotations.Api;
 
 
 @RestController
-@RequestMapping("/address")
-@Api(tags = { "address" })
-public class AddressController {
+@RequestMapping("/tahsil")
+@Api(tags = { "tahsil" })
+public class TahsilController {
 
 	@Autowired
 	private HelperService helperService;
 
-	@PostMapping("/state")
-	public ResultDTO insertState(@RequestBody  List<StateDO> states) {
+	@PostMapping("")
+	public ResultDTO addTahsil(@RequestBody  TahsilRequestDTO tahsil) {
 
-		return helperService.bulkInsertState(states);
+		return helperService.addTahsil(tahsil);
 
 	}
-
-	@GetMapping("/getAllState")
-	public List<StateDTO> getAllState() {
+	
+	@PutMapping("/{id}")
+	public ResultDTO updateTahsil(@PathVariable(name = "id") Long id,@RequestBody TahsilRequestDTO tahsil) {
 		
-		return helperService.getAllState();
+		return helperService.updateTahsil(id,tahsil);
 
 	}
 	
-	@GetMapping("/getDistrictByStateId/{id}")
-	public List<DistrictDTO> getDistrictByStateId(@PathVariable(name = "id") Long stateId) {
+	@DeleteMapping("/{id}")
+	public ResultDTO deleteTahsil(@PathVariable(name = "id") Long id) {
 		
-		return helperService.getDistrictByStateId(stateId);
+		return helperService.deleteTahsil(id);
 
 	}
-	
-	@GetMapping("/getTahsilByDistrictId/{id}")
-	public List<TahsilDTO> getTahsilByDistrictId(@PathVariable(name = "id") Long districtId) {
+
+	@GetMapping("/{id}")
+	public TahsilDTO getTahsilById(@PathVariable(name = "id") Long id) {
 		
-		return helperService.getTahsilByDistrictId(districtId);
+		return helperService.getTahsilById(id);
 
 	}
 	
-	@GetMapping("/getVillageByTahsilId/{id}")
-	public List<VillageDTO> getVillageByTahsilId(@PathVariable(name = "id") Long tahsilId) {
-		
-		return helperService.getVillageByTahsilId(tahsilId);
-
-	}
-	
-	@PostMapping("/district")
-	public ResultDTO insertDistrict(@RequestBody  List<DistrictDO> district) {
-
-		return helperService.bulkInsertDistrict(district);
-
-	}
-	
-	@PostMapping("/tahsil")
-	public ResultDTO insertTahsil(@RequestBody  List<TahsilDO> tahsil) {
-
-		return helperService.bulkInsertTahsil(tahsil);
-
-	}
-	
-	@PostMapping("/village")
-	public ResultDTO insertVillage(@RequestBody  List<VillageDO> village) {
-
-		return helperService.bulkInsertVillage(village);
-
-	}
-
-
-	@GetMapping("/list")
-	public List<StateDO> getList() {
-
-		return helperService.getAll();
-
-	}
 
 
 	

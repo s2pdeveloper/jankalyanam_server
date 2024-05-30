@@ -24,9 +24,9 @@ public interface DonorService {
     
     public DonorDTO createRequest(DonorRequestDTO donorRequestDTO);
 
-	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search, String bloodBankName, String bloodGroup, String donationDate);
+	public ResponseDTO<DonorDTO> getByStatus(String type, Integer pageNo, Integer pageSize, String sortBy, String search, String bloodBankName, List<String> bloodGroup, String donationDate);
 
-	public ResponseDTO<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search, String bloodBankName, String bloodGroup, String donationDate);
+	public ResponseDTO<DonorDTO> getByStatusAndAttenderId(String type, Integer pageNo, Integer pageSize, String sortBy, String search, String bloodBankName, List<String> bloodGroup, String donationDate);
 
 	public ResultDTO updateById(Long id, DonorRequestUpdateDTO updateData);
 

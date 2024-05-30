@@ -61,7 +61,7 @@ public class DonorController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String bloodBankName,
-            @RequestParam(required = false) String bloodGroup,
+            @RequestParam(required = false) List<String> bloodGroup,
             @RequestParam(required = false) String donationDate
             ) {
 		return donorService.getByStatus(type,pageNo,pageSize,sortBy,search,bloodBankName,bloodGroup,donationDate);
@@ -77,7 +77,7 @@ public class DonorController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String bloodBankName,
-            @RequestParam(required = false) String bloodGroup,
+            @RequestParam(required = false) List<String> bloodGroup,
             @RequestParam(required = false) String donationDate
             ) {
 		return donorService.getByStatusAndAttenderId(type,pageNo,pageSize,sortBy,search,bloodBankName,bloodGroup,donationDate);
