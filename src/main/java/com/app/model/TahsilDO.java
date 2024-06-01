@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -47,4 +48,8 @@ public class TahsilDO {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "tahsil_id", referencedColumnName = "id")
     private List<VillageDO> tahsilVillage;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id",referencedColumnName = "id", insertable = false, updatable = false)
+    private DistrictDO district;
 }

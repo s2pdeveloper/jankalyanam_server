@@ -18,8 +18,10 @@ import com.app.dto.ResultDTO;
 import com.app.dto.StateDTO;
 import com.app.dto.TahsilDTO;
 import com.app.dto.TahsilRequestDTO;
+import com.app.dto.TahsilResponseDTO;
 import com.app.dto.VillageDTO;
 import com.app.dto.VillageRequestDTO;
+import com.app.dto.VillageResponseDTO;
 import com.app.model.DistrictDO;
 import com.app.model.DonorDO;
 import com.app.model.StateDO;
@@ -88,6 +90,13 @@ public interface HelperService {
 
 
 	VillageDTO getVillageById(Long id);
+
+
+	ResponseDTO<TahsilResponseDTO> getAll(Integer pageNo, Integer pageSize, String sortBy, String districtId, String search);
+
+
+	ResponseDTO<VillageResponseDTO> getAllVillage(Integer pageNo, Integer pageSize, String sortBy, String tahsilId,
+			String search);
 
    
 }

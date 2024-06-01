@@ -33,6 +33,7 @@ import com.app.dto.ResultDTO;
 import com.app.dto.StateDTO;
 import com.app.dto.TahsilDTO;
 import com.app.dto.TahsilRequestDTO;
+import com.app.dto.TahsilResponseDTO;
 import com.app.dto.VillageDTO;
 import com.app.model.DistrictDO;
 import com.app.model.DonorDO;
@@ -71,6 +72,17 @@ public class TahsilController {
 	public ResultDTO deleteTahsil(@PathVariable(name = "id") Long id) {
 		
 		return helperService.deleteTahsil(id);
+
+	}
+	
+	@GetMapping("/all")
+	public ResponseDTO<TahsilResponseDTO> getAll(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize, 
+			@RequestParam(defaultValue = "id") String sortBy,
+			@RequestParam(required = false) String districtId,
+			@RequestParam(required = false) String search) {
+		
+		return helperService.getAll(pageNo,pageSize,sortBy,districtId,search);
 
 	}
 

@@ -156,7 +156,8 @@ public class DonorServiceImp implements DonorService{
 		        }
 
 		        if (bloodBankName != null && !bloodBankName.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodBankName"), bloodBankName));
+		        	 String pattern = "%" + bloodBankName + "%";
+		            predicates.add(cb.like(root.get("bloodBankName"), pattern));
 		        }
 
 		        if (donationDate != null && !donationDate.isEmpty()) {
@@ -234,7 +235,8 @@ public class DonorServiceImp implements DonorService{
 		        }
 
 		        if (bloodBankName != null && !bloodBankName.isEmpty()) {
-		            predicates.add(cb.equal(root.get("bloodBankName"), bloodBankName));
+		        	String pattern = "%" + bloodBankName + "%";
+		            predicates.add(cb.equal(root.get("bloodBankName"), pattern));
 		        }
 
 		        if (donationDate != null && !donationDate.isEmpty()) {

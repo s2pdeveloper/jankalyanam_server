@@ -33,8 +33,10 @@ import com.app.dto.ResultDTO;
 import com.app.dto.StateDTO;
 import com.app.dto.TahsilDTO;
 import com.app.dto.TahsilRequestDTO;
+import com.app.dto.TahsilResponseDTO;
 import com.app.dto.VillageDTO;
 import com.app.dto.VillageRequestDTO;
+import com.app.dto.VillageResponseDTO;
 import com.app.model.DistrictDO;
 import com.app.model.DonorDO;
 import com.app.model.StateDO;
@@ -75,14 +77,23 @@ public class VillageController {
 
 	}
 
+	@GetMapping("/all")
+	public ResponseDTO<VillageResponseDTO> getAll(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize, 
+			@RequestParam(defaultValue = "id") String sortBy,
+			@RequestParam(required = false) String tahsilId,
+			@RequestParam(required = false) String search) {
+		
+		return helperService.getAllVillage(pageNo,pageSize,sortBy,tahsilId,search);
+
+	}
+	
 	@GetMapping("/{id}")
 	public VillageDTO getVillageById(@PathVariable(name = "id") Long id) {
 		
 		return helperService.getVillageById(id);
 
 	}
-
-
 
 
 	

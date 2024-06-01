@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -43,4 +45,7 @@ public class VillageDO {
     @Column(name = "tahsil_id")
     private Long  tahsilId;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tahsil_id",referencedColumnName = "id", insertable = false, updatable = false)
+    private TahsilDO tahsil;
 }

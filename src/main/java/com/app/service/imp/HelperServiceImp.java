@@ -40,9 +40,11 @@ import com.app.dto.ResultDTO;
 import com.app.dto.StateDTO;
 import com.app.dto.TahsilDTO;
 import com.app.dto.TahsilRequestDTO;
+import com.app.dto.TahsilResponseDTO;
 import com.app.dto.UserDTO;
 import com.app.dto.VillageDTO;
 import com.app.dto.VillageRequestDTO;
+import com.app.dto.VillageResponseDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.BloodRequestDO;
 import com.app.model.DistrictDO;
@@ -71,6 +73,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 
 
@@ -338,5 +341,72 @@ public class HelperServiceImp implements HelperService{
 		}
 		VillageDTO village = Utility.mapObject(data, VillageDTO.class);
 		return village;
+	}
+
+	@Override
+	public ResponseDTO<TahsilResponseDTO> getAll(Integer pageNo, Integer pageSize, String sortBy, String districtId, String search) {
+		Page<TahsilDO> tahsilList;
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+		Specification<TahsilDO> specification = (root, query, cb) -> {
+			 List<Predicate> predicates = new ArrayList<>();
+			 	if (districtId != null && !districtId.isEmpty()) {
+		            predicates.add(cb.equal(root.get("districtId"), districtId));
+		        }
+		        if (search != null && !search.isEmpty()) {
+		            String searchString = "%" + search.toLowerCase() + "%";
+		            List<Predicate> attributePredicates = new ArrayList<>();
+		            for (SingularAttribute<? super TahsilDO, ?> attribute : root.getModel().getSingularAttributes()) {
+		                if (attribute.getJavaType() == String.class) {
+		                    Expression<?> attributePath = root.get(attribute);
+		                    if (attributePath.getJavaType() == String.class) {
+		                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+		                    }
+		                }
+		            }
+		            if (!attributePredicates.isEmpty()) {
+		                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+		            }
+		        }
+		        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+		        return finalPredicate;
+		 };
+		 
+		 	tahsilList = tahsilRepositoy.findAll(specification, paging);
+		    List<TahsilResponseDTO> tahsilDTOList = Utility.mapList(tahsilList.getContent(), TahsilResponseDTO.class);
+		    return new ResponseDTO<TahsilResponseDTO>(tahsilList.getTotalElements(), tahsilList.getTotalPages(), tahsilDTOList);
+	}
+
+	@Override
+	public ResponseDTO<VillageResponseDTO> getAllVillage(Integer pageNo, Integer pageSize, String sortBy,
+			String tahsilId, String search) {
+		Page<VillageDO> villageList;
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+		Specification<VillageDO> specification = (root, query, cb) -> {
+			 List<Predicate> predicates = new ArrayList<>();
+			 	if (tahsilId != null && !tahsilId.isEmpty()) {
+		            predicates.add(cb.equal(root.get("tahsilId"), tahsilId));
+		        }
+		        if (search != null && !search.isEmpty()) {
+		            String searchString = "%" + search.toLowerCase() + "%";
+		            List<Predicate> attributePredicates = new ArrayList<>();
+		            for (SingularAttribute<? super VillageDO, ?> attribute : root.getModel().getSingularAttributes()) {
+		                if (attribute.getJavaType() == String.class) {
+		                    Expression<?> attributePath = root.get(attribute);
+		                    if (attributePath.getJavaType() == String.class) {
+		                        attributePredicates.add(cb.like(cb.lower((Expression<String>) attributePath), searchString));
+		                    }
+		                }
+		            }
+		            if (!attributePredicates.isEmpty()) {
+		                predicates.add(cb.or(attributePredicates.toArray(new Predicate[0])));
+		            }
+		        }
+		        Predicate finalPredicate = cb.and(predicates.toArray(new Predicate[0]));
+		        return finalPredicate;
+		 };
+		 
+		 	villageList = villageRepositoy.findAll(specification, paging);
+		    List<VillageResponseDTO> villageDTOList = Utility.mapList(villageList.getContent(), VillageResponseDTO.class);
+		    return new ResponseDTO<VillageResponseDTO>(villageList.getTotalElements(), villageList.getTotalPages(), villageDTOList);
 	}
 }

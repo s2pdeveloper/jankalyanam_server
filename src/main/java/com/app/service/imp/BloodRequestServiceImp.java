@@ -178,7 +178,8 @@ public class BloodRequestServiceImp implements BloodRequestService{
 		        }
 
 		        if (hospitalName != null && !hospitalName.isEmpty()) {
-		            predicates.add(cb.equal(root.get("hospitalName"), hospitalName));
+		        	 String pattern = "%" + hospitalName + "%";
+		            predicates.add(cb.like(root.get("hospitalName"), pattern));
 		        }
 
 		        if (search != null && !search.isEmpty()) {
@@ -319,7 +320,8 @@ public class BloodRequestServiceImp implements BloodRequestService{
 	        }
 
 	        if (hospitalName != null && !hospitalName.isEmpty()) {
-	            predicates.add(cb.equal(root.get("hospitalName"), hospitalName));
+	        	 String pattern = "%" + hospitalName + "%";
+	            predicates.add(cb.like(root.get("hospitalName"), pattern));
 	        }
 
 	        if (search != null && !search.isEmpty()) {
