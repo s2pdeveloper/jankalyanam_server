@@ -49,7 +49,10 @@ public class DonorDTO {
     
     private String bloodBankName;
     
+    private String  image;
+    
     private BloodResponseDTO bloodRequest;
     
     private UserDTO user;
+    
 }

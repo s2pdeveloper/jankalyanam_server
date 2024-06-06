@@ -174,6 +174,8 @@ public class HelperServiceImp implements HelperService{
 			if(b != null) {
 				b.setStatus(BLOOD_STATUS.ALLOCATED);
 				bloodRequestRepository.save(b);
+				data.setDonationDate(b.getBloodRequireDate());
+				donorRepository.save(data);
 			}
 		
 			
@@ -184,6 +186,7 @@ public class HelperServiceImp implements HelperService{
 			if(b != null) {
 			b.setStatus(BLOOD_STATUS.ACCEPTED);		
 			b.setDonorId(null);		
+			b.setProvided(null);
 			bloodRequestRepository.save(b);
 			}
 		}
@@ -205,6 +208,7 @@ public class HelperServiceImp implements HelperService{
 				donorRepository.save(donarDetails);
 			}
 			data.setDonorId(null);	
+			data.setProvided(null);
 			bloodRequestRepository.save(data);
 		}
 		

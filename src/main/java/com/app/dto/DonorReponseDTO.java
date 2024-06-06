@@ -27,5 +27,6 @@ public class DonorReponseDTO {
     private LocalDate donationDate;
     private GENDER gender;
     private String bloodGroup;
+    private String image;
 	private Boolean isWebsite;
 }

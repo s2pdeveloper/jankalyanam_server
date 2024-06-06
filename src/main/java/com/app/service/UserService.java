@@ -19,6 +19,7 @@ import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
+import com.app.dto.UserUpdateDTO;
 import com.app.model.UserDO;
 import com.app.repository.UserRepository;
 
@@ -49,7 +50,7 @@ public interface UserService {
 	 
 	 public UserDTO getByRoleAndStatus(ROLE role , STATUS status) ;
 
-	public ResultDTO updateUser(Long id, UserDTO userDTO);
+	public UserDTO updateUser(Long id, UserUpdateDTO userDTO);
 
 	public ProfileResponseDTO uploadProfile(ProfileUploadDTO profileUploadDTO);
 

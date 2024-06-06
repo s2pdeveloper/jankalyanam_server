@@ -24,6 +24,7 @@ import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
+import com.app.dto.UserUpdateDTO;
 import com.app.model.UserDO;
 import com.app.service.UserService;
 import io.swagger.annotations.Api;
@@ -85,7 +86,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResultDTO update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
+	public UserDTO update(@PathVariable Long id,@RequestBody UserUpdateDTO userDTO) {
 		return userService.updateUser(id,userDTO);	
 	}
 	

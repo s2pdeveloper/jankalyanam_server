@@ -33,6 +33,7 @@ import com.app.dto.RegisterDTO;
 import com.app.dto.ResponseDTO;
 import com.app.dto.ResultDTO;
 import com.app.dto.UserDTO;
+import com.app.dto.UserUpdateDTO;
 import com.app.exception.InvalidInputException;
 import com.app.model.AdvertisementDO;
 import com.app.model.UserDO;
@@ -202,7 +203,7 @@ public class UserServiceImp implements UserService{
 
 
 	@Override
-	public ResultDTO updateUser(Long id,UserDTO userDTO) {
+	public UserDTO updateUser(Long id,UserUpdateDTO userDTO) {
 		UserDO user = userRepository.findById(id).orElse(null);
 		if(user == null) {
 			 throw new InvalidInputException("No User Present");
@@ -213,7 +214,10 @@ public class UserServiceImp implements UserService{
 		UserDO updatedUser = Utility.updateObjectWithNonNullFields(user, newUser);
 		
 		userRepository.save(updatedUser);
-		return new ResultDTO(user.getId().toString(),"Updated successfully");
+		
+		UserDTO result = Utility.mapObject(updatedUser, UserDTO.class);
+		
+		return result;
 		
 	}
 
